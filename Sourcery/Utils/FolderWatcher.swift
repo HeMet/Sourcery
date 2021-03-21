@@ -8,6 +8,23 @@
 
 import Foundation
 
+#if !canImport(Darwin)
+typealias FSEventStreamEventFlags = Int
+let kFSEventStreamEventFlagItemIsDir: Int = 0
+let kFSEventStreamEventFlagItemIsFile: Int = 0
+let kFSEventStreamEventFlagItemCreated: Int = 0
+let kFSEventStreamEventFlagItemModified: Int = 0
+let kFSEventStreamEventFlagItemRemoved: Int = 0
+let kFSEventStreamEventFlagItemRenamed: Int = 0
+let kFSEventStreamEventFlagItemIsHardlink: Int = 0
+let kFSEventStreamEventFlagItemIsLastHardlink: Int = 0
+let kFSEventStreamEventFlagItemIsSymlink: Int = 0
+let kFSEventStreamEventFlagItemChangeOwner: Int = 0
+let kFSEventStreamEventFlagItemFinderInfoMod: Int = 0
+let kFSEventStreamEventFlagItemInodeMetaMod: Int = 0
+let kFSEventStreamEventFlagItemXattrMod: Int = 0
+#endif
+
 enum FolderWatcher {
 
     struct Event {
@@ -64,9 +81,11 @@ enum FolderWatcher {
     }
 
     class Local {
+        #if canImport(Darwin)
         private let path: String
         private var stream: FSEventStreamRef!
         private let closure: (_ events: [Event]) -> Void
+        #endif
 
         /// Creates folder watcher.
         ///
@@ -75,6 +94,7 @@ enum FolderWatcher {
         ///   - latency: Latency to use
         ///   - closure: Callback closure
         init(path: String, latency: TimeInterval = 1/60, closure: @escaping (_ events: [Event]) -> Void) {
+            #if canImport(Darwin)
             self.path = path
             self.closure = closure
 
@@ -97,12 +117,19 @@ enum FolderWatcher {
 
             FSEventStreamScheduleWithRunLoop(stream, CFRunLoopGetCurrent(), CFRunLoopMode.defaultMode.rawValue)
             FSEventStreamStart(stream)
+            #else
+            fatalError("File watching supported on Darwin only")
+            #endif
         }
 
         deinit {
+            #if canImport(Darwin)
             FSEventStreamStop(stream)
             FSEventStreamInvalidate(stream)
             FSEventStreamRelease(stream)
+            #else
+            fatalError("File watching supported on Darwin only")
+            #endif
         }
     }
 }
