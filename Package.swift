@@ -40,7 +40,7 @@ let package = Package(
             "SwiftSyntax",
             "XcodeProj",
             "TryCatch",
-        ]),
+        ], linkerSettings: [.unsafeFlags(["-L_InternalSwiftSyntaxParser"])]),
         .target(name: "SourceryRuntime"),
         .target(name: "SourceryUtils", dependencies: [
           "PathKit"
