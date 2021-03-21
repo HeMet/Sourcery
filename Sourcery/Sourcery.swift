@@ -11,7 +11,9 @@ import SourceryRuntime
 import SourceryJS
 import SourcerySwift
 import SourceryStencil
+#if !os(Windows)
 import TryCatch
+#endif
 import XcodeProj
 
 class Sourcery {
@@ -368,8 +370,23 @@ extension Sourcery {
         return unarchived
     }
 
+    #if os(Windows)
     private func load(artifacts: String, modifiedDate: Date, path: Path) -> FileParserResult? {
         var unarchivedResult: FileParserResult?
+        do {
+            if let unarchived = NSKeyedUnarchiver.unarchiveObject(withFile: artifacts) as? FileParserResult {
+                if unarchived.sourceryVersion == Sourcery.version, unarchived.modifiedDate == modifiedDate {
+                    unarchivedResult = unarchived
+                }
+            }
+        } catch {
+            Log.warning("Failed to unarchive cache for \(path.string) due to error, re-parsing file")
+        }     
+        return unarchivedResult
+    }
+    #else
+    private func load(artifacts: String, modifiedDate: Date, path: Path) -> FileParserResult? {
+        var unarchivedResult: FileParserResult?        
         SwiftTryCatch.try({
 
             if let unarchived = NSKeyedUnarchiver.unarchiveObject(withFile: artifacts) as? FileParserResult {
@@ -383,6 +400,7 @@ extension Sourcery {
 
         return unarchivedResult
     }
+    #endif
 }
 
 // MARK: - Generation
@@ -498,6 +516,17 @@ extension Sourcery {
         }
 
         var result: String = ""
+        #if os(Windows)
+        do {
+            do {
+                result = try Generator.generate(parsingResult.parserResult, types: parsingResult.types, functions: parsingResult.functions, template: template, arguments: self.arguments)
+            } catch {
+                Log.error(error)
+            }
+        } catch {
+            result = error?.description ?? ""
+        }
+        #else
         SwiftTryCatch.try({
             do {
                 result = try Generator.generate(parsingResult.parserResult, types: parsingResult.types, functions: parsingResult.functions, template: template, arguments: self.arguments)
@@ -507,6 +536,7 @@ extension Sourcery {
         }, catch: { error in
             result = error?.description ?? ""
         }, finallyBlock: {})
+        #endif
 
         return try processRanges(in: parsingResult, result: result, outputPath: outputPath)
     }

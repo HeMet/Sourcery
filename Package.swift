@@ -70,6 +70,7 @@ let package = Package(
 
 #if os(Windows)
 for target in package.targets {
-  target.path = target.name
+  // no unix-like symlinks on Windows
+  target.path = target.name 
 }
 #endif

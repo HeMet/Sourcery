@@ -24,6 +24,7 @@
  SOFTWARE.
  */
 
+#if !defined(_WIN32)
 #import <Foundation/Foundation.h>
 
 @interface SwiftTryCatch : NSObject
@@ -35,3 +36,4 @@
 + (void)throwString:(NSString*)s;
 + (void)throwException:(NSException*)e;
 @end
+#endif
