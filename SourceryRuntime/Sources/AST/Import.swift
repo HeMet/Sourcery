@@ -1,7 +1,7 @@
 import Foundation
 
 /// Defines import type
-@objcMembers public class Import: NSObject, SourceryModelWithoutDescription {
+/*/*@objc*/Members*/ public class Import: NSObject, SourceryModelWithoutDescription {
     /// Import kind, e.g. class, struct in `import class Module.ClassName`
     public var kind: String?
 

@@ -115,9 +115,11 @@ func runCLI() {
             Log.logAST = (verboseLogging || logAST) && !quiet
 
             // if ejsPath is not provided use default value or executable path
+            #if canImport(JavaScriptCore)
             EJSTemplate.ejsPath = ejsPath.string.isEmpty
                 ? (EJSTemplate.ejsPath ?? Path(ProcessInfo.processInfo.arguments[0]).parent() + "ejs.js")
                 : ejsPath
+            #endif
 
             let configurations = configPaths.flatMap { configPath -> [Configuration] in
                 let yamlPath: Path = configPath.isDirectory ? configPath + ".sourcery.yml" : configPath
@@ -235,5 +237,11 @@ if !inUnitTests {
         app.delegate   = controller
         app.run()
     }
+}
+#endif
+
+#if !canImport(Darwin)
+func CFAbsoluteTimeGetCurrent() -> TimeInterval {
+    Date().timeIntervalSinceReferenceDate
 }
 #endif

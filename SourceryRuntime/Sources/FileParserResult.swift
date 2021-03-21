@@ -10,7 +10,7 @@ import Foundation
 
 // sourcery: skipJSExport
 /// :nodoc:
-@objcMembers public final class FileParserResult: NSObject, SourceryModel {
+/*/*@objc*/Members*/ public final class FileParserResult: NSObject, SourceryModel {
     public let path: String?
     public let module: String?
     public var types = [Type]() {

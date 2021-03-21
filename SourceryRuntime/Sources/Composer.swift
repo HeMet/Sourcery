@@ -6,7 +6,11 @@
 import Foundation
 
 private func currentTimestamp() -> TimeInterval {
+    #if os(Windows)
+    return Date.timeIntervalSinceReferenceDate
+    #else
     return CFAbsoluteTimeGetCurrent()
+    #endif
 }
 
 /// Responsible for composing results of `FileParser`.

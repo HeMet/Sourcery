@@ -3,6 +3,7 @@
 // swiftlint:disable vertical_whitespace
 
 
+#if canImport(Darwin)
 extension ArrayType {
     /// :nodoc:
     override public var description: String {
@@ -351,3 +352,4 @@ extension Variable {
         return string
     }
 }
+#endif

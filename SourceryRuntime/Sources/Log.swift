@@ -1,4 +1,8 @@
+#if os(Windows)
+import CRT
+#else
 import Darwin
+#endif
 import Foundation
 
 /// :nodoc:
@@ -18,7 +22,13 @@ public enum Log {
     public static func error(_ message: Any) {
         log(level: .errors, "error: \(message)")
         // to return error when running swift templates which is done in a different process
-        if ProcessInfo().processName != "Sourcery" {
+        let processInfo: ProcessInfo
+        #if canImport(Darwin)
+        processInfo = ProcessInfo()
+        #else
+        processInfo = ProcessInfo.processInfo
+        #endif
+        if processInfo.processName != "Sourcery" {
             fputs("\(message)", stderr)
         }
     }

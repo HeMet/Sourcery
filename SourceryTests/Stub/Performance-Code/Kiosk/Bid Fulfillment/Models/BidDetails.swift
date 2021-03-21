@@ -2,7 +2,7 @@ import UIKit
 import RxSwift
 import Moya
 
-@objc class BidDetails: NSObject {
+/*@objc*/ class BidDetails: NSObject {
     typealias DownloadImageClosure = (_ url: URL, _ imageView: UIImageView) -> ()
 
     let auctionID: String

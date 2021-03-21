@@ -18,12 +18,12 @@ class FileParserAttributesSpec: QuickSpec {
                              /*
                                docs
                              */
-                             @objc(WAGiveRecognitionCoordinator)
+                             /*@objc*/(WAGiveRecognitionCoordinator)
                              // sourcery: AutoProtocol, AutoMockable
                              class GiveRecognitionCoordinator: NSObject {
                              }
                              """).first?.attributes).to(
-                  equal(["objc": [Attribute(name: "objc", arguments: ["0": "WAGiveRecognitionCoordinator" as NSString], description: "@objc(WAGiveRecognitionCoordinator)")]])
+                  equal(["objc": [Attribute(name: "objc", arguments: ["0": "WAGiveRecognitionCoordinator" as NSString], description: "/*@objc*/(WAGiveRecognitionCoordinator)")]])
                 )
 
                 expect(parse("class Foo { func some(param: @convention(swift) @escaping ()->()) {} }").first?.methods.first?.parameters.first?.typeAttributes).to(equal([
@@ -35,16 +35,16 @@ class FileParserAttributesSpec: QuickSpec {
                     Modifier(name: "final")
                 ]))
 
-                expect(parse("@objc class Foo {}").first?.attributes).to(equal([
-                    "objc": [Attribute(name: "objc", arguments: [:], description: "@objc")]
+                expect(parse("/*@objc*/ class Foo {}").first?.attributes).to(equal([
+                    "objc": [Attribute(name: "objc", arguments: [:], description: "/*@objc*/")]
                 ]))
 
-                expect(parse("@objc(Bar) class Foo {}").first?.attributes).to(equal([
-                    "objc": [Attribute(name: "objc", arguments: ["0": "Bar" as NSString], description: "@objc(Bar)")]
+                expect(parse("/*@objc*/(Bar) class Foo {}").first?.attributes).to(equal([
+                    "objc": [Attribute(name: "objc", arguments: ["0": "Bar" as NSString], description: "/*@objc*/(Bar)")]
                 ]))
 
-                expect(parse("@objcMembers class Foo {}").first?.attributes).to(equal([
-                    "objcMembers": [Attribute(name: "objcMembers", arguments: [:], description: "@objcMembers")]
+                expect(parse("/*/*@objc*/Members*/ class Foo {}").first?.attributes).to(equal([
+                    "objcMembers": [Attribute(name: "objcMembers", arguments: [:], description: "/*/*@objc*/Members*/")]
                 ]))
 
                 expect(parse("public class Foo {}").first?.modifiers).to(equal([
@@ -83,9 +83,9 @@ class FileParserAttributesSpec: QuickSpec {
             }
 
             it("extracts method attributes and modifiers") {
-                expect(parse("class Foo { @discardableResult\n@objc(some)\nfunc some() {} }").first?.methods.first?.attributes).to(equal([
+                expect(parse("class Foo { @discardableResult\n/*@objc*/(some)\nfunc some() {} }").first?.methods.first?.attributes).to(equal([
                     "discardableResult": [Attribute(name: "discardableResult")],
-                    "objc": [Attribute(name: "objc", arguments: ["0": "some" as NSString], description: "@objc(some)")]
+                    "objc": [Attribute(name: "objc", arguments: ["0": "some" as NSString], description: "/*@objc*/(some)")]
                 ]))
 
                 expect(parse("class Foo { @nonobjc convenience required init() {} }").first?.initializers.first?.attributes).to(equal([
@@ -105,7 +105,7 @@ class FileParserAttributesSpec: QuickSpec {
                     Modifier(name: "final")
                 ]))
 
-                expect(parse("@objc protocol Foo { @objc optional func some() }").first?.methods.first?.modifiers).to(equal([
+                expect(parse("/*@objc*/ protocol Foo { /*@objc*/ optional func some() }").first?.methods.first?.modifiers).to(equal([
                     Modifier(name: "optional")
                 ]))
             }
@@ -117,9 +117,9 @@ class FileParserAttributesSpec: QuickSpec {
             }
 
             it("extracts variable attributes and modifiers") {
-                expect(parse("class Foo { @NSCopying @objc(objcName) var name: NSString = \"\" }").first?.variables.first?.attributes).to(equal([
+                expect(parse("class Foo { @NSCopying /*@objc*/(objcName) var name: NSString = \"\" }").first?.variables.first?.attributes).to(equal([
                     "NSCopying": [Attribute(name: "NSCopying", description: "@NSCopying")],
-                    "objc": [Attribute(name: "objc", arguments: ["0": "objcName" as NSString], description: "@objc(objcName)")]
+                    "objc": [Attribute(name: "objc", arguments: ["0": "objcName" as NSString], description: "/*@objc*/(objcName)")]
                 ]))
 
                 expect(parse("struct Foo { mutating var some: Int }").first?.variables.first?.modifiers).to(equal([

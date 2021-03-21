@@ -1,3 +1,4 @@
+#if canImport(JavaScriptCore)
 import JavaScriptCore
 import PathKit
 
@@ -85,3 +86,4 @@ open class EJSTemplate {
     }
 
 }
+#endif

@@ -2,9 +2,10 @@
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
+#if canImport(JavaScriptCore)
 import JavaScriptCore
 
-@objc protocol ArrayTypeAutoJSExport: JSExport {
+/*@objc*/ protocol ArrayTypeAutoJSExport: JSExport {
     var name: String { get }
     var elementTypeName: TypeName { get }
     var elementType: Type? { get }
@@ -14,7 +15,7 @@ import JavaScriptCore
 
 extension ArrayType: ArrayTypeAutoJSExport {}
 
-@objc protocol AssociatedTypeAutoJSExport: JSExport {
+/*@objc*/ protocol AssociatedTypeAutoJSExport: JSExport {
     var name: String { get }
     var typeName: TypeName? { get }
     var type: Type? { get }
@@ -22,7 +23,7 @@ extension ArrayType: ArrayTypeAutoJSExport {}
 
 extension AssociatedType: AssociatedTypeAutoJSExport {}
 
-@objc protocol AssociatedValueAutoJSExport: JSExport {
+/*@objc*/ protocol AssociatedValueAutoJSExport: JSExport {
     var localName: String? { get }
     var externalName: String? { get }
     var typeName: TypeName { get }
@@ -36,7 +37,7 @@ extension AssociatedType: AssociatedTypeAutoJSExport {}
 
 extension AssociatedValue: AssociatedValueAutoJSExport {}
 
-@objc protocol AttributeAutoJSExport: JSExport {
+/*@objc*/ protocol AttributeAutoJSExport: JSExport {
     var name: String { get }
     var arguments: [String: NSObject] { get }
     var asSource: String { get }
@@ -45,14 +46,14 @@ extension AssociatedValue: AssociatedValueAutoJSExport {}
 
 extension Attribute: AttributeAutoJSExport {}
 
-@objc protocol BytesRangeAutoJSExport: JSExport {
+/*@objc*/ protocol BytesRangeAutoJSExport: JSExport {
     var offset: Int64 { get }
     var length: Int64 { get }
 }
 
 extension BytesRange: BytesRangeAutoJSExport {}
 
-@objc protocol ClassAutoJSExport: JSExport {
+/*@objc*/ protocol ClassAutoJSExport: JSExport {
     var kind: String { get }
     var isFinal: Bool { get }
     var module: String? { get }
@@ -96,7 +97,7 @@ extension BytesRange: BytesRangeAutoJSExport {}
 
 extension Class: ClassAutoJSExport {}
 
-@objc protocol ClosureParameterAutoJSExport: JSExport {
+/*@objc*/ protocol ClosureParameterAutoJSExport: JSExport {
     var argumentLabel: String? { get }
     var name: String? { get }
     var typeName: TypeName { get }
@@ -113,7 +114,7 @@ extension Class: ClassAutoJSExport {}
 
 extension ClosureParameter: ClosureParameterAutoJSExport {}
 
-@objc protocol ClosureTypeAutoJSExport: JSExport {
+/*@objc*/ protocol ClosureTypeAutoJSExport: JSExport {
     var name: String { get }
     var parameters: [ClosureParameter] { get }
     var returnTypeName: TypeName { get }
@@ -129,7 +130,7 @@ extension ClosureParameter: ClosureParameterAutoJSExport {}
 
 extension ClosureType: ClosureTypeAutoJSExport {}
 
-@objc protocol DictionaryTypeAutoJSExport: JSExport {
+/*@objc*/ protocol DictionaryTypeAutoJSExport: JSExport {
     var name: String { get }
     var valueTypeName: TypeName { get }
     var valueType: Type? { get }
@@ -141,7 +142,7 @@ extension ClosureType: ClosureTypeAutoJSExport {}
 
 extension DictionaryType: DictionaryTypeAutoJSExport {}
 
-@objc protocol EnumAutoJSExport: JSExport {
+/*@objc*/ protocol EnumAutoJSExport: JSExport {
     var kind: String { get }
     var cases: [EnumCase] { get }
     var rawTypeName: TypeName? { get }
@@ -189,7 +190,7 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
 
 extension Enum: EnumAutoJSExport {}
 
-@objc protocol EnumCaseAutoJSExport: JSExport {
+/*@objc*/ protocol EnumCaseAutoJSExport: JSExport {
     var name: String { get }
     var rawValue: String? { get }
     var associatedValues: [AssociatedValue] { get }
@@ -201,7 +202,7 @@ extension Enum: EnumAutoJSExport {}
 extension EnumCase: EnumCaseAutoJSExport {}
 
 
-@objc protocol GenericRequirementAutoJSExport: JSExport {
+/*@objc*/ protocol GenericRequirementAutoJSExport: JSExport {
     var leftType: AssociatedType { get }
     var rightType: GenericTypeParameter { get }
     var relationship: String { get }
@@ -210,7 +211,7 @@ extension EnumCase: EnumCaseAutoJSExport {}
 
 extension GenericRequirement: GenericRequirementAutoJSExport {}
 
-@objc protocol GenericTypeAutoJSExport: JSExport {
+/*@objc*/ protocol GenericTypeAutoJSExport: JSExport {
     var name: String { get }
     var typeParameters: [GenericTypeParameter] { get }
     var asSource: String { get }
@@ -219,14 +220,14 @@ extension GenericRequirement: GenericRequirementAutoJSExport {}
 
 extension GenericType: GenericTypeAutoJSExport {}
 
-@objc protocol GenericTypeParameterAutoJSExport: JSExport {
+/*@objc*/ protocol GenericTypeParameterAutoJSExport: JSExport {
     var typeName: TypeName { get }
     var type: Type? { get }
 }
 
 extension GenericTypeParameter: GenericTypeParameterAutoJSExport {}
 
-@objc protocol ImportAutoJSExport: JSExport {
+/*@objc*/ protocol ImportAutoJSExport: JSExport {
     var kind: String? { get }
     var path: String { get }
     var description: String { get }
@@ -235,7 +236,7 @@ extension GenericTypeParameter: GenericTypeParameterAutoJSExport {}
 
 extension Import: ImportAutoJSExport {}
 
-@objc protocol MethodAutoJSExport: JSExport {
+/*@objc*/ protocol MethodAutoJSExport: JSExport {
     var name: String { get }
     var selectorName: String { get }
     var shortName: String { get }
@@ -271,7 +272,7 @@ extension Import: ImportAutoJSExport {}
 
 extension Method: MethodAutoJSExport {}
 
-@objc protocol MethodParameterAutoJSExport: JSExport {
+/*@objc*/ protocol MethodParameterAutoJSExport: JSExport {
     var argumentLabel: String? { get }
     var name: String { get }
     var typeName: TypeName { get }
@@ -288,7 +289,7 @@ extension Method: MethodAutoJSExport {}
 
 extension MethodParameter: MethodParameterAutoJSExport {}
 
-@objc protocol ModifierAutoJSExport: JSExport {
+/*@objc*/ protocol ModifierAutoJSExport: JSExport {
     var name: String { get }
     var detail: String? { get }
     var asSource: String { get }
@@ -296,7 +297,7 @@ extension MethodParameter: MethodParameterAutoJSExport {}
 
 extension Modifier: ModifierAutoJSExport {}
 
-@objc protocol ProtocolAutoJSExport: JSExport {
+/*@objc*/ protocol ProtocolAutoJSExport: JSExport {
     var kind: String { get }
     var associatedTypes: [String: AssociatedType] { get }
     var genericRequirements: [GenericRequirement] { get }
@@ -344,7 +345,7 @@ extension Protocol: ProtocolAutoJSExport {}
 
 
 
-@objc protocol StructAutoJSExport: JSExport {
+/*@objc*/ protocol StructAutoJSExport: JSExport {
     var kind: String { get }
     var module: String? { get }
     var imports: [Import] { get }
@@ -387,7 +388,7 @@ extension Protocol: ProtocolAutoJSExport {}
 
 extension Struct: StructAutoJSExport {}
 
-@objc protocol SubscriptAutoJSExport: JSExport {
+/*@objc*/ protocol SubscriptAutoJSExport: JSExport {
     var parameters: [MethodParameter] { get }
     var returnTypeName: TypeName { get }
     var actualReturnTypeName: TypeName { get }
@@ -409,7 +410,7 @@ extension Struct: StructAutoJSExport {}
 
 extension Subscript: SubscriptAutoJSExport {}
 
-@objc protocol TemplateContextAutoJSExport: JSExport {
+/*@objc*/ protocol TemplateContextAutoJSExport: JSExport {
     var functions: [SourceryMethod] { get }
     var types: Types { get }
     var argument: [String: NSObject] { get }
@@ -420,7 +421,7 @@ extension Subscript: SubscriptAutoJSExport {}
 
 extension TemplateContext: TemplateContextAutoJSExport {}
 
-@objc protocol TupleElementAutoJSExport: JSExport {
+/*@objc*/ protocol TupleElementAutoJSExport: JSExport {
     var name: String? { get }
     var typeName: TypeName { get }
     var type: Type? { get }
@@ -432,14 +433,14 @@ extension TemplateContext: TemplateContextAutoJSExport {}
 
 extension TupleElement: TupleElementAutoJSExport {}
 
-@objc protocol TupleTypeAutoJSExport: JSExport {
+/*@objc*/ protocol TupleTypeAutoJSExport: JSExport {
     var name: String { get }
     var elements: [TupleElement] { get }
 }
 
 extension TupleType: TupleTypeAutoJSExport {}
 
-@objc protocol TypeAutoJSExport: JSExport {
+/*@objc*/ protocol TypeAutoJSExport: JSExport {
     var module: String? { get }
     var imports: [Import] { get }
     var kind: String { get }
@@ -482,7 +483,7 @@ extension TupleType: TupleTypeAutoJSExport {}
 
 extension Type: TypeAutoJSExport {}
 
-@objc protocol TypeNameAutoJSExport: JSExport {
+/*@objc*/ protocol TypeNameAutoJSExport: JSExport {
     var name: String { get }
     var generic: GenericType? { get }
     var isGeneric: Bool { get }
@@ -511,12 +512,12 @@ extension TypeName: TypeNameAutoJSExport {}
 
 
 
-@objc protocol TypesCollectionAutoJSExport: JSExport {
+/*@objc*/ protocol TypesCollectionAutoJSExport: JSExport {
 }
 
 extension TypesCollection: TypesCollectionAutoJSExport {}
 
-@objc protocol VariableAutoJSExport: JSExport {
+/*@objc*/ protocol VariableAutoJSExport: JSExport {
     var name: String { get }
     var typeName: TypeName { get }
     var type: Type? { get }
@@ -542,3 +543,4 @@ extension TypesCollection: TypesCollectionAutoJSExport {}
 extension Variable: VariableAutoJSExport {}
 
 
+#endif

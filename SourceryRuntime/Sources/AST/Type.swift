@@ -8,7 +8,7 @@ import Foundation
 public typealias AttributeList = [String: [Attribute]]
 
 /// Defines Swift type
-@objcMembers public class Type: NSObject, SourceryModel, Annotated {
+/*/*@objc*/Members*/ public class Type: NSObject, SourceryModel, Annotated {
 
     /// :nodoc:
     public var module: String?
@@ -301,7 +301,7 @@ public typealias AttributeList = [String: [Attribute]]
     /// Superclass type, if known (only for classes)
     public var supertype: Type?
 
-    /// Type attributes, i.e. `@objc`
+    /// Type attributes, i.e. `/*@objc*/`
     public var attributes: AttributeList
 
     /// Type modifiers, i.e. `private`, `final`
@@ -444,11 +444,17 @@ extension Type {
 /// Extends type so that inner types can be accessed via KVC e.g. Parent.Inner.Children
 extension Type {
     /// :nodoc:
+    #if canImport(Darwin)
     override public func value(forUndefinedKey key: String) -> Any? {
         if let innerType = containedTypes.lazy.filter({ $0.localName == key }).first {
             return innerType
         }
 
+        #if canImport(Darwin)
         return super.value(forUndefinedKey: key)
+        #else
+        fatalError("No Objective-C runtime presented")
+        #endif
     }
+    #endif
 }

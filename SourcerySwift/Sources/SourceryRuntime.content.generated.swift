@@ -130,7 +130,7 @@ public extension Array {
 import Foundation
 
 /// Describes array type
-@objcMembers public final class ArrayType: NSObject, SourceryModel {
+/*/*@objc*/Members*/ public final class ArrayType: NSObject, SourceryModel {
 
     /// Type name used in declaration
     public var name: String
@@ -184,7 +184,7 @@ import Foundation
 import Foundation
 
 /// Describes Swift AssociatedType
-@objcMembers public final class AssociatedType: NSObject, SourceryModel {
+/*/*@objc*/Members*/ public final class AssociatedType: NSObject, SourceryModel {
     /// Associated type name
     public let name: String
 
@@ -226,7 +226,7 @@ import Foundation
 import Foundation
 
 /// Describes Swift attribute
-@objcMembers public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
+/*/*@objc*/Members*/ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
 
     /// Attribute name
     public let name: String
@@ -414,7 +414,7 @@ import Foundation
 import Foundation
 
 /// :nodoc:
-@objcMembers public final class BytesRange: NSObject, SourceryModel {
+/*/*@objc*/Members*/ public final class BytesRange: NSObject, SourceryModel {
 
     public let offset: Int64
     public let length: Int64
@@ -451,7 +451,7 @@ import Foundation
 
 // sourcery: skipDescription
 /// Descibes Swift class
-@objc(SwiftClass) @objcMembers public final class Class: Type {
+/*/*@objc*/(SwiftClass)*/ /*/*@objc*/Members*/ public final class Class: Type {
     /// Returns "class"
     public override var kind: String { return "class" }
 
@@ -513,7 +513,7 @@ import Foundation
 import Foundation
 
 /// Describes closure type
-@objcMembers public final class ClosureType: NSObject, SourceryModel {
+/*/*@objc*/Members*/ public final class ClosureType: NSObject, SourceryModel {
 
     /// Type name used in declaration with stripped whitespaces and new lines
     public let name: String
@@ -1799,7 +1799,7 @@ extension Variable {
 import Foundation
 
 /// Describes dictionary type
-@objcMembers public final class DictionaryType: NSObject, SourceryModel {
+/*/*@objc*/Members*/ public final class DictionaryType: NSObject, SourceryModel {
     /// Type name used in declaration
     public var name: String
 
@@ -1868,7 +1868,7 @@ import Foundation
 import Foundation
 
 extension ArrayType: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    /*@objc*/ public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? ArrayType else {
             results.append("Incorrect type <expected: ArrayType, received: \\(Swift.type(of: object))>")
@@ -1880,7 +1880,7 @@ extension ArrayType: Diffable {
     }
 }
 extension AssociatedType: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    /*@objc*/ public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? AssociatedType else {
             results.append("Incorrect type <expected: AssociatedType, received: \\(Swift.type(of: object))>")
@@ -1892,7 +1892,7 @@ extension AssociatedType: Diffable {
     }
 }
 extension AssociatedValue: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    /*@objc*/ public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? AssociatedValue else {
             results.append("Incorrect type <expected: AssociatedValue, received: \\(Swift.type(of: object))>")
@@ -1907,7 +1907,7 @@ extension AssociatedValue: Diffable {
     }
 }
 extension Attribute: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    /*@objc*/ public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Attribute else {
             results.append("Incorrect type <expected: Attribute, received: \\(Swift.type(of: object))>")
@@ -1920,7 +1920,7 @@ extension Attribute: Diffable {
     }
 }
 extension BytesRange: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    /*@objc*/ public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? BytesRange else {
             results.append("Incorrect type <expected: BytesRange, received: \\(Swift.type(of: object))>")
@@ -1943,7 +1943,7 @@ extension Class {
     }
 }
 extension ClosureType: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    /*@objc*/ public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? ClosureType else {
             results.append("Incorrect type <expected: ClosureType, received: \\(Swift.type(of: object))>")
@@ -1958,7 +1958,7 @@ extension ClosureType: Diffable {
     }
 }
 extension DictionaryType: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    /*@objc*/ public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? DictionaryType else {
             results.append("Incorrect type <expected: DictionaryType, received: \\(Swift.type(of: object))>")
@@ -1984,7 +1984,7 @@ extension Enum {
     }
 }
 extension EnumCase: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    /*@objc*/ public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? EnumCase else {
             results.append("Incorrect type <expected: EnumCase, received: \\(Swift.type(of: object))>")
@@ -1999,7 +1999,7 @@ extension EnumCase: Diffable {
     }
 }
 extension FileParserResult: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    /*@objc*/ public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? FileParserResult else {
             results.append("Incorrect type <expected: FileParserResult, received: \\(Swift.type(of: object))>")
@@ -2018,7 +2018,7 @@ extension FileParserResult: Diffable {
     }
 }
 extension GenericRequirement: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    /*@objc*/ public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? GenericRequirement else {
             results.append("Incorrect type <expected: GenericRequirement, received: \\(Swift.type(of: object))>")
@@ -2032,7 +2032,7 @@ extension GenericRequirement: Diffable {
     }
 }
 extension GenericType: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    /*@objc*/ public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? GenericType else {
             results.append("Incorrect type <expected: GenericType, received: \\(Swift.type(of: object))>")
@@ -2044,7 +2044,7 @@ extension GenericType: Diffable {
     }
 }
 extension GenericTypeParameter: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    /*@objc*/ public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? GenericTypeParameter else {
             results.append("Incorrect type <expected: GenericTypeParameter, received: \\(Swift.type(of: object))>")
@@ -2055,7 +2055,7 @@ extension GenericTypeParameter: Diffable {
     }
 }
 extension Import: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    /*@objc*/ public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Import else {
             results.append("Incorrect type <expected: Import, received: \\(Swift.type(of: object))>")
@@ -2067,7 +2067,7 @@ extension Import: Diffable {
     }
 }
 extension Method: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    /*@objc*/ public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Method else {
             results.append("Incorrect type <expected: Method, received: \\(Swift.type(of: object))>")
@@ -2091,7 +2091,7 @@ extension Method: Diffable {
     }
 }
 extension MethodParameter: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    /*@objc*/ public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? MethodParameter else {
             results.append("Incorrect type <expected: MethodParameter, received: \\(Swift.type(of: object))>")
@@ -2107,7 +2107,7 @@ extension MethodParameter: Diffable {
     }
 }
 extension Modifier: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    /*@objc*/ public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Modifier else {
             results.append("Incorrect type <expected: Modifier, received: \\(Swift.type(of: object))>")
@@ -2155,7 +2155,7 @@ extension Struct {
     }
 }
 extension Subscript: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    /*@objc*/ public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Subscript else {
             results.append("Incorrect type <expected: Subscript, received: \\(Swift.type(of: object))>")
@@ -2173,7 +2173,7 @@ extension Subscript: Diffable {
     }
 }
 extension TemplateContext: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    /*@objc*/ public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? TemplateContext else {
             results.append("Incorrect type <expected: TemplateContext, received: \\(Swift.type(of: object))>")
@@ -2187,7 +2187,7 @@ extension TemplateContext: Diffable {
     }
 }
 extension TupleElement: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    /*@objc*/ public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? TupleElement else {
             results.append("Incorrect type <expected: TupleElement, received: \\(Swift.type(of: object))>")
@@ -2199,7 +2199,7 @@ extension TupleElement: Diffable {
     }
 }
 extension TupleType: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    /*@objc*/ public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? TupleType else {
             results.append("Incorrect type <expected: TupleType, received: \\(Swift.type(of: object))>")
@@ -2211,7 +2211,7 @@ extension TupleType: Diffable {
     }
 }
 extension Type: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    /*@objc*/ public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Type else {
             results.append("Incorrect type <expected: Type, received: \\(Swift.type(of: object))>")
@@ -2238,7 +2238,7 @@ extension Type: Diffable {
     }
 }
 extension TypeName: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    /*@objc*/ public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? TypeName else {
             results.append("Incorrect type <expected: TypeName, received: \\(Swift.type(of: object))>")
@@ -2257,7 +2257,7 @@ extension TypeName: Diffable {
     }
 }
 extension Typealias: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    /*@objc*/ public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Typealias else {
             results.append("Incorrect type <expected: Typealias, received: \\(Swift.type(of: object))>")
@@ -2272,7 +2272,7 @@ extension Typealias: Diffable {
     }
 }
 extension Types: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    /*@objc*/ public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Types else {
             results.append("Incorrect type <expected: Types, received: \\(Swift.type(of: object))>")
@@ -2284,7 +2284,7 @@ extension Types: Diffable {
     }
 }
 extension Variable: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    /*@objc*/ public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Variable else {
             results.append("Incorrect type <expected: Variable, received: \\(Swift.type(of: object))>")
@@ -2346,7 +2346,7 @@ extension NSRange: Diffable {
     }
 }
 
-@objcMembers public class DiffableResult: NSObject, AutoEquatable {
+/*/*@objc*/Members*/ public class DiffableResult: NSObject, AutoEquatable {
     // sourcery: skipEquality
     private var results: [String]
     internal var identifier: String?
@@ -2527,7 +2527,7 @@ public extension DiffableResult {
 import Foundation
 
 /// Defines enum case associated value
-@objcMembers public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed, Annotated {
+/*/*@objc*/Members*/ public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed, Annotated {
 
     /// Associated value local name.
     /// This is a name to be used to construct enum case value
@@ -2590,7 +2590,7 @@ import Foundation
 }
 
 /// Defines enum case
-@objcMembers public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated {
+/*/*@objc*/Members*/ public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated {
 
     /// Enum case name
     public let name: String
@@ -2649,7 +2649,7 @@ import Foundation
 }
 
 /// Defines Swift enum
-@objcMembers public final class Enum: Type {
+/*/*@objc*/Members*/ public final class Enum: Type {
 
     // sourcery: skipDescription
     /// Returns "enum"
@@ -3742,7 +3742,7 @@ import Foundation
 
 // sourcery: skipJSExport
 /// :nodoc:
-@objcMembers public final class FileParserResult: NSObject, SourceryModel {
+/*/*@objc*/Members*/ public final class FileParserResult: NSObject, SourceryModel {
     public let path: String?
     public let module: String?
     public var types = [Type]() {
@@ -3815,7 +3815,7 @@ import Foundation
 import Foundation
 
 /// Descibes Swift generic type
-@objcMembers public final class GenericType: NSObject, SourceryModelWithoutDescription {
+/*/*@objc*/Members*/ public final class GenericType: NSObject, SourceryModelWithoutDescription {
     /// The name of the base type, i.e. `Array` for `Array<Int>`
     public var name: String
 
@@ -3857,7 +3857,7 @@ import Foundation
 }
 
 /// Descibes Swift generic type parameter
-@objcMembers public final class GenericTypeParameter: NSObject, SourceryModel {
+/*/*@objc*/Members*/ public final class GenericTypeParameter: NSObject, SourceryModel {
 
     /// Generic parameter type name
     public var typeName: TypeName
@@ -3896,7 +3896,7 @@ import Foundation
 
 /// modifier can be thing like `private`, `class`, `nonmutating`
 /// if a declaration has modifier like `private(set)` it's name will be `private` and detail will be `set`
-@objcMembers public class GenericRequirement: NSObject, SourceryModel {
+/*/*@objc*/Members*/ public class GenericRequirement: NSObject, SourceryModel {
 
     public enum Relationship: String {
         case equals
@@ -3954,7 +3954,7 @@ import Foundation
 import Foundation
 
 /// Defines import type
-@objcMembers public class Import: NSObject, SourceryModelWithoutDescription {
+/*/*@objc*/Members*/ public class Import: NSObject, SourceryModelWithoutDescription {
     /// Import kind, e.g. class, struct in `import class Module.ClassName`
     public var kind: String?
 
@@ -4015,7 +4015,7 @@ import Foundation
 
 import JavaScriptCore
 
-@objc protocol ArrayTypeAutoJSExport: JSExport {
+/*@objc*/ protocol ArrayTypeAutoJSExport: JSExport {
     var name: String { get }
     var elementTypeName: TypeName { get }
     var elementType: Type? { get }
@@ -4025,7 +4025,7 @@ import JavaScriptCore
 
 extension ArrayType: ArrayTypeAutoJSExport {}
 
-@objc protocol AssociatedTypeAutoJSExport: JSExport {
+/*@objc*/ protocol AssociatedTypeAutoJSExport: JSExport {
     var name: String { get }
     var typeName: TypeName? { get }
     var type: Type? { get }
@@ -4033,7 +4033,7 @@ extension ArrayType: ArrayTypeAutoJSExport {}
 
 extension AssociatedType: AssociatedTypeAutoJSExport {}
 
-@objc protocol AssociatedValueAutoJSExport: JSExport {
+/*@objc*/ protocol AssociatedValueAutoJSExport: JSExport {
     var localName: String? { get }
     var externalName: String? { get }
     var typeName: TypeName { get }
@@ -4047,7 +4047,7 @@ extension AssociatedType: AssociatedTypeAutoJSExport {}
 
 extension AssociatedValue: AssociatedValueAutoJSExport {}
 
-@objc protocol AttributeAutoJSExport: JSExport {
+/*@objc*/ protocol AttributeAutoJSExport: JSExport {
     var name: String { get }
     var arguments: [String: NSObject] { get }
     var asSource: String { get }
@@ -4056,14 +4056,14 @@ extension AssociatedValue: AssociatedValueAutoJSExport {}
 
 extension Attribute: AttributeAutoJSExport {}
 
-@objc protocol BytesRangeAutoJSExport: JSExport {
+/*@objc*/ protocol BytesRangeAutoJSExport: JSExport {
     var offset: Int64 { get }
     var length: Int64 { get }
 }
 
 extension BytesRange: BytesRangeAutoJSExport {}
 
-@objc protocol ClassAutoJSExport: JSExport {
+/*@objc*/ protocol ClassAutoJSExport: JSExport {
     var kind: String { get }
     var isFinal: Bool { get }
     var module: String? { get }
@@ -4107,7 +4107,7 @@ extension BytesRange: BytesRangeAutoJSExport {}
 
 extension Class: ClassAutoJSExport {}
 
-@objc protocol ClosureParameterAutoJSExport: JSExport {
+/*@objc*/ protocol ClosureParameterAutoJSExport: JSExport {
     var argumentLabel: String? { get }
     var name: String? { get }
     var typeName: TypeName { get }
@@ -4124,7 +4124,7 @@ extension Class: ClassAutoJSExport {}
 
 extension ClosureParameter: ClosureParameterAutoJSExport {}
 
-@objc protocol ClosureTypeAutoJSExport: JSExport {
+/*@objc*/ protocol ClosureTypeAutoJSExport: JSExport {
     var name: String { get }
     var parameters: [ClosureParameter] { get }
     var returnTypeName: TypeName { get }
@@ -4140,7 +4140,7 @@ extension ClosureParameter: ClosureParameterAutoJSExport {}
 
 extension ClosureType: ClosureTypeAutoJSExport {}
 
-@objc protocol DictionaryTypeAutoJSExport: JSExport {
+/*@objc*/ protocol DictionaryTypeAutoJSExport: JSExport {
     var name: String { get }
     var valueTypeName: TypeName { get }
     var valueType: Type? { get }
@@ -4152,7 +4152,7 @@ extension ClosureType: ClosureTypeAutoJSExport {}
 
 extension DictionaryType: DictionaryTypeAutoJSExport {}
 
-@objc protocol EnumAutoJSExport: JSExport {
+/*@objc*/ protocol EnumAutoJSExport: JSExport {
     var kind: String { get }
     var cases: [EnumCase] { get }
     var rawTypeName: TypeName? { get }
@@ -4200,7 +4200,7 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
 
 extension Enum: EnumAutoJSExport {}
 
-@objc protocol EnumCaseAutoJSExport: JSExport {
+/*@objc*/ protocol EnumCaseAutoJSExport: JSExport {
     var name: String { get }
     var rawValue: String? { get }
     var associatedValues: [AssociatedValue] { get }
@@ -4212,7 +4212,7 @@ extension Enum: EnumAutoJSExport {}
 extension EnumCase: EnumCaseAutoJSExport {}
 
 
-@objc protocol GenericRequirementAutoJSExport: JSExport {
+/*@objc*/ protocol GenericRequirementAutoJSExport: JSExport {
     var leftType: AssociatedType { get }
     var rightType: GenericTypeParameter { get }
     var relationship: String { get }
@@ -4221,7 +4221,7 @@ extension EnumCase: EnumCaseAutoJSExport {}
 
 extension GenericRequirement: GenericRequirementAutoJSExport {}
 
-@objc protocol GenericTypeAutoJSExport: JSExport {
+/*@objc*/ protocol GenericTypeAutoJSExport: JSExport {
     var name: String { get }
     var typeParameters: [GenericTypeParameter] { get }
     var asSource: String { get }
@@ -4230,14 +4230,14 @@ extension GenericRequirement: GenericRequirementAutoJSExport {}
 
 extension GenericType: GenericTypeAutoJSExport {}
 
-@objc protocol GenericTypeParameterAutoJSExport: JSExport {
+/*@objc*/ protocol GenericTypeParameterAutoJSExport: JSExport {
     var typeName: TypeName { get }
     var type: Type? { get }
 }
 
 extension GenericTypeParameter: GenericTypeParameterAutoJSExport {}
 
-@objc protocol ImportAutoJSExport: JSExport {
+/*@objc*/ protocol ImportAutoJSExport: JSExport {
     var kind: String? { get }
     var path: String { get }
     var description: String { get }
@@ -4246,7 +4246,7 @@ extension GenericTypeParameter: GenericTypeParameterAutoJSExport {}
 
 extension Import: ImportAutoJSExport {}
 
-@objc protocol MethodAutoJSExport: JSExport {
+/*@objc*/ protocol MethodAutoJSExport: JSExport {
     var name: String { get }
     var selectorName: String { get }
     var shortName: String { get }
@@ -4282,7 +4282,7 @@ extension Import: ImportAutoJSExport {}
 
 extension Method: MethodAutoJSExport {}
 
-@objc protocol MethodParameterAutoJSExport: JSExport {
+/*@objc*/ protocol MethodParameterAutoJSExport: JSExport {
     var argumentLabel: String? { get }
     var name: String { get }
     var typeName: TypeName { get }
@@ -4299,7 +4299,7 @@ extension Method: MethodAutoJSExport {}
 
 extension MethodParameter: MethodParameterAutoJSExport {}
 
-@objc protocol ModifierAutoJSExport: JSExport {
+/*@objc*/ protocol ModifierAutoJSExport: JSExport {
     var name: String { get }
     var detail: String? { get }
     var asSource: String { get }
@@ -4307,7 +4307,7 @@ extension MethodParameter: MethodParameterAutoJSExport {}
 
 extension Modifier: ModifierAutoJSExport {}
 
-@objc protocol ProtocolAutoJSExport: JSExport {
+/*@objc*/ protocol ProtocolAutoJSExport: JSExport {
     var kind: String { get }
     var associatedTypes: [String: AssociatedType] { get }
     var genericRequirements: [GenericRequirement] { get }
@@ -4355,7 +4355,7 @@ extension Protocol: ProtocolAutoJSExport {}
 
 
 
-@objc protocol StructAutoJSExport: JSExport {
+/*@objc*/ protocol StructAutoJSExport: JSExport {
     var kind: String { get }
     var module: String? { get }
     var imports: [Import] { get }
@@ -4398,7 +4398,7 @@ extension Protocol: ProtocolAutoJSExport {}
 
 extension Struct: StructAutoJSExport {}
 
-@objc protocol SubscriptAutoJSExport: JSExport {
+/*@objc*/ protocol SubscriptAutoJSExport: JSExport {
     var parameters: [MethodParameter] { get }
     var returnTypeName: TypeName { get }
     var actualReturnTypeName: TypeName { get }
@@ -4420,7 +4420,7 @@ extension Struct: StructAutoJSExport {}
 
 extension Subscript: SubscriptAutoJSExport {}
 
-@objc protocol TemplateContextAutoJSExport: JSExport {
+/*@objc*/ protocol TemplateContextAutoJSExport: JSExport {
     var functions: [SourceryMethod] { get }
     var types: Types { get }
     var argument: [String: NSObject] { get }
@@ -4431,7 +4431,7 @@ extension Subscript: SubscriptAutoJSExport {}
 
 extension TemplateContext: TemplateContextAutoJSExport {}
 
-@objc protocol TupleElementAutoJSExport: JSExport {
+/*@objc*/ protocol TupleElementAutoJSExport: JSExport {
     var name: String? { get }
     var typeName: TypeName { get }
     var type: Type? { get }
@@ -4443,14 +4443,14 @@ extension TemplateContext: TemplateContextAutoJSExport {}
 
 extension TupleElement: TupleElementAutoJSExport {}
 
-@objc protocol TupleTypeAutoJSExport: JSExport {
+/*@objc*/ protocol TupleTypeAutoJSExport: JSExport {
     var name: String { get }
     var elements: [TupleElement] { get }
 }
 
 extension TupleType: TupleTypeAutoJSExport {}
 
-@objc protocol TypeAutoJSExport: JSExport {
+/*@objc*/ protocol TypeAutoJSExport: JSExport {
     var module: String? { get }
     var imports: [Import] { get }
     var kind: String { get }
@@ -4493,7 +4493,7 @@ extension TupleType: TupleTypeAutoJSExport {}
 
 extension Type: TypeAutoJSExport {}
 
-@objc protocol TypeNameAutoJSExport: JSExport {
+/*@objc*/ protocol TypeNameAutoJSExport: JSExport {
     var name: String { get }
     var generic: GenericType? { get }
     var isGeneric: Bool { get }
@@ -4522,12 +4522,12 @@ extension TypeName: TypeNameAutoJSExport {}
 
 
 
-@objc protocol TypesCollectionAutoJSExport: JSExport {
+/*@objc*/ protocol TypesCollectionAutoJSExport: JSExport {
 }
 
 extension TypesCollection: TypesCollectionAutoJSExport {}
 
-@objc protocol VariableAutoJSExport: JSExport {
+/*@objc*/ protocol VariableAutoJSExport: JSExport {
     var name: String { get }
     var typeName: TypeName { get }
     var type: Type? { get }
@@ -4557,7 +4557,11 @@ extension Variable: VariableAutoJSExport {}
 """),
     .init(name: "Log.swift", content:
 """
+#if os(Windows)
+import CRT
+#else
 import Darwin
+#endif
 import Foundation
 
 /// :nodoc:
@@ -4627,7 +4631,7 @@ import Foundation
 public typealias SourceryMethod = Method
 
 /// Describes method parameter
-@objcMembers public class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
+/*/*@objc*/Members*/ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
     /// Parameter external name
     public var argumentLabel: String?
 
@@ -4725,7 +4729,7 @@ extension Array where Element == MethodParameter {
 }
 
 // sourcery: skipDiffing
-@objcMembers public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated {
+/*/*@objc*/Members*/ public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated {
     /// Parameter external name
     public var argumentLabel: String?
 
@@ -4817,7 +4821,7 @@ extension Array where Element == ClosureParameter {
 }
 
 /// Describes method
-@objc(SwiftMethod) @objcMembers public final class Method: NSObject, SourceryModel, Annotated, Definition {
+/*/*@objc*/(SwiftMethod)*/ /*/*@objc*/Members*/ public final class Method: NSObject, SourceryModel, Annotated, Definition {
 
     /// Full method name, including generic constraints, i.e. `foo<T>(bar: T)`
     public let name: String
@@ -5056,7 +5060,7 @@ import Foundation
 public typealias SourceryModifier = Modifier
 /// modifier can be thing like `private`, `class`, `nonmutating`
 /// if a declaration has modifier like `private(set)` it's name will be `private` and detail will be `set`
-@objcMembers public class Modifier: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
+/*/*@objc*/Members*/ public class Modifier: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
 
     /// The declaration modifier name.
     public let name: String
@@ -5139,7 +5143,7 @@ import Foundation
 public typealias SourceryProtocol = Protocol
 
 /// Describes Swift protocol
-@objcMembers public final class Protocol: Type {
+/*/*@objc*/Members*/ public final class Protocol: Type {
 
     /// Returns "protocol"
     public override var kind: String { return "protocol" }
@@ -5222,7 +5226,7 @@ import Foundation
 
 // sourcery: skipJSExport
 /// Describes a Swift [protocol composition](https://docs.swift.org/swift-book/ReferenceManual/Types.html#ID454).
-@objcMembers public final class ProtocolComposition: Type {
+/*/*@objc*/Members*/ public final class ProtocolComposition: Type {
 
     /// Returns "protocolComposition"
     public override var kind: String { return "protocolComposition" }
@@ -5302,7 +5306,7 @@ import Foundation
 
 // sourcery: skipDescription
 /// Describes Swift struct
-@objcMembers public final class Struct: Type {
+/*/*@objc*/Members*/ public final class Struct: Type {
 
     /// Returns "struct"
     public override var kind: String { return "struct" }
@@ -5360,7 +5364,7 @@ import Foundation
 import Foundation
 
 /// Describes subscript
-@objcMembers public final class Subscript: NSObject, SourceryModel, Annotated, Definition {
+/*/*@objc*/Members*/ public final class Subscript: NSObject, SourceryModel, Annotated, Definition {
 
     /// Method parameters
     public var parameters: [MethodParameter]
@@ -5504,7 +5508,7 @@ import Foundation
 
 /// :nodoc:
 // sourcery: skipCoding
-@objcMembers public final class TemplateContext: NSObject, SourceryModel, NSCoding {
+/*/*@objc*/Members*/ public final class TemplateContext: NSObject, SourceryModel, NSCoding {
     // sourcery: skipJSExport
     public let parserResult: FileParserResult?
     public let functions: [SourceryMethod]
@@ -5586,7 +5590,7 @@ extension ProcessInfo {
 
 // sourcery: skipJSExport
 /// Collection of scanned types for accessing in templates
-@objcMembers public final class Types: NSObject, SourceryModel {
+/*/*@objc*/Members*/ public final class Types: NSObject, SourceryModel {
 
     /// :nodoc:
     public let types: [Type]
@@ -5713,7 +5717,7 @@ extension ProcessInfo {
 }
 
 /// :nodoc:
-@objcMembers public class TypesCollection: NSObject, AutoJSExport {
+/*/*@objc*/Members*/ public class TypesCollection: NSObject, AutoJSExport {
 
     // sourcery:begin: skipJSExport
     let all: [Type]
@@ -5795,7 +5799,7 @@ extension ProcessInfo {
 import Foundation
 
 /// Describes tuple type
-@objcMembers public final class TupleType: NSObject, SourceryModel {
+/*/*@objc*/Members*/ public final class TupleType: NSObject, SourceryModel {
 
     /// Type name used in declaration
     public var name: String
@@ -5832,7 +5836,7 @@ import Foundation
 }
 
 /// Describes tuple type element
-@objcMembers public final class TupleElement: NSObject, SourceryModel, Typed {
+/*/*@objc*/Members*/ public final class TupleElement: NSObject, SourceryModel, Typed {
 
     /// Tuple element name
     public let name: String?
@@ -5897,7 +5901,7 @@ import Foundation
 public typealias AttributeList = [String: [Attribute]]
 
 /// Defines Swift type
-@objcMembers public class Type: NSObject, SourceryModel, Annotated {
+/*/*@objc*/Members*/ public class Type: NSObject, SourceryModel, Annotated {
 
     /// :nodoc:
     public var module: String?
@@ -6190,7 +6194,7 @@ public typealias AttributeList = [String: [Attribute]]
     /// Superclass type, if known (only for classes)
     public var supertype: Type?
 
-    /// Type attributes, i.e. `@objc`
+    /// Type attributes, i.e. `/*@objc*/`
     public var attributes: AttributeList
 
     /// Type modifiers, i.e. `private`, `final`
@@ -6353,7 +6357,7 @@ extension Type {
 import Foundation
 
 /// Describes name of the type used in typed declaration (variable, method parameter or return value etc.)
-@objcMembers public final class TypeName: NSObject, SourceryModelWithoutDescription, LosslessStringConvertible {
+/*/*@objc*/Members*/ public final class TypeName: NSObject, SourceryModelWithoutDescription, LosslessStringConvertible {
     /// :nodoc:
     public init(name: String,
                 actualTypeName: TypeName? = nil,
@@ -6579,7 +6583,7 @@ import Foundation
 
 // sourcery: skipJSExport
 /// :nodoc:
-@objcMembers public final class Typealias: NSObject, Typed, SourceryModel {
+/*/*@objc*/Members*/ public final class Typealias: NSObject, Typed, SourceryModel {
     // New typealias name
     public let aliasName: String
 
@@ -6807,7 +6811,7 @@ import Foundation
 public typealias SourceryVariable = Variable
 
 /// Defines variable
-@objcMembers public final class Variable: NSObject, SourceryModel, Typed, Annotated, Definition {
+/*/*@objc*/Members*/ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Definition {
     /// Variable name
     public let name: String
 

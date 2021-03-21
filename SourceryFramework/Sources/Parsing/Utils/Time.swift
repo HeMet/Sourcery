@@ -9,5 +9,9 @@ import Foundation
 
 /// Returns current timestamp interval
 public func currentTimestamp() -> TimeInterval {
+    #if canImport(Darwin)
     return CFAbsoluteTimeGetCurrent()
+    #else
+    return Date().timeIntervalSinceReferenceDate
+    #endif
 }

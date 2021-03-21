@@ -73,8 +73,12 @@ public final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate {
         ext.registerFilterWithArguments("sorted") { (array, propertyName: String) -> Any? in
             switch array {
             case let array as NSArray:
+                #if canImport(Darwin)
                 let sortDescriptor = NSSortDescriptor(key: propertyName, ascending: true, selector: #selector(NSString.caseInsensitiveCompare))
                 return array.sortedArray(using: [sortDescriptor])
+                #else
+                fatalError("Not implemented yet")
+                #endif
             default:
                 return nil
             }
@@ -83,8 +87,12 @@ public final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate {
         ext.registerFilterWithArguments("sortedDescending") { (array, propertyName: String) -> Any? in
             switch array {
             case let array as NSArray:
+                #if canImport(Darwin)
                 let sortDescriptor = NSSortDescriptor(key: propertyName, ascending: false, selector: #selector(NSString.caseInsensitiveCompare))
                 return array.sortedArray(using: [sortDescriptor])
+                #else
+                fatalError("Not implemented yet")
+                #endif
             default:
                 return nil
             }

@@ -2,7 +2,7 @@ import Foundation
 
 // sourcery: skipDescription
 /// Descibes Swift class
-@objc(SwiftClass) @objcMembers public final class Class: Type {
+/*/*@objc*/(SwiftClass)*/ /*/*@objc*/Members*/ public final class Class: Type {
     /// Returns "class"
     public override var kind: String { return "class" }
 

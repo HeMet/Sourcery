@@ -15,6 +15,9 @@ import SourceryStencil
 import TryCatch
 #endif
 import XcodeProj
+#if os(Windows)
+import Dispatch
+#endif
 
 class Sourcery {
     public static let version: String = SourceryVersion.current.value
@@ -41,8 +44,15 @@ class Sourcery {
     fileprivate var fileAnnotatedContent: [Path: [String]] = [:]
 
     private (set) var numberOfFilesThatHadToBeParsed: Int32 = 0
+    #if !canImport(Darwin)
+    private let atomicIncrementQueue = DispatchQueue(label: "atomicIncrementQueue")
+    #endif
     func incrementFileParsedCount() {
+        #if canImport(Darwin)
         OSAtomicIncrement32(&numberOfFilesThatHadToBeParsed)
+        #else
+        atomicIncrementQueue.sync { numberOfFilesThatHadToBeParsed += 1 }
+        #endif
     }
 
     /// Creates Sourcery processor
@@ -220,11 +230,15 @@ class Sourcery {
                 let cachePath = cachesDir(sourcePath: $0)
                 return try SwiftTemplate(path: $0, cachePath: cachePath, version: type(of: self).version)
             } else if $0.extension == "ejs" {
+                #if canImport(JavaScriptCore)
                 guard EJSTemplate.ejsPath != nil else {
                     Log.warning("Skipping template \($0). JavaScript templates require EJS path to be set manually when using Sourcery built with Swift Package Manager. Use `--ejsPath` command line argument to set it.")
                     return nil
                 }
                 return try JavaScriptTemplate(path: $0)
+                #else
+                fatalError("JavaScript templates are not supported on current platrorm")
+                #endif
             } else {
                 return try StencilTemplate(path: $0)
             }
@@ -518,13 +532,10 @@ extension Sourcery {
         var result: String = ""
         #if os(Windows)
         do {
-            do {
-                result = try Generator.generate(parsingResult.parserResult, types: parsingResult.types, functions: parsingResult.functions, template: template, arguments: self.arguments)
-            } catch {
-                Log.error(error)
-            }
+            result = try Generator.generate(parsingResult.parserResult, types: parsingResult.types, functions: parsingResult.functions, template: template, arguments: self.arguments)
         } catch {
-            result = error?.description ?? ""
+            result = String(describing: error)
+            Log.error(error)                
         }
         #else
         SwiftTryCatch.try({

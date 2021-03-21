@@ -7,7 +7,7 @@ import Foundation
 
 /// :nodoc:
 // sourcery: skipCoding
-@objcMembers public final class TemplateContext: NSObject, SourceryModel, NSCoding {
+/*/*@objc*/Members*/ public final class TemplateContext: NSObject, SourceryModel, NSCoding {
     // sourcery: skipJSExport
     public let parserResult: FileParserResult?
     public let functions: [SourceryMethod]
@@ -89,7 +89,7 @@ extension ProcessInfo {
 
 // sourcery: skipJSExport
 /// Collection of scanned types for accessing in templates
-@objcMembers public final class Types: NSObject, SourceryModel {
+/*/*@objc*/Members*/ public final class Types: NSObject, SourceryModel {
 
     /// :nodoc:
     public let types: [Type]
@@ -216,7 +216,7 @@ extension ProcessInfo {
 }
 
 /// :nodoc:
-@objcMembers public class TypesCollection: NSObject, AutoJSExport {
+/*/*@objc*/Members*/ public class TypesCollection: NSObject, AutoJSExport {
 
     // sourcery:begin: skipJSExport
     let all: [Type]
@@ -268,6 +268,7 @@ extension ProcessInfo {
     }
 
     /// :nodoc:
+    #if canImport(Darwin)
     public override func value(forKey key: String) -> Any? {
         do {
             return try types(forKey: key)
@@ -276,6 +277,7 @@ extension ProcessInfo {
             return nil
         }
     }
+    #endif
 
     /// :nodoc:
     public subscript(_ key: String) -> [Type] {
@@ -287,7 +289,9 @@ extension ProcessInfo {
         }
     }
 
+    #if canImport(Darwin)
     public override func responds(to aSelector: Selector!) -> Bool {
         return true
     }
+    #endif
 }

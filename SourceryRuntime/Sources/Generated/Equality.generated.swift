@@ -2,7 +2,7 @@
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
-
+#if canImport(Darwin)
 extension ArrayType {
     /// :nodoc:
     public override func isEqual(_ object: Any?) -> Bool {
@@ -737,3 +737,4 @@ extension Variable {
         return hasher.finalize()
     }
 }
+#endif
