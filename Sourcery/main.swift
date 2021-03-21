@@ -210,12 +210,14 @@ func runCLI() {
         }.run(Sourcery.version)
 }
 
-#if os(macOS)
+#if canImport(AppKit)
 import AppKit
+#endif
 
 if !inUnitTests {
     runCLI()
 } else {
+    #if canImport(AppKit)
     //! Need to run something for tests to work
     final class TestApplicationController: NSObject, NSApplicationDelegate {
         let window =   NSWindow()
@@ -237,8 +239,8 @@ if !inUnitTests {
         app.delegate   = controller
         app.run()
     }
+    #endif
 }
-#endif
 
 #if !canImport(Darwin)
 func CFAbsoluteTimeGetCurrent() -> TimeInterval {
