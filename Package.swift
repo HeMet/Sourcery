@@ -67,10 +67,3 @@ let package = Package(
         .target(name: "TryCatch", path: "TryCatch"),
     ]
 )
-
-#if os(Windows)
-for target in package.targets {
-  // no unix-like symlinks on Windows
-  target.path = target.name 
-}
-#endif
