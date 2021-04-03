@@ -20,12 +20,30 @@
         }
       },
       {
+        "package": "Nimble",
+        "repositoryURL": "https://github.com/HeMet/Nimble.git",
+        "state": {
+          "branch": "win-support",
+          "revision": "ec4f22089a2a1c6ab4f9d418eea44f06c2164684",
+          "version": null
+        }
+      },
+      {
         "package": "PathKit",
         "repositoryURL": "https://github.com/HeMet/PathKit.git",
         "state": {
           "branch": "win-support",
           "revision": "976f3e59fcc4a677177d658101ae1d35e2a40fb9",
           "version": null
+        }
+      },
+      {
+        "package": "Quick",
+        "repositoryURL": "https://github.com/Quick/Quick.git",
+        "state": {
+          "branch": null,
+          "revision": "8cce6acd38f965f5baa3167b939f86500314022b",
+          "version": "3.1.2"
         }
       },
       {

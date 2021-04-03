@@ -1,5 +1,8 @@
 # Sourcery CHANGELOG
 
+- Added `allImports` property to `Type`, which returns all imports existed in all files containing this type and all its super classes/protocols.
+- Added `basedTypes` property to `Type`, which contains all Types this type inherits from or implements, including unknown (not scanned) types with extensions defined.
+
 ---
 ## Master
 
@@ -10,6 +13,8 @@
 
 ## Internal changes
 - Removes manual parsing of `TypeName`, only explicit parser / configuration is now used
+- Add support for testing via `SPM`
+
 
 ## 1.3.4
 ## Fixes
