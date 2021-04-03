@@ -1,3 +1,5 @@
+// not JS support on Windows
+#if !os(Windows)
 import Foundation
 import Quick
 import Nimble
@@ -88,3 +90,4 @@ class JavaScriptTemplateTests: QuickSpec {
         }
     }
 }
+#endif

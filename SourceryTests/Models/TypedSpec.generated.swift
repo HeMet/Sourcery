@@ -1,5 +1,7 @@
 // Generated using Sourcery 1.3.4 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
+// no KVC on Windows
+#if !os(Windows)
 import Quick
 import Nimble
 #if SWIFT_PACKAGE
@@ -13,7 +15,7 @@ import Sourcery
 // swiftlint:disable function_body_length
 
 class TypedSpec: QuickSpec {
-    override func spec() {
+    override func spec() {        
         describe("AssociatedValue") {
             func typeName(_ code: String) -> TypeName {
                 let wrappedCode =
@@ -316,3 +318,4 @@ class TypedSpec: QuickSpec {
         }
     }
 }
+#endif

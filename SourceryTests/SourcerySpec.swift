@@ -12,6 +12,10 @@ import XcodeProj
 
 private let version = "Major.Minor.Patch"
 
+#if os(Windows)
+private let NSEC_PER_SEC: UInt64 = 1_000_000_000
+#endif
+
 // swiftlint:disable file_length type_body_length
 class SourcerySpecTests: QuickSpec {
     // swiftlint:disable:next function_body_length
