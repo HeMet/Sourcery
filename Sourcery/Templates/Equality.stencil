@@ -2,7 +2,7 @@
 
 
 {% for type in types.implementing.AutoEquatable|class %}
-extension {{ type.name }} {
+// sourcery:inline:{{ type.name }}.Equality
     /// :nodoc:
     {{ type.accessLevel }} override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? {{ type.name }} else { return false }
@@ -12,12 +12,8 @@ extension {{ type.name }} {
         {% endfor %}
         {% if type.inheritedTypes.first == "NSObject" %}return true{% else %}return super.isEqual(rhs){% endif %}
     }
-}
-{% endfor %}
 
-{% for type in types.implementing.AutoEquatable|class %}
-// MARK: - {{ type.name }} AutoHashable
-extension {{ type.name }} {
+    // MARK: - {{ type.name }} AutoHashable
     {{ type.accessLevel }} override var hash: Int {
         var hasher = Hasher()
         {% for variable in type.storedVariables|!annotated:"skipEquality" %}hasher.combine(self.{{ variable.name }})
@@ -27,5 +23,5 @@ extension {{ type.name }} {
         {% if not type.inheritedTypes.first == "NSObject" %}hasher.combine(super.hash){% endif %}
         return hasher.finalize()
     }
-}
+// sourcery:end
 {% endfor %}

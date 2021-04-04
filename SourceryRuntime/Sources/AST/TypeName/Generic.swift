@@ -40,6 +40,25 @@ import Foundation
         }
 
 // sourcery:end
+
+// sourcery:inline:GenericType.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? GenericType else { return false }
+        if self.name != rhs.name { return false }
+        if self.typeParameters != rhs.typeParameters { return false }
+        return true
+    }
+
+    // MARK: - GenericType AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.typeParameters)
+        return hasher.finalize()
+    }
+// sourcery:end
+
 }
 
 /// Descibes Swift generic type parameter
@@ -73,4 +92,21 @@ import Foundation
         }
 
 // sourcery:end
+
+// sourcery:inline:GenericTypeParameter.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? GenericTypeParameter else { return false }
+        if self.typeName != rhs.typeName { return false }
+        return true
+    }
+
+    // MARK: - GenericTypeParameter AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.typeName)
+        return hasher.finalize()
+    }
+// sourcery:end
+
 }

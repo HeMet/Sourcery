@@ -52,4 +52,27 @@ import Foundation
                 aCoder.encode(self.relationshipSyntax, forKey: "relationshipSyntax")
             }
     // sourcery:end
+
+    // sourcery:inline:GenericRequirement.Equality
+        /// :nodoc:
+        public override func isEqual(_ object: Any?) -> Bool {
+            guard let rhs = object as? GenericRequirement else { return false }
+            if self.leftType != rhs.leftType { return false }
+            if self.rightType != rhs.rightType { return false }
+            if self.relationship != rhs.relationship { return false }
+            if self.relationshipSyntax != rhs.relationshipSyntax { return false }
+            return true
+        }
+
+        // MARK: - GenericRequirement AutoHashable
+        public override var hash: Int {
+            var hasher = Hasher()
+            hasher.combine(self.leftType)
+            hasher.combine(self.rightType)
+            hasher.combine(self.relationship)
+            hasher.combine(self.relationshipSyntax)
+            return hasher.finalize()
+        }
+    // sourcery:end
+
 }

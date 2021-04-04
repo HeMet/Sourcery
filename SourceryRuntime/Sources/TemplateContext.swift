@@ -78,6 +78,28 @@ import Foundation
         ]
     }
 
+    // sourcery:inline:TemplateContext.Equality
+        /// :nodoc:
+        public override func isEqual(_ object: Any?) -> Bool {
+            guard let rhs = object as? TemplateContext else { return false }
+            if self.parserResult != rhs.parserResult { return false }
+            if self.functions != rhs.functions { return false }
+            if self.types != rhs.types { return false }
+            if self.argument != rhs.argument { return false }
+            return true
+        }
+
+        // MARK: - TemplateContext AutoHashable
+        public override var hash: Int {
+            var hasher = Hasher()
+            hasher.combine(self.parserResult)
+            hasher.combine(self.functions)
+            hasher.combine(self.types)
+            hasher.combine(self.argument)
+            return hasher.finalize()
+        }
+    // sourcery:end
+
 }
 
 extension ProcessInfo {
@@ -116,6 +138,24 @@ extension ProcessInfo {
             aCoder.encode(self.types, forKey: "types")
             aCoder.encode(self.typealiases, forKey: "typealiases")
         }
+// sourcery:end
+
+// sourcery:inline:Types.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Types else { return false }
+        if self.types != rhs.types { return false }
+        if self.typealiases != rhs.typealiases { return false }
+        return true
+    }
+
+    // MARK: - Types AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.types)
+        hasher.combine(self.typealiases)
+        return hasher.finalize()
+    }
 // sourcery:end
 
     // sourcery: skipDescription, skipEquality, skipCoding

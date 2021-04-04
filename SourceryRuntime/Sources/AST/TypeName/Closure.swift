@@ -82,4 +82,27 @@ import Foundation
         }
 // sourcery:end
 
+// sourcery:inline:ClosureType.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? ClosureType else { return false }
+        if self.name != rhs.name { return false }
+        if self.parameters != rhs.parameters { return false }
+        if self.returnTypeName != rhs.returnTypeName { return false }
+        if self.`throws` != rhs.`throws` { return false }
+        if self.throwsOrRethrowsKeyword != rhs.throwsOrRethrowsKeyword { return false }
+        return true
+    }
+
+    // MARK: - ClosureType AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.parameters)
+        hasher.combine(self.returnTypeName)
+        hasher.combine(self.`throws`)
+        hasher.combine(self.throwsOrRethrowsKeyword)
+        return hasher.finalize()
+    }
+// sourcery:end
 }

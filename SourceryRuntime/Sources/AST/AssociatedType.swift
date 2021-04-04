@@ -35,4 +35,22 @@ import Foundation
             aCoder.encode(self.type, forKey: "type")
         }
 // sourcery:end
+
+// sourcery:inline:AssociatedType.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? AssociatedType else { return false }
+        if self.name != rhs.name { return false }
+        if self.typeName != rhs.typeName { return false }
+        return true
+    }
+
+    // MARK: - AssociatedType AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.typeName)
+        return hasher.finalize()
+    }
+// sourcery:end
 }

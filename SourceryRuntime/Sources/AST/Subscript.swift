@@ -131,4 +131,34 @@ import Foundation
         }
 // sourcery:end
 
+// sourcery:inline:Subscript.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Subscript else { return false }
+        if self.parameters != rhs.parameters { return false }
+        if self.returnTypeName != rhs.returnTypeName { return false }
+        if self.readAccess != rhs.readAccess { return false }
+        if self.writeAccess != rhs.writeAccess { return false }
+        if self.annotations != rhs.annotations { return false }
+        if self.definedInTypeName != rhs.definedInTypeName { return false }
+        if self.attributes != rhs.attributes { return false }
+        if self.modifiers != rhs.modifiers { return false }
+        return true
+    }
+
+    // MARK: - Subscript AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.parameters)
+        hasher.combine(self.returnTypeName)
+        hasher.combine(self.readAccess)
+        hasher.combine(self.writeAccess)
+        hasher.combine(self.annotations)
+        hasher.combine(self.definedInTypeName)
+        hasher.combine(self.attributes)
+        hasher.combine(self.modifiers)
+        return hasher.finalize()
+    }
+// sourcery:end
+
 }

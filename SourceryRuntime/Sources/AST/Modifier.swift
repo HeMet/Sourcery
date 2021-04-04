@@ -38,4 +38,23 @@ public typealias SourceryModifier = Modifier
                 aCoder.encode(self.detail, forKey: "detail")
             }
     // sourcery:end
+
+    // sourcery:inline:Modifier.Equality
+        /// :nodoc:
+        public override func isEqual(_ object: Any?) -> Bool {
+            guard let rhs = object as? Modifier else { return false }
+            if self.name != rhs.name { return false }
+            if self.detail != rhs.detail { return false }
+            return true
+        }
+
+        // MARK: - Modifier AutoHashable
+        public override var hash: Int {
+            var hasher = Hasher()
+            hasher.combine(self.name)
+            hasher.combine(self.detail)
+            return hasher.finalize()
+        }
+    // sourcery:end
+
 }

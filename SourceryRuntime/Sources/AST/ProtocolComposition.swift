@@ -68,4 +68,22 @@ import Foundation
         }
 // sourcery:end
 
+// sourcery:inline:ProtocolComposition.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? ProtocolComposition else { return false }
+        if self.composedTypeNames != rhs.composedTypeNames { return false }
+        return super.isEqual(rhs)
+    }
+
+    // MARK: - ProtocolComposition AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.composedTypeNames)
+        hasher.combine(super.hash)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+
 }

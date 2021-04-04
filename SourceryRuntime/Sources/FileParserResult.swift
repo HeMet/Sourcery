@@ -75,4 +75,37 @@ import Foundation
             aCoder.encode(self.sourceryVersion, forKey: "sourceryVersion")
         }
 // sourcery:end
+
+// sourcery:inline:FileParserResult.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? FileParserResult else { return false }
+        if self.path != rhs.path { return false }
+        if self.module != rhs.module { return false }
+        if self.types != rhs.types { return false }
+        if self.functions != rhs.functions { return false }
+        if self.typealiases != rhs.typealiases { return false }
+        if self.inlineRanges != rhs.inlineRanges { return false }
+        if self.inlineIndentations != rhs.inlineIndentations { return false }
+        if self.modifiedDate != rhs.modifiedDate { return false }
+        if self.sourceryVersion != rhs.sourceryVersion { return false }
+        return true
+    }
+
+    // MARK: - FileParserResult AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.path)
+        hasher.combine(self.module)
+        hasher.combine(self.types)
+        hasher.combine(self.functions)
+        hasher.combine(self.typealiases)
+        hasher.combine(self.inlineRanges)
+        hasher.combine(self.inlineIndentations)
+        hasher.combine(self.modifiedDate)
+        hasher.combine(self.sourceryVersion)
+        return hasher.finalize()
+    }
+// sourcery:end
+
 }

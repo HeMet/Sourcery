@@ -35,6 +35,25 @@ import Foundation
             aCoder.encode(self.elements, forKey: "elements")
         }
 // sourcery:end
+
+// sourcery:inline:TupleType.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? TupleType else { return false }
+        if self.name != rhs.name { return false }
+        if self.elements != rhs.elements { return false }
+        return true
+    }
+
+    // MARK: - TupleType AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.elements)
+        return hasher.finalize()
+    }
+// sourcery:end
+
 }
 
 /// Describes tuple type element
@@ -78,6 +97,25 @@ import Foundation
             aCoder.encode(self.type, forKey: "type")
         }
 // sourcery:end
+
+// sourcery:inline:TupleElement.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? TupleElement else { return false }
+        if self.name != rhs.name { return false }
+        if self.typeName != rhs.typeName { return false }
+        return true
+    }
+
+    // MARK: - TupleElement AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.typeName)
+        return hasher.finalize()
+    }
+// sourcery:end
+
 }
 
 extension Array where Element == TupleElement {

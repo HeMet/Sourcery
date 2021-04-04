@@ -93,6 +93,33 @@ public typealias SourceryMethod = Method
             aCoder.encode(self.annotations, forKey: "annotations")
         }
 // sourcery:end
+
+// sourcery:inline:MethodParameter.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? MethodParameter else { return false }
+        if self.argumentLabel != rhs.argumentLabel { return false }
+        if self.name != rhs.name { return false }
+        if self.typeName != rhs.typeName { return false }
+        if self.`inout` != rhs.`inout` { return false }
+        if self.defaultValue != rhs.defaultValue { return false }
+        if self.annotations != rhs.annotations { return false }
+        return true
+    }
+
+    // MARK: - MethodParameter AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.argumentLabel)
+        hasher.combine(self.name)
+        hasher.combine(self.typeName)
+        hasher.combine(self.`inout`)
+        hasher.combine(self.defaultValue)
+        hasher.combine(self.annotations)
+        return hasher.finalize()
+    }
+// sourcery:end
+
 }
 
 extension Array where Element == MethodParameter {
@@ -184,6 +211,32 @@ extension Array where Element == MethodParameter {
                 aCoder.encode(self.annotations, forKey: "annotations")
             }
 
+    // sourcery:end
+
+    // sourcery:inline:ClosureParameter.Equality
+        /// :nodoc:
+        public override func isEqual(_ object: Any?) -> Bool {
+            guard let rhs = object as? ClosureParameter else { return false }
+            if self.argumentLabel != rhs.argumentLabel { return false }
+            if self.name != rhs.name { return false }
+            if self.typeName != rhs.typeName { return false }
+            if self.`inout` != rhs.`inout` { return false }
+            if self.defaultValue != rhs.defaultValue { return false }
+            if self.annotations != rhs.annotations { return false }
+            return true
+        }
+
+        // MARK: - ClosureParameter AutoHashable
+        public override var hash: Int {
+            var hasher = Hasher()
+            hasher.combine(self.argumentLabel)
+            hasher.combine(self.name)
+            hasher.combine(self.typeName)
+            hasher.combine(self.`inout`)
+            hasher.combine(self.defaultValue)
+            hasher.combine(self.annotations)
+            return hasher.finalize()
+        }
     // sourcery:end
 }
 
@@ -423,4 +476,47 @@ extension Array where Element == ClosureParameter {
             aCoder.encode(self.modifiers, forKey: "modifiers")
         }
 // sourcery:end
+
+// sourcery:inline:Method.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Method else { return false }
+        if self.name != rhs.name { return false }
+        if self.selectorName != rhs.selectorName { return false }
+        if self.parameters != rhs.parameters { return false }
+        if self.returnTypeName != rhs.returnTypeName { return false }
+        if self.`throws` != rhs.`throws` { return false }
+        if self.`rethrows` != rhs.`rethrows` { return false }
+        if self.accessLevel != rhs.accessLevel { return false }
+        if self.isStatic != rhs.isStatic { return false }
+        if self.isClass != rhs.isClass { return false }
+        if self.isFailableInitializer != rhs.isFailableInitializer { return false }
+        if self.annotations != rhs.annotations { return false }
+        if self.definedInTypeName != rhs.definedInTypeName { return false }
+        if self.attributes != rhs.attributes { return false }
+        if self.modifiers != rhs.modifiers { return false }
+        return true
+    }
+
+    // MARK: - Method AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.selectorName)
+        hasher.combine(self.parameters)
+        hasher.combine(self.returnTypeName)
+        hasher.combine(self.`throws`)
+        hasher.combine(self.`rethrows`)
+        hasher.combine(self.accessLevel)
+        hasher.combine(self.isStatic)
+        hasher.combine(self.isClass)
+        hasher.combine(self.isFailableInitializer)
+        hasher.combine(self.annotations)
+        hasher.combine(self.definedInTypeName)
+        hasher.combine(self.attributes)
+        hasher.combine(self.modifiers)
+        return hasher.finalize()
+    }
+// sourcery:end
+
 }

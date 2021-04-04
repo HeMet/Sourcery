@@ -83,4 +83,24 @@ public typealias SourceryProtocol = Protocol
             aCoder.encode(self.genericRequirements, forKey: "genericRequirements")
         }
 // sourcery:end
+
+// sourcery:inline:Protocol.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Protocol else { return false }
+        if self.associatedTypes != rhs.associatedTypes { return false }
+        if self.genericRequirements != rhs.genericRequirements { return false }
+        return super.isEqual(rhs)
+    }
+
+    // MARK: - Protocol AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.associatedTypes)
+        hasher.combine(self.genericRequirements)
+        hasher.combine(super.hash)
+        return hasher.finalize()
+    }
+// sourcery:end
+
 }

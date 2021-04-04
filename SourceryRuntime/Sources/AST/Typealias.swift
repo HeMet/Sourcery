@@ -68,4 +68,29 @@ import Foundation
             aCoder.encode(self.parentName, forKey: "parentName")
         }
 // sourcery:end
+
+// sourcery:inline:Typealias.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Typealias else { return false }
+        if self.aliasName != rhs.aliasName { return false }
+        if self.typeName != rhs.typeName { return false }
+        if self.module != rhs.module { return false }
+        if self.accessLevel != rhs.accessLevel { return false }
+        if self.parentName != rhs.parentName { return false }
+        return true
+    }
+
+    // MARK: - Typealias AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.aliasName)
+        hasher.combine(self.typeName)
+        hasher.combine(self.module)
+        hasher.combine(self.accessLevel)
+        hasher.combine(self.parentName)
+        return hasher.finalize()
+    }
+// sourcery:end
+
 }

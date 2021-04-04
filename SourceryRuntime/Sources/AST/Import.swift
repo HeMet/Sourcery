@@ -51,4 +51,23 @@ import Foundation
         }
 
 // sourcery:end
+
+// sourcery:inline:Import.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Import else { return false }
+        if self.kind != rhs.kind { return false }
+        if self.path != rhs.path { return false }
+        return true
+    }
+
+    // MARK: - Import AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.kind)
+        hasher.combine(self.path)
+        return hasher.finalize()
+    }
+// sourcery:end
+
 }

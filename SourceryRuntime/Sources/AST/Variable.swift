@@ -144,4 +144,41 @@ public typealias SourceryVariable = Variable
             aCoder.encode(self.definedInType, forKey: "definedInType")
         }
 // sourcery:end
+
+// sourcery:inline:Variable.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Variable else { return false }
+        if self.name != rhs.name { return false }
+        if self.typeName != rhs.typeName { return false }
+        if self.isComputed != rhs.isComputed { return false }
+        if self.isStatic != rhs.isStatic { return false }
+        if self.readAccess != rhs.readAccess { return false }
+        if self.writeAccess != rhs.writeAccess { return false }
+        if self.defaultValue != rhs.defaultValue { return false }
+        if self.annotations != rhs.annotations { return false }
+        if self.attributes != rhs.attributes { return false }
+        if self.modifiers != rhs.modifiers { return false }
+        if self.definedInTypeName != rhs.definedInTypeName { return false }
+        return true
+    }
+
+    // MARK: - Variable AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.typeName)
+        hasher.combine(self.isComputed)
+        hasher.combine(self.isStatic)
+        hasher.combine(self.readAccess)
+        hasher.combine(self.writeAccess)
+        hasher.combine(self.defaultValue)
+        hasher.combine(self.annotations)
+        hasher.combine(self.attributes)
+        hasher.combine(self.modifiers)
+        hasher.combine(self.definedInTypeName)
+        return hasher.finalize()
+    }
+// sourcery:end
+
 }

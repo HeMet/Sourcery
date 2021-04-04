@@ -203,6 +203,39 @@ import Foundation
         }
 // sourcery:end
 
+// sourcery:inline:TypeName.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? TypeName else { return false }
+        if self.name != rhs.name { return false }
+        if self.generic != rhs.generic { return false }
+        if self.isProtocolComposition != rhs.isProtocolComposition { return false }
+        if self.attributes != rhs.attributes { return false }
+        if self.modifiers != rhs.modifiers { return false }
+        if self.tuple != rhs.tuple { return false }
+        if self.array != rhs.array { return false }
+        if self.dictionary != rhs.dictionary { return false }
+        if self.closure != rhs.closure { return false }
+        return true
+    }
+
+    // MARK: - TypeName AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.generic)
+        hasher.combine(self.isProtocolComposition)
+        hasher.combine(self.attributes)
+        hasher.combine(self.modifiers)
+        hasher.combine(self.tuple)
+        hasher.combine(self.array)
+        hasher.combine(self.dictionary)
+        hasher.combine(self.closure)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+
     // sourcery: skipEquality, skipDescription
     /// :nodoc:
     public override var debugDescription: String {

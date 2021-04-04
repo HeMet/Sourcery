@@ -456,6 +456,59 @@ public typealias AttributeList = [String: [Attribute]]
             aCoder.encode(self.path, forKey: "path")
         }
 // sourcery:end
+
+// sourcery:inline:Type.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Type else { return false }
+        if self.module != rhs.module { return false }
+        if self.imports != rhs.imports { return false }
+        if self.typealiases != rhs.typealiases { return false }
+        if self.isExtension != rhs.isExtension { return false }
+        if self.accessLevel != rhs.accessLevel { return false }
+        if self.isUnknownExtension != rhs.isUnknownExtension { return false }
+        if self.isGeneric != rhs.isGeneric { return false }
+        if self.localName != rhs.localName { return false }
+        if self.rawVariables != rhs.rawVariables { return false }
+        if self.rawMethods != rhs.rawMethods { return false }
+        if self.rawSubscripts != rhs.rawSubscripts { return false }
+        if self.annotations != rhs.annotations { return false }
+        if self.inheritedTypes != rhs.inheritedTypes { return false }
+        if self.inherits != rhs.inherits { return false }
+        if self.containedTypes != rhs.containedTypes { return false }
+        if self.parentName != rhs.parentName { return false }
+        if self.attributes != rhs.attributes { return false }
+        if self.modifiers != rhs.modifiers { return false }
+        if self.kind != rhs.kind { return false }
+        return true
+    }
+
+    // MARK: - Type AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.module)
+        hasher.combine(self.imports)
+        hasher.combine(self.typealiases)
+        hasher.combine(self.isExtension)
+        hasher.combine(self.accessLevel)
+        hasher.combine(self.isUnknownExtension)
+        hasher.combine(self.isGeneric)
+        hasher.combine(self.localName)
+        hasher.combine(self.rawVariables)
+        hasher.combine(self.rawMethods)
+        hasher.combine(self.rawSubscripts)
+        hasher.combine(self.annotations)
+        hasher.combine(self.inheritedTypes)
+        hasher.combine(self.inherits)
+        hasher.combine(self.containedTypes)
+        hasher.combine(self.parentName)
+        hasher.combine(self.attributes)
+        hasher.combine(self.modifiers)
+        hasher.combine(kind)
+        return hasher.finalize()
+    }
+// sourcery:end
+
 }
 
 extension Type {

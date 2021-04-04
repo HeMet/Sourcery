@@ -66,6 +66,29 @@ import Foundation
         }
 // sourcery:end
 
+// sourcery:inline:AssociatedValue.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? AssociatedValue else { return false }
+        if self.localName != rhs.localName { return false }
+        if self.externalName != rhs.externalName { return false }
+        if self.typeName != rhs.typeName { return false }
+        if self.defaultValue != rhs.defaultValue { return false }
+        if self.annotations != rhs.annotations { return false }
+        return true
+    }
+
+    // MARK: - AssociatedValue AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.localName)
+        hasher.combine(self.externalName)
+        hasher.combine(self.typeName)
+        hasher.combine(self.defaultValue)
+        hasher.combine(self.annotations)
+        return hasher.finalize()
+    }
+// sourcery:end
 }
 
 /// Defines enum case
@@ -124,6 +147,30 @@ import Foundation
             aCoder.encode(self.annotations, forKey: "annotations")
             aCoder.encode(self.indirect, forKey: "indirect")
         }
+// sourcery:end
+
+// sourcery:inline:EnumCase.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? EnumCase else { return false }
+        if self.name != rhs.name { return false }
+        if self.rawValue != rhs.rawValue { return false }
+        if self.associatedValues != rhs.associatedValues { return false }
+        if self.annotations != rhs.annotations { return false }
+        if self.indirect != rhs.indirect { return false }
+        return true
+    }
+
+    // MARK: - EnumCase AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.rawValue)
+        hasher.combine(self.associatedValues)
+        hasher.combine(self.annotations)
+        hasher.combine(self.indirect)
+        return hasher.finalize()
+    }
 // sourcery:end
 }
 
@@ -229,5 +276,24 @@ import Foundation
             aCoder.encode(self.hasRawType, forKey: "hasRawType")
             aCoder.encode(self.rawType, forKey: "rawType")
         }
+// sourcery:end
+
+// sourcery:inline:Enum.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Enum else { return false }
+        if self.cases != rhs.cases { return false }
+        if self.rawTypeName != rhs.rawTypeName { return false }
+        return super.isEqual(rhs)
+    }
+
+    // MARK: - Enum AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.cases)
+        hasher.combine(self.rawTypeName)
+        hasher.combine(super.hash)
+        return hasher.finalize()
+    }
 // sourcery:end
 }

@@ -60,4 +60,24 @@ import Foundation
             aCoder.encode(self.keyType, forKey: "keyType")
         }
 // sourcery:end
+
+// sourcery:inline:DictionaryType.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? DictionaryType else { return false }
+        if self.name != rhs.name { return false }
+        if self.valueTypeName != rhs.valueTypeName { return false }
+        if self.keyTypeName != rhs.keyTypeName { return false }
+        return true
+    }
+
+    // MARK: - DictionaryType AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.valueTypeName)
+        hasher.combine(self.keyTypeName)
+        return hasher.finalize()
+    }
+// sourcery:end
 }

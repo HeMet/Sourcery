@@ -164,4 +164,23 @@ import Foundation
         }
 // sourcery:end
 
+// sourcery:inline:Attribute.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Attribute else { return false }
+        if self.name != rhs.name { return false }
+        if self.arguments != rhs.arguments { return false }
+        if self._description != rhs._description { return false }
+        return true
+    }
+
+    // MARK: - Attribute AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.arguments)
+        hasher.combine(self._description)
+        return hasher.finalize()
+    }
+// sourcery:end
 }

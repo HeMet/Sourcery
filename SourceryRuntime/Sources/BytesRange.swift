@@ -34,4 +34,22 @@ import Foundation
             aCoder.encode(self.length, forKey: "length")
         }
 // sourcery:end
+
+// sourcery:inline:BytesRange.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? BytesRange else { return false }
+        if self.offset != rhs.offset { return false }
+        if self.length != rhs.length { return false }
+        return true
+    }
+
+    // MARK: - BytesRange AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.offset)
+        hasher.combine(self.length)
+        return hasher.finalize()
+    }
+// sourcery:end
 }

@@ -60,4 +60,20 @@ import Foundation
             super.encode(with: aCoder)
         }
 // sourcery:end
+
+// sourcery:inline:Struct.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Struct else { return false }
+        return super.isEqual(rhs)
+    }
+
+    // MARK: - Struct AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(super.hash)
+        return hasher.finalize()
+    }
+// sourcery:end
+
 }
