@@ -95,7 +95,7 @@ import Foundation
 // sourcery:end
 
 // sourcery:inline:DictionaryType.AutoDiffable
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? DictionaryType else {
             results.append("Incorrect type <expected: DictionaryType, received: \(Swift.type(of: object))>")

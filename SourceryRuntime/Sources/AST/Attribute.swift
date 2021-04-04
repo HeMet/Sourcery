@@ -185,7 +185,7 @@ import Foundation
 // sourcery:end
 
 // sourcery:inline:Attribute.AutoDiffable
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Attribute else {
             results.append("Incorrect type <expected: Attribute, received: \(Swift.type(of: object))>")

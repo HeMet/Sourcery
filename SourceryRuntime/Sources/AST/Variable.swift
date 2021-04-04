@@ -206,7 +206,7 @@ public typealias SourceryVariable = Variable
 // sourcery:end
 
 // sourcery:inline:Variable.AutoDiffable
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Variable else {
             results.append("Incorrect type <expected: Variable, received: \(Swift.type(of: object))>")

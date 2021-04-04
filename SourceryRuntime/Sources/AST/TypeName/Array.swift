@@ -79,7 +79,7 @@ import Foundation
 // sourcery:end
 
 // sourcery:inline:ArrayType.AutoDiffable
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? ArrayType else {
             results.append("Incorrect type <expected: ArrayType, received: \(Swift.type(of: object))>")

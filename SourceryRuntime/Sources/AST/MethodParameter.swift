@@ -134,7 +134,7 @@ import Foundation
 // sourcery:end
 
 // sourcery:inline:MethodParameter.AutoDiffable
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? MethodParameter else {
             results.append("Incorrect type <expected: MethodParameter, received: \(Swift.type(of: object))>")

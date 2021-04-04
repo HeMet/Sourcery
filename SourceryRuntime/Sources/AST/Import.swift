@@ -71,7 +71,7 @@ import Foundation
 // sourcery:end
 
 // sourcery:inline:Import.AutoDiffable
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Import else {
             results.append("Incorrect type <expected: Import, received: \(Swift.type(of: object))>")

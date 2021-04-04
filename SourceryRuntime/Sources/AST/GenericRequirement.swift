@@ -88,7 +88,7 @@ import Foundation
     // sourcery:end
 
     // sourcery:inline:GenericRequirement.AutoDiffable
-        @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+        public func diffAgainst(_ object: Any?) -> DiffableResult {
             let results = DiffableResult()
             guard let castObject = object as? GenericRequirement else {
                 results.append("Incorrect type <expected: GenericRequirement, received: \(Swift.type(of: object))>")

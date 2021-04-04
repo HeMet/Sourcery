@@ -2,7 +2,7 @@ import Foundation
 
 {% for type in types.implementing.AutoDiffable|!protocol|!annotated:"skipDiffing" %}
 // sourcery:inline:{{ type.name }}.AutoDiffable
-    {% if type.based.Type %}override {% else %}@objc {% endif %}public func diffAgainst(_ object: Any?) -> DiffableResult {
+    {% if type.based.Type %}override {% endif %}public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? {{ type.name }} else {
             results.append("Incorrect type <expected: {{ type.name }}, received: \(Swift.type(of: object))>")

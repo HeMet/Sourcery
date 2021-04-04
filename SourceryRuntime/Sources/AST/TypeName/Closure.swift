@@ -122,7 +122,7 @@ import Foundation
 // sourcery:end
 
 // sourcery:inline:ClosureType.AutoDiffable
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? ClosureType else {
             results.append("Incorrect type <expected: ClosureType, received: \(Swift.type(of: object))>")

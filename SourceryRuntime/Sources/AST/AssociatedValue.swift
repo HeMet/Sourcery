@@ -99,7 +99,7 @@ import Foundation
 // sourcery:end
 
 // sourcery:inline:AssociatedValue.AutoDiffable
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? AssociatedValue else {
             results.append("Incorrect type <expected: AssociatedValue, received: \(Swift.type(of: object))>")

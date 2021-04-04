@@ -127,7 +127,7 @@ import Foundation
 // sourcery:end
 
 // sourcery:inline:FileParserResult.AutoDiffable
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? FileParserResult else {
             results.append("Incorrect type <expected: FileParserResult, received: \(Swift.type(of: object))>")

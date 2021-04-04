@@ -58,7 +58,7 @@ public typealias SourceryModifier = Modifier
     // sourcery:end
 
     // sourcery:inline:Modifier.AutoDiffable
-        @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+        public func diffAgainst(_ object: Any?) -> DiffableResult {
             let results = DiffableResult()
             guard let castObject = object as? Modifier else {
                 results.append("Incorrect type <expected: Modifier, received: \(Swift.type(of: object))>")
