@@ -80,4 +80,17 @@ import Foundation
         return hasher.finalize()
     }
 // sourcery:end
+
+// sourcery:inline:DictionaryType.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "name = \(String(describing: self.name)), "
+        string += "valueTypeName = \(String(describing: self.valueTypeName)), "
+        string += "keyTypeName = \(String(describing: self.keyTypeName)), "
+        string += "asGeneric = \(String(describing: self.asGeneric)), "
+        string += "asSource = \(String(describing: self.asSource))"
+        return string
+    }
+// sourcery:end
 }

@@ -65,4 +65,16 @@ import Foundation
         return hasher.finalize()
     }
 // sourcery:end
+
+// sourcery:inline:ArrayType.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "name = \(String(describing: self.name)), "
+        string += "elementTypeName = \(String(describing: self.elementTypeName)), "
+        string += "asGeneric = \(String(describing: self.asGeneric)), "
+        string += "asSource = \(String(describing: self.asSource))"
+        return string
+    }
+// sourcery:end
 }

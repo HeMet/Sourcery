@@ -70,4 +70,7 @@ import Foundation
     }
 // sourcery:end
 
+// sourcery:inline:Import.Description
+// sourcery:end
+
 }

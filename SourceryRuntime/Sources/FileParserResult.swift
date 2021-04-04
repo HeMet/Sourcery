@@ -108,4 +108,22 @@ import Foundation
     }
 // sourcery:end
 
+// sourcery:inline:FileParserResult.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "path = \(String(describing: self.path)), "
+        string += "module = \(String(describing: self.module)), "
+        string += "types = \(String(describing: self.types)), "
+        string += "functions = \(String(describing: self.functions)), "
+        string += "typealiases = \(String(describing: self.typealiases)), "
+        string += "inlineRanges = \(String(describing: self.inlineRanges)), "
+        string += "inlineIndentations = \(String(describing: self.inlineIndentations)), "
+        string += "modifiedDate = \(String(describing: self.modifiedDate)), "
+        string += "sourceryVersion = \(String(describing: self.sourceryVersion)), "
+        string += "isEmpty = \(String(describing: self.isEmpty))"
+        return string
+    }
+// sourcery:end
+
 }

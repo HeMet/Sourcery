@@ -105,4 +105,19 @@ import Foundation
         return hasher.finalize()
     }
 // sourcery:end
+
+// sourcery:inline:ClosureType.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "name = \(String(describing: self.name)), "
+        string += "parameters = \(String(describing: self.parameters)), "
+        string += "returnTypeName = \(String(describing: self.returnTypeName)), "
+        string += "actualReturnTypeName = \(String(describing: self.actualReturnTypeName)), "
+        string += "`throws` = \(String(describing: self.`throws`)), "
+        string += "throwsOrRethrowsKeyword = \(String(describing: self.throwsOrRethrowsKeyword)), "
+        string += "asSource = \(String(describing: self.asSource))"
+        return string
+    }
+// sourcery:end
 }

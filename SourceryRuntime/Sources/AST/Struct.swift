@@ -76,4 +76,14 @@ import Foundation
     }
 // sourcery:end
 
+// sourcery:inline:Struct.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = super.description
+        string += ", "
+        string += "kind = \(String(describing: self.kind))"
+        return string
+    }
+// sourcery:end
+
 }

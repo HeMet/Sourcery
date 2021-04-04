@@ -100,6 +100,19 @@ import Foundation
         }
     // sourcery:end
 
+    // sourcery:inline:TemplateContext.Description
+        /// :nodoc:
+        override public var description: String {
+            var string = "\(Swift.type(of: self)): "
+            string += "parserResult = \(String(describing: self.parserResult)), "
+            string += "functions = \(String(describing: self.functions)), "
+            string += "types = \(String(describing: self.types)), "
+            string += "argument = \(String(describing: self.argument)), "
+            string += "stencilContext = \(String(describing: self.stencilContext))"
+            return string
+        }
+    // sourcery:end
+
 }
 
 extension ProcessInfo {
@@ -155,6 +168,16 @@ extension ProcessInfo {
         hasher.combine(self.types)
         hasher.combine(self.typealiases)
         return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:Types.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "types = \(String(describing: self.types)), "
+        string += "typealiases = \(String(describing: self.typealiases))"
+        return string
     }
 // sourcery:end
 

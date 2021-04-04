@@ -109,4 +109,13 @@ import Foundation
     }
 // sourcery:end
 
+// sourcery:inline:GenericTypeParameter.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "typeName = \(String(describing: self.typeName))"
+        return string
+    }
+// sourcery:end
+
 }

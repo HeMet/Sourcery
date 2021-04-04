@@ -93,4 +93,18 @@ import Foundation
     }
 // sourcery:end
 
+// sourcery:inline:Typealias.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "aliasName = \(String(describing: self.aliasName)), "
+        string += "typeName = \(String(describing: self.typeName)), "
+        string += "module = \(String(describing: self.module)), "
+        string += "accessLevel = \(String(describing: self.accessLevel)), "
+        string += "parentName = \(String(describing: self.parentName)), "
+        string += "name = \(String(describing: self.name))"
+        return string
+    }
+// sourcery:end
+
 }

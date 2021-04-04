@@ -53,4 +53,14 @@ import Foundation
         return hasher.finalize()
     }
 // sourcery:end
+
+// sourcery:inline:AssociatedType.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "name = \(String(describing: self.name)), "
+        string += "typeName = \(String(describing: self.typeName))"
+        return string
+    }
+// sourcery:end
 }

@@ -181,4 +181,28 @@ public typealias SourceryVariable = Variable
     }
 // sourcery:end
 
+// sourcery:inline:Variable.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "name = \(String(describing: self.name)), "
+        string += "typeName = \(String(describing: self.typeName)), "
+        string += "isComputed = \(String(describing: self.isComputed)), "
+        string += "isStatic = \(String(describing: self.isStatic)), "
+        string += "readAccess = \(String(describing: self.readAccess)), "
+        string += "writeAccess = \(String(describing: self.writeAccess)), "
+        string += "accessLevel = \(String(describing: self.accessLevel)), "
+        string += "isMutable = \(String(describing: self.isMutable)), "
+        string += "defaultValue = \(String(describing: self.defaultValue)), "
+        string += "annotations = \(String(describing: self.annotations)), "
+        string += "attributes = \(String(describing: self.attributes)), "
+        string += "modifiers = \(String(describing: self.modifiers)), "
+        string += "isFinal = \(String(describing: self.isFinal)), "
+        string += "isLazy = \(String(describing: self.isLazy)), "
+        string += "definedInTypeName = \(String(describing: self.definedInTypeName)), "
+        string += "actualDefinedInTypeName = \(String(describing: self.actualDefinedInTypeName))"
+        return string
+    }
+// sourcery:end
+
 }

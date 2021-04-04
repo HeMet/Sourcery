@@ -52,4 +52,14 @@ import Foundation
         return hasher.finalize()
     }
 // sourcery:end
+
+// sourcery:inline:BytesRange.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "offset = \(String(describing: self.offset)), "
+        string += "length = \(String(describing: self.length))"
+        return string
+    }
+// sourcery:end
 }

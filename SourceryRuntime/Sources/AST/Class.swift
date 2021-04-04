@@ -71,4 +71,15 @@ import Foundation
         return hasher.finalize()
     }
 // sourcery:end
+
+// sourcery:inline:Class.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = super.description
+        string += ", "
+        string += "kind = \(String(describing: self.kind)), "
+        string += "isFinal = \(String(describing: self.isFinal))"
+        return string
+    }
+// sourcery:end
 }

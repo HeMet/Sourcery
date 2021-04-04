@@ -85,5 +85,15 @@ import Foundation
     }
 // sourcery:end
 
+// sourcery:inline:ProtocolComposition.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = super.description
+        string += ", "
+        string += "kind = \(String(describing: self.kind)), "
+        string += "composedTypeNames = \(String(describing: self.composedTypeNames))"
+        return string
+    }
+// sourcery:end
 
 }

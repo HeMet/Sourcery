@@ -120,6 +120,21 @@ public typealias SourceryMethod = Method
     }
 // sourcery:end
 
+// sourcery:inline:MethodParameter.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "argumentLabel = \(String(describing: self.argumentLabel)), "
+        string += "name = \(String(describing: self.name)), "
+        string += "typeName = \(String(describing: self.typeName)), "
+        string += "`inout` = \(String(describing: self.`inout`)), "
+        string += "typeAttributes = \(String(describing: self.typeAttributes)), "
+        string += "defaultValue = \(String(describing: self.defaultValue)), "
+        string += "annotations = \(String(describing: self.annotations)), "
+        string += "asSource = \(String(describing: self.asSource))"
+        return string
+    }
+// sourcery:end
 }
 
 extension Array where Element == MethodParameter {
@@ -210,34 +225,49 @@ extension Array where Element == MethodParameter {
                 aCoder.encode(self.defaultValue, forKey: "defaultValue")
                 aCoder.encode(self.annotations, forKey: "annotations")
             }
-
     // sourcery:end
 
-    // sourcery:inline:ClosureParameter.Equality
-        /// :nodoc:
-        public override func isEqual(_ object: Any?) -> Bool {
-            guard let rhs = object as? ClosureParameter else { return false }
-            if self.argumentLabel != rhs.argumentLabel { return false }
-            if self.name != rhs.name { return false }
-            if self.typeName != rhs.typeName { return false }
-            if self.`inout` != rhs.`inout` { return false }
-            if self.defaultValue != rhs.defaultValue { return false }
-            if self.annotations != rhs.annotations { return false }
-            return true
-        }
+// sourcery:inline:ClosureParameter.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? ClosureParameter else { return false }
+        if self.argumentLabel != rhs.argumentLabel { return false }
+        if self.name != rhs.name { return false }
+        if self.typeName != rhs.typeName { return false }
+        if self.`inout` != rhs.`inout` { return false }
+        if self.defaultValue != rhs.defaultValue { return false }
+        if self.annotations != rhs.annotations { return false }
+        return true
+    }
 
-        // MARK: - ClosureParameter AutoHashable
-        public override var hash: Int {
-            var hasher = Hasher()
-            hasher.combine(self.argumentLabel)
-            hasher.combine(self.name)
-            hasher.combine(self.typeName)
-            hasher.combine(self.`inout`)
-            hasher.combine(self.defaultValue)
-            hasher.combine(self.annotations)
-            return hasher.finalize()
-        }
-    // sourcery:end
+    // MARK: - ClosureParameter AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.argumentLabel)
+        hasher.combine(self.name)
+        hasher.combine(self.typeName)
+        hasher.combine(self.`inout`)
+        hasher.combine(self.defaultValue)
+        hasher.combine(self.annotations)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:ClosureParameter.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "argumentLabel = \(String(describing: self.argumentLabel)), "
+        string += "name = \(String(describing: self.name)), "
+        string += "typeName = \(String(describing: self.typeName)), "
+        string += "`inout` = \(String(describing: self.`inout`)), "
+        string += "typeAttributes = \(String(describing: self.typeAttributes)), "
+        string += "defaultValue = \(String(describing: self.defaultValue)), "
+        string += "annotations = \(String(describing: self.annotations)), "
+        string += "asSource = \(String(describing: self.asSource))"
+        return string
+    }
+// sourcery:end
 }
 
 extension Array where Element == ClosureParameter {
@@ -516,6 +546,28 @@ extension Array where Element == ClosureParameter {
         hasher.combine(self.attributes)
         hasher.combine(self.modifiers)
         return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:Method.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "name = \(String(describing: self.name)), "
+        string += "selectorName = \(String(describing: self.selectorName)), "
+        string += "parameters = \(String(describing: self.parameters)), "
+        string += "returnTypeName = \(String(describing: self.returnTypeName)), "
+        string += "`throws` = \(String(describing: self.`throws`)), "
+        string += "`rethrows` = \(String(describing: self.`rethrows`)), "
+        string += "accessLevel = \(String(describing: self.accessLevel)), "
+        string += "isStatic = \(String(describing: self.isStatic)), "
+        string += "isClass = \(String(describing: self.isClass)), "
+        string += "isFailableInitializer = \(String(describing: self.isFailableInitializer)), "
+        string += "annotations = \(String(describing: self.annotations)), "
+        string += "definedInTypeName = \(String(describing: self.definedInTypeName)), "
+        string += "attributes = \(String(describing: self.attributes)), "
+        string += "modifiers = \(String(describing: self.modifiers))"
+        return string
     }
 // sourcery:end
 

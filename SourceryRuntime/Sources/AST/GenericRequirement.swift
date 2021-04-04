@@ -75,4 +75,16 @@ import Foundation
         }
     // sourcery:end
 
+    // sourcery:inline:GenericRequirement.Description
+        /// :nodoc:
+        override public var description: String {
+            var string = "\(Swift.type(of: self)): "
+            string += "leftType = \(String(describing: self.leftType)), "
+            string += "rightType = \(String(describing: self.rightType)), "
+            string += "relationship = \(String(describing: self.relationship)), "
+            string += "relationshipSyntax = \(String(describing: self.relationshipSyntax))"
+            return string
+        }
+    // sourcery:end
+
 }

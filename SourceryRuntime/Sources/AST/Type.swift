@@ -509,6 +509,44 @@ public typealias AttributeList = [String: [Attribute]]
     }
 // sourcery:end
 
+// sourcery:inline:Type.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "module = \(String(describing: self.module)), "
+        string += "imports = \(String(describing: self.imports)), "
+        string += "allImports = \(String(describing: self.allImports)), "
+        string += "typealiases = \(String(describing: self.typealiases)), "
+        string += "isExtension = \(String(describing: self.isExtension)), "
+        string += "kind = \(String(describing: self.kind)), "
+        string += "accessLevel = \(String(describing: self.accessLevel)), "
+        string += "name = \(String(describing: self.name)), "
+        string += "isUnknownExtension = \(String(describing: self.isUnknownExtension)), "
+        string += "isGeneric = \(String(describing: self.isGeneric)), "
+        string += "localName = \(String(describing: self.localName)), "
+        string += "rawVariables = \(String(describing: self.rawVariables)), "
+        string += "rawMethods = \(String(describing: self.rawMethods)), "
+        string += "rawSubscripts = \(String(describing: self.rawSubscripts)), "
+        string += "initializers = \(String(describing: self.initializers)), "
+        string += "annotations = \(String(describing: self.annotations)), "
+        string += "staticVariables = \(String(describing: self.staticVariables)), "
+        string += "staticMethods = \(String(describing: self.staticMethods)), "
+        string += "classMethods = \(String(describing: self.classMethods)), "
+        string += "instanceVariables = \(String(describing: self.instanceVariables)), "
+        string += "instanceMethods = \(String(describing: self.instanceMethods)), "
+        string += "computedVariables = \(String(describing: self.computedVariables)), "
+        string += "storedVariables = \(String(describing: self.storedVariables)), "
+        string += "inheritedTypes = \(String(describing: self.inheritedTypes)), "
+        string += "inherits = \(String(describing: self.inherits)), "
+        string += "containedTypes = \(String(describing: self.containedTypes)), "
+        string += "parentName = \(String(describing: self.parentName)), "
+        string += "parentTypes = \(String(describing: self.parentTypes)), "
+        string += "attributes = \(String(describing: self.attributes)), "
+        string += "modifiers = \(String(describing: self.modifiers))"
+        return string
+    }
+// sourcery:end
+
 }
 
 extension Type {
