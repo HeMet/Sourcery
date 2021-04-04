@@ -62,4 +62,18 @@ import Foundation
         return string
     }
 // sourcery:end
+
+// sourcery:inline:BytesRange.AutoDiffable
+    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? BytesRange else {
+            results.append("Incorrect type <expected: BytesRange, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "offset").trackDifference(actual: self.offset, expected: castObject.offset))
+        results.append(contentsOf: DiffableResult(identifier: "length").trackDifference(actual: self.length, expected: castObject.length))
+        return results
+    }
+// sourcery:end
+
 }

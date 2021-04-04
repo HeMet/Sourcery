@@ -139,4 +139,19 @@ import Foundation
         return string
     }
 // sourcery:end
+
+// sourcery:inline:Enum.AutoDiffable
+    override public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Enum else {
+            results.append("Incorrect type <expected: Enum, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "cases").trackDifference(actual: self.cases, expected: castObject.cases))
+        results.append(contentsOf: DiffableResult(identifier: "rawTypeName").trackDifference(actual: self.rawTypeName, expected: castObject.rawTypeName))
+        results.append(contentsOf: super.diffAgainst(castObject))
+        return results
+    }
+// sourcery:end
+
 }

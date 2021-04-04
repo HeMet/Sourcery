@@ -82,4 +82,17 @@ import Foundation
         return string
     }
 // sourcery:end
+
+// sourcery:inline:Class.AutoDiffable
+    override public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Class else {
+            results.append("Incorrect type <expected: Class, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: super.diffAgainst(castObject))
+        return results
+    }
+// sourcery:end
+
 }

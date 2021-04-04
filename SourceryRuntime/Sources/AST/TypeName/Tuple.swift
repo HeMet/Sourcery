@@ -63,4 +63,18 @@ import Foundation
         return string
     }
 // sourcery:end
+
+// sourcery:inline:TupleType.AutoDiffable
+    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? TupleType else {
+            results.append("Incorrect type <expected: TupleType, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "elements").trackDifference(actual: self.elements, expected: castObject.elements))
+        return results
+    }
+// sourcery:end
+
 }

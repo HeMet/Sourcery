@@ -70,6 +70,20 @@ import Foundation
         return string
     }
 // sourcery:end
+
+// sourcery:inline:TupleElement.AutoDiffable
+    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? TupleElement else {
+            results.append("Incorrect type <expected: TupleElement, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
+        return results
+    }
+// sourcery:end
+
 }
 
 extension Array where Element == TupleElement {

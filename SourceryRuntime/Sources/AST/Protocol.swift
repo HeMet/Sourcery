@@ -115,4 +115,18 @@ public typealias SourceryProtocol = Protocol
     }
 // sourcery:end
 
+// sourcery:inline:Protocol.AutoDiffable
+    override public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Protocol else {
+            results.append("Incorrect type <expected: Protocol, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "associatedTypes").trackDifference(actual: self.associatedTypes, expected: castObject.associatedTypes))
+        results.append(contentsOf: DiffableResult(identifier: "genericRequirements").trackDifference(actual: self.genericRequirements, expected: castObject.genericRequirements))
+        results.append(contentsOf: super.diffAgainst(castObject))
+        return results
+    }
+// sourcery:end
+
 }

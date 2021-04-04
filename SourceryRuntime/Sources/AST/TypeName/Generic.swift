@@ -59,62 +59,16 @@ import Foundation
     }
 // sourcery:end
 
-}
-
-/// Descibes Swift generic type parameter
-@objcMembers public final class GenericTypeParameter: NSObject, SourceryModel {
-
-    /// Generic parameter type name
-    public var typeName: TypeName
-
-    // sourcery: skipEquality, skipDescription
-    /// Generic parameter type, if known
-    public var type: Type?
-
-    /// :nodoc:
-    public init(typeName: TypeName, type: Type? = nil) {
-        self.typeName = typeName
-        self.type = type
-    }
-
-// sourcery:inline:GenericTypeParameter.AutoCoding
-
-        /// :nodoc:
-        required public init?(coder aDecoder: NSCoder) {
-            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
-            self.type = aDecoder.decode(forKey: "type")
+// sourcery:inline:GenericType.AutoDiffable
+    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? GenericType else {
+            results.append("Incorrect type <expected: GenericType, received: \(Swift.type(of: object))>")
+            return results
         }
-
-        /// :nodoc:
-        public func encode(with aCoder: NSCoder) {
-            aCoder.encode(self.typeName, forKey: "typeName")
-            aCoder.encode(self.type, forKey: "type")
-        }
-
-// sourcery:end
-
-// sourcery:inline:GenericTypeParameter.Equality
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? GenericTypeParameter else { return false }
-        if self.typeName != rhs.typeName { return false }
-        return true
-    }
-
-    // MARK: - GenericTypeParameter AutoHashable
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.typeName)
-        return hasher.finalize()
-    }
-// sourcery:end
-
-// sourcery:inline:GenericTypeParameter.Description
-    /// :nodoc:
-    override public var description: String {
-        var string = "\(Swift.type(of: self)): "
-        string += "typeName = \(String(describing: self.typeName))"
-        return string
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "typeParameters").trackDifference(actual: self.typeParameters, expected: castObject.typeParameters))
+        return results
     }
 // sourcery:end
 

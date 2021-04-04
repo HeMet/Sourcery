@@ -1,5 +1,6 @@
-// Generated using Sourcery 1.3.4 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.17.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
+
 // swiftlint:disable vertical_whitespace trailing_newline
 
 import JavaScriptCore

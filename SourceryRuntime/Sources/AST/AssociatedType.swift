@@ -63,4 +63,18 @@ import Foundation
         return string
     }
 // sourcery:end
+
+// sourcery:inline:AssociatedType.AutoDiffable
+    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? AssociatedType else {
+            results.append("Incorrect type <expected: AssociatedType, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
+        return results
+    }
+// sourcery:end
+
 }
