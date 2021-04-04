@@ -1,7 +1,7 @@
 import Foundation
 
 /// Describes tuple type element
-@objcMembers public final class TupleElement: NSObject, SourceryModel, Typed {
+public final class TupleElement: NSObject, SourceryModel, Typed {
 
     /// Tuple element name
     public let name: String?

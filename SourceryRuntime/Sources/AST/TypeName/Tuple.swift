@@ -1,7 +1,7 @@
 import Foundation
 
 /// Describes tuple type
-@objcMembers public final class TupleType: NSObject, SourceryModel {
+public final class TupleType: NSObject, SourceryModel {
 
     /// Type name used in declaration
     public var name: String

@@ -6,7 +6,7 @@
 import Foundation
 
 /// Defines Swift enum
-@objcMembers public final class Enum: Type {
+public final class Enum: Type {
 
     // sourcery: skipDescription
     /// Returns "enum"

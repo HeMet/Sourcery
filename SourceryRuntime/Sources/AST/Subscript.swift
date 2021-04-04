@@ -1,7 +1,7 @@
 import Foundation
 
 /// Describes subscript
-@objcMembers public final class Subscript: NSObject, SourceryModel, Annotated, Definition {
+public final class Subscript: NSObject, SourceryModel, Annotated, Definition {
 
     /// Method parameters
     public var parameters: [MethodParameter]

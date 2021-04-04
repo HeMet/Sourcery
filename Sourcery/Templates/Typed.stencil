@@ -1,8 +1,8 @@
 // swiftlint:disable vertical_whitespace
-
+import Foundation
 
 {% for type in types.implementing.Typed %}
-extension {{ type.name }} {
+@objc extension {{ type.name }} {
     /// Whether type is optional. Shorthand for `typeName.isOptional`
     {{ type.accessLevel }} var isOptional: Bool { return typeName.isOptional }
     /// Whether type is implicitly unwrapped optional. Shorthand for `typeName.isImplicitlyUnwrappedOptional`

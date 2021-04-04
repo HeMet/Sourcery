@@ -1,7 +1,7 @@
 import Foundation
 
 /// Descibes Swift generic type parameter
-@objcMembers public final class GenericTypeParameter: NSObject, SourceryModel {
+public final class GenericTypeParameter: NSObject, SourceryModel {
 
     /// Generic parameter type name
     public var typeName: TypeName

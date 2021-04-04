@@ -1,7 +1,7 @@
 import Foundation
 
 /// Defines enum case
-@objcMembers public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated {
+public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated {
 
     /// Enum case name
     public let name: String

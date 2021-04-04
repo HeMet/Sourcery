@@ -2,7 +2,7 @@ import Foundation
 
 // sourcery: skipJSExport
 /// Collection of scanned types for accessing in templates
-@objcMembers public final class Types: NSObject, SourceryModel {
+public final class Types: NSObject, SourceryModel {
 
     /// :nodoc:
     public let types: [Type]
@@ -168,3 +168,22 @@ import Foundation
         })
     }()
 }
+
+@objc protocol TypesObjCExport {
+    var types: [Type] { get }
+    var typealiases: [Typealias] { get }
+    var typesByName: [String: Type] { get }
+    var typesaliasesByName: [String: Typealias] { get }
+    var all: [Type] { get }
+    var protocols: [Protocol] { get }
+    var protocolCompositions: [ProtocolComposition] { get }
+    var classes: [Class] { get }
+    var structs: [Struct] { get }
+    var enums: [Enum] { get }
+    var extensions: [Type] { get }
+    var based: TypesCollection { get }
+    var inheriting: TypesCollection { get }
+    var implementing: TypesCollection { get }
+}
+
+extension Types: TypesObjCExport { }
