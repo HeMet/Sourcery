@@ -100,8 +100,13 @@ public struct AnnotationsParser {
 
     func inlineFrom(line lineInfo: (line: Int, character: Int), stop: inout Bool) -> Annotations {
         let sourceLine = lines[lineInfo.line - 1]
-        var prefix = sourceLine.content.bridge()
-            .substring(to: max(0, lineInfo.character - 1))
+        var index = sourceLine.content.startIndex
+        _ = sourceLine.content.formIndex(
+            &index,
+            offsetBy: max(0, lineInfo.character - 1),
+            limitedBy: sourceLine.content.endIndex
+        )
+        var prefix: String = sourceLine.content[..<index]
             .trimmingCharacters(in: .whitespaces)
 
         guard !prefix.isEmpty else { return [:] }

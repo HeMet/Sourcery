@@ -13,7 +13,7 @@ QCKMain([
     FileParserMethodsSpec.self,
     FileParserSubscriptsSpec.self,
     FileParserVariableSpec.self,
-//    FileParserSpec.self,
+    FileParserSpec.self,
     AnnotationsParserSpec.self,
     TemplateAnnotationsParserSpec.self,
     VerifierSpec.self,
