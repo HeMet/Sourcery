@@ -1,6 +1,8 @@
 import Foundation
 
+#if canImport(Darwin)
 @objc(SwiftClass) extension Class { }
+#endif
 
 // sourcery: skipDescription
 /// Descibes Swift class

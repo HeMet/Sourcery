@@ -3,7 +3,9 @@ import Foundation
 /// :nodoc:
 public typealias SourceryMethod = Method
 
+#if canImport(Darwin)
 @objc(SwiftMethod) extension Method { }
+#endif
 
 /// Describes method
 public final class Method: NSObject, SourceryModel, Annotated, Definition {

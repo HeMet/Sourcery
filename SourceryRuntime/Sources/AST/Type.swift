@@ -638,6 +638,7 @@ extension Type {
     }
 }
 
+#if canImport(Darwin)
 /// Extends type so that inner types can be accessed via KVC e.g. Parent.Inner.Children
 extension Type {
     /// :nodoc:
@@ -649,3 +650,4 @@ extension Type {
         return super.value(forUndefinedKey: key)
     }
 }
+#endif

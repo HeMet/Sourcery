@@ -185,7 +185,9 @@ let package = Package(
     ]
 )
 
+#if canImport(Darwin)
 hookInternalSwiftSyntaxParser()
+#endif
 
 /// We need to manually add an -rpath to the project so the tests can run via Xcode
 /// If we are running from console (swift build & friend) we don't need to do it

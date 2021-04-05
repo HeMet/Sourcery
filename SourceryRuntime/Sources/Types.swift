@@ -191,6 +191,7 @@ public final class Types: NSObject, SourceryModel {
     }()
 }
 
+#if canImport(Darwin)
 @objc protocol TypesObjCExport {
     var types: [Type] { get }
     var typealiases: [Typealias] { get }
@@ -209,3 +210,4 @@ public final class Types: NSObject, SourceryModel {
 }
 
 extension Types: TypesObjCExport { }
+#endif
