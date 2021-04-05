@@ -3,6 +3,8 @@
 
 // swiftlint:disable vertical_whitespace trailing_newline
 
+#if canImport(JavaScriptCore)
+
 import JavaScriptCore
 
 @objc protocol ArrayTypeAutoJSExport: JSExport {
@@ -552,4 +554,4 @@ extension TypesCollection: TypesCollectionAutoJSExport {}
 
 extension Variable: VariableAutoJSExport {}
 
-
+#endif
