@@ -4,7 +4,13 @@ import Quick
 @testable import SourceryLibTests
 
 QCKMain([
-//    SourcerySpecTests.self,
+    ConfigurationSpec.self,
+    GeneratorSpec.self,
+    SourcerySpecTests.self,
+    // Generating
+//    JavaScriptTemplateTests.self, (JS)
+    StencilTemplateSpec.self,
+//    SwiftTemplateTests.self, (need to update runtime)
     // Models
     ClassSpec.self,
     DiffableSpec.self,
