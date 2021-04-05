@@ -27,6 +27,7 @@
 
 #import "TryCatch.h"
 
+#if !defined(_WIN32)
 @implementation SwiftTryCatch
 
 /**
@@ -56,3 +57,4 @@
 }
 
 @end
+#endif

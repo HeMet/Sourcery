@@ -190,6 +190,7 @@ public class TypesCollection: NSObject, AutoJSExport {
     }
 
     /// :nodoc:
+    #if canImport(Darwin)
     public override func value(forKey key: String) -> Any? {
         do {
             return try types(forKey: key)
@@ -198,6 +199,7 @@ public class TypesCollection: NSObject, AutoJSExport {
             return nil
         }
     }
+    #endif
 
     /// :nodoc:
     public subscript(_ key: String) -> [Type] {
@@ -209,9 +211,11 @@ public class TypesCollection: NSObject, AutoJSExport {
         }
     }
 
+    #if canImport(Darwin)
     public override func responds(to aSelector: Selector!) -> Bool {
         return true
     }
+    #endif
 }
 
 extension TypesCollection: CustomReflectable {
