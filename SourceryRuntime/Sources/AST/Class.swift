@@ -1,8 +1,9 @@
 import Foundation
 
+public typealias Class = SwiftClass
 // sourcery: skipDescription
 /// Descibes Swift class
-@objc(SwiftClass) public final class Class: Type {
+public final class SwiftClass: Type {
     /// Returns "class"
     public override var kind: String { return "class" }
 
