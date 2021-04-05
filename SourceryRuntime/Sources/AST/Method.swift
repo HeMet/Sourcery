@@ -2,10 +2,11 @@ import Foundation
 
 /// :nodoc:
 public typealias SourceryMethod = Method
-public typealias Method = SwiftMethod
+
+@objc(SwiftMethod) extension Method { }
 
 /// Describes method
-public final class SwiftMethod: NSObject, SourceryModel, Annotated, Definition {
+public final class Method: NSObject, SourceryModel, Annotated, Definition {
 
     /// Full method name, including generic constraints, i.e. `foo<T>(bar: T)`
     public let name: String
