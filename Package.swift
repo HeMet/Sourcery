@@ -34,17 +34,17 @@ let package = Package(
         .library(name: "SourceryFramework", targets: ["SourceryFramework"]),
     ],
     dependencies: [
-        .package(name: "Yams", url: "https://github.com/jpsim/Yams.git", .exact("4.0.0")),
-        .package(name: "Commander", url: "https://github.com/kylef/Commander.git", .exact("0.9.1")),
+        .package(name: "Yams", url: "https://github.com/HeMet/Yams.git", .branch("win-support")),
+        .package(name: "Commander", url: "https://github.com/HeMet/Commander.git", .branch("win-support")),
         // PathKit needs to be exact to avoid a SwiftPM bug where dependency resolution takes a very long time.
-        .package(name: "PathKit", url: "https://github.com/kylef/PathKit.git", .exact("1.0.0")),
-        .package(name: "StencilSwiftKit", url: "https://github.com/SwiftGen/StencilSwiftKit.git", .exact("2.8.0")),
-        .package(name: "XcodeProj", url: "https://github.com/tuist/xcodeproj", .exact("7.18.0")),
+        .package(name: "PathKit", url: "https://github.com/HeMet/PathKit.git", .branch("win-support")),
+        .package(name: "StencilSwiftKit", url: "https://github.com/HeMet/StencilSwiftKit.git", .branch("win-support")),
+        .package(name: "XcodeProj", url: "https://github.com/HeMet/xcodeproj", .branch("win-support")),
         .package(name: "SwiftSyntax",
-                 url: "https://github.com/apple/swift-syntax.git",
-                 .exact("0.50300.0")),
+                url: "https://github.com/HeMet/swift-syntax.git",
+                .branch("win-support")),
         .package(url: "https://github.com/Quick/Quick.git", from: "3.0.0"),
-        .package(url: "https://github.com/Quick/Nimble.git", from: "9.0.0")
+        .package(url: "https://github.com/HeMet/Nimble.git", .branch("win-support"))
     ],
     targets: [
         .target(
