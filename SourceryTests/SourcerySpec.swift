@@ -23,7 +23,11 @@ class SourcerySpecTests: QuickSpec {
         func update(code: String, in path: Path) { guard (try? path.write(code)) != nil else { fatalError() } }
 
         describe ("Sourcery") {
+            #if os(Windows)
+            var outputDir = Path.temporary
+            #else
             var outputDir = Path("/tmp")
+            #endif
             var output: Output { return Output(outputDir) }
 
             beforeEach {
