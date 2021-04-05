@@ -6,7 +6,7 @@
         "repositoryURL": "https://github.com/HeMet/AEXML.git",
         "state": {
           "branch": "win-support",
-          "revision": "6e1d2e2b70df280cdabd15ffb087e82ce746aab4",
+          "revision": "d193a65c7e27d085dc21e411eed0118c78e268d0",
           "version": null
         }
       },
@@ -15,7 +15,7 @@
         "repositoryURL": "https://github.com/HeMet/Commander.git",
         "state": {
           "branch": "win-support",
-          "revision": "539aa0934137d46670770002a09b22475ae8bfd3",
+          "revision": "9a460e3ebb5fbd6eac363eb06736f6b8e402c9fb",
           "version": null
         }
       },
@@ -33,7 +33,7 @@
         "repositoryURL": "https://github.com/HeMet/PathKit.git",
         "state": {
           "branch": "win-support",
-          "revision": "976f3e59fcc4a677177d658101ae1d35e2a40fb9",
+          "revision": "0ce2e702e07f7e0f126986d497ead86c7f31777b",
           "version": null
         }
       },
@@ -51,7 +51,7 @@
         "repositoryURL": "https://github.com/HeMet/Spectre.git",
         "state": {
           "branch": "win-support",
-          "revision": "32d492769bd4949c5a6ecc8bdc2c96bf1d02bd10",
+          "revision": "f0a197e17236de6bbba14c7031a80ea69d615ad5",
           "version": null
         }
       },
@@ -60,7 +60,7 @@
         "repositoryURL": "https://github.com/HeMet/Stencil.git",
         "state": {
           "branch": "win-support",
-          "revision": "6694456349131ed5c7fa3967d9e8b413e990b0bd",
+          "revision": "5e15861d9bd9a01743f91200f511f09e8acc700a",
           "version": null
         }
       },
@@ -69,7 +69,7 @@
         "repositoryURL": "https://github.com/HeMet/StencilSwiftKit.git",
         "state": {
           "branch": "win-support",
-          "revision": "862c162bcb5e8c6f90f6a5dda6111516f837a59e",
+          "revision": "03d7d71fd3ceaf125d9ce7f01ba5c22dd1296263",
           "version": null
         }
       },
@@ -78,7 +78,7 @@
         "repositoryURL": "https://github.com/HeMet/swift-syntax.git",
         "state": {
           "branch": "win-support",
-          "revision": "f4a114301e0d5430736c9b225a74c65f59b1d3a0",
+          "revision": "42e45bdd13495b4c07cff372c17a99ab3964a917",
           "version": null
         }
       },
@@ -87,7 +87,7 @@
         "repositoryURL": "https://github.com/HeMet/xcodeproj",
         "state": {
           "branch": "win-support",
-          "revision": "a6ac9382fcc4f993cdc8d866dd33fe53e5f69918",
+          "revision": "0a64094e0040143f4e7636820a6fcf821e4883de",
           "version": null
         }
       },
@@ -96,7 +96,7 @@
         "repositoryURL": "https://github.com/HeMet/Yams.git",
         "state": {
           "branch": "win-support",
-          "revision": "56448dde911830e88611b263352abb31e7abb2f4",
+          "revision": "ad10724a851a98884791f7218100e7bc361b5c54",
           "version": null
         }
       }
