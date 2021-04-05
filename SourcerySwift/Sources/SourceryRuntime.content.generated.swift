@@ -130,7 +130,7 @@ public extension Array {
 import Foundation
 
 /// Describes array type
-@objcMembers public final class ArrayType: NSObject, SourceryModel {
+public final class ArrayType: NSObject, SourceryModel {
 
     /// Type name used in declaration
     public var name: String
@@ -176,6 +176,49 @@ import Foundation
             aCoder.encode(self.elementType, forKey: "elementType")
         }
 // sourcery:end
+
+// sourcery:inline:ArrayType.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? ArrayType else { return false }
+        if self.name != rhs.name { return false }
+        if self.elementTypeName != rhs.elementTypeName { return false }
+        return true
+    }
+
+    // MARK: - ArrayType AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.elementTypeName)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:ArrayType.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "name = \\(String(describing: self.name)), "
+        string += "elementTypeName = \\(String(describing: self.elementTypeName)), "
+        string += "asGeneric = \\(String(describing: self.asGeneric)), "
+        string += "asSource = \\(String(describing: self.asSource))"
+        return string
+    }
+// sourcery:end
+
+// sourcery:inline:ArrayType.AutoDiffable
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? ArrayType else {
+            results.append("Incorrect type <expected: ArrayType, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "elementTypeName").trackDifference(actual: self.elementTypeName, expected: castObject.elementTypeName))
+        return results
+    }
+// sourcery:end
 }
 
 """),
@@ -184,7 +227,7 @@ import Foundation
 import Foundation
 
 /// Describes Swift AssociatedType
-@objcMembers public final class AssociatedType: NSObject, SourceryModel {
+public final class AssociatedType: NSObject, SourceryModel {
     /// Associated type name
     public let name: String
 
@@ -218,6 +261,169 @@ import Foundation
             aCoder.encode(self.type, forKey: "type")
         }
 // sourcery:end
+
+// sourcery:inline:AssociatedType.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? AssociatedType else { return false }
+        if self.name != rhs.name { return false }
+        if self.typeName != rhs.typeName { return false }
+        return true
+    }
+
+    // MARK: - AssociatedType AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.typeName)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:AssociatedType.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "name = \\(String(describing: self.name)), "
+        string += "typeName = \\(String(describing: self.typeName))"
+        return string
+    }
+// sourcery:end
+
+// sourcery:inline:AssociatedType.AutoDiffable
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? AssociatedType else {
+            results.append("Incorrect type <expected: AssociatedType, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
+        return results
+    }
+// sourcery:end
+
+}
+
+"""),
+    .init(name: "AssociatedValue.swift", content:
+"""
+import Foundation
+
+/// Defines enum case associated value
+public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed, Annotated {
+
+    /// Associated value local name.
+    /// This is a name to be used to construct enum case value
+    public let localName: String?
+
+    /// Associated value external name.
+    /// This is a name to be used to access value in value-bindig
+    public let externalName: String?
+
+    /// Associated value type name
+    public let typeName: TypeName
+
+    // sourcery: skipEquality, skipDescription
+    /// Associated value type, if known
+    public var type: Type?
+
+    /// Associated value default value
+    public let defaultValue: String?
+
+    /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
+    public var annotations: Annotations = [:]
+
+    /// :nodoc:
+    public init(localName: String?, externalName: String?, typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:]) {
+        self.localName = localName
+        self.externalName = externalName
+        self.typeName = typeName
+        self.type = type
+        self.defaultValue = defaultValue
+        self.annotations = annotations
+    }
+
+    convenience init(name: String? = nil, typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:]) {
+        self.init(localName: name, externalName: name, typeName: typeName, type: type, defaultValue: defaultValue, annotations: annotations)
+    }
+
+// sourcery:inline:AssociatedValue.AutoCoding
+
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
+            self.localName = aDecoder.decode(forKey: "localName")
+            self.externalName = aDecoder.decode(forKey: "externalName")
+            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
+            self.type = aDecoder.decode(forKey: "type")
+            self.defaultValue = aDecoder.decode(forKey: "defaultValue")
+            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
+        }
+
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
+            aCoder.encode(self.localName, forKey: "localName")
+            aCoder.encode(self.externalName, forKey: "externalName")
+            aCoder.encode(self.typeName, forKey: "typeName")
+            aCoder.encode(self.type, forKey: "type")
+            aCoder.encode(self.defaultValue, forKey: "defaultValue")
+            aCoder.encode(self.annotations, forKey: "annotations")
+        }
+// sourcery:end
+
+// sourcery:inline:AssociatedValue.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? AssociatedValue else { return false }
+        if self.localName != rhs.localName { return false }
+        if self.externalName != rhs.externalName { return false }
+        if self.typeName != rhs.typeName { return false }
+        if self.defaultValue != rhs.defaultValue { return false }
+        if self.annotations != rhs.annotations { return false }
+        return true
+    }
+
+    // MARK: - AssociatedValue AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.localName)
+        hasher.combine(self.externalName)
+        hasher.combine(self.typeName)
+        hasher.combine(self.defaultValue)
+        hasher.combine(self.annotations)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:AssociatedValue.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "localName = \\(String(describing: self.localName)), "
+        string += "externalName = \\(String(describing: self.externalName)), "
+        string += "typeName = \\(String(describing: self.typeName)), "
+        string += "defaultValue = \\(String(describing: self.defaultValue)), "
+        string += "annotations = \\(String(describing: self.annotations))"
+        return string
+    }
+// sourcery:end
+
+// sourcery:inline:AssociatedValue.AutoDiffable
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? AssociatedValue else {
+            results.append("Incorrect type <expected: AssociatedValue, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "localName").trackDifference(actual: self.localName, expected: castObject.localName))
+        results.append(contentsOf: DiffableResult(identifier: "externalName").trackDifference(actual: self.externalName, expected: castObject.externalName))
+        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
+        results.append(contentsOf: DiffableResult(identifier: "defaultValue").trackDifference(actual: self.defaultValue, expected: castObject.defaultValue))
+        results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
+        return results
+    }
+// sourcery:end
+
 }
 
 """),
@@ -226,7 +432,7 @@ import Foundation
 import Foundation
 
 /// Describes Swift attribute
-@objcMembers public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
+public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
 
     /// Attribute name
     public let name: String
@@ -389,6 +595,40 @@ import Foundation
         }
 // sourcery:end
 
+// sourcery:inline:Attribute.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Attribute else { return false }
+        if self.name != rhs.name { return false }
+        if self.arguments != rhs.arguments { return false }
+        if self._description != rhs._description { return false }
+        return true
+    }
+
+    // MARK: - Attribute AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.arguments)
+        hasher.combine(self._description)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:Attribute.AutoDiffable
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Attribute else {
+            results.append("Incorrect type <expected: Attribute, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "arguments").trackDifference(actual: self.arguments, expected: castObject.arguments))
+        results.append(contentsOf: DiffableResult(identifier: "_description").trackDifference(actual: self._description, expected: castObject._description))
+        return results
+    }
+// sourcery:end
+
 }
 
 """),
@@ -414,7 +654,7 @@ import Foundation
 import Foundation
 
 /// :nodoc:
-@objcMembers public final class BytesRange: NSObject, SourceryModel {
+public final class BytesRange: NSObject, SourceryModel {
 
     public let offset: Int64
     public let length: Int64
@@ -442,6 +682,48 @@ import Foundation
             aCoder.encode(self.length, forKey: "length")
         }
 // sourcery:end
+
+// sourcery:inline:BytesRange.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? BytesRange else { return false }
+        if self.offset != rhs.offset { return false }
+        if self.length != rhs.length { return false }
+        return true
+    }
+
+    // MARK: - BytesRange AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.offset)
+        hasher.combine(self.length)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:BytesRange.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "offset = \\(String(describing: self.offset)), "
+        string += "length = \\(String(describing: self.length))"
+        return string
+    }
+// sourcery:end
+
+// sourcery:inline:BytesRange.AutoDiffable
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? BytesRange else {
+            results.append("Incorrect type <expected: BytesRange, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "offset").trackDifference(actual: self.offset, expected: castObject.offset))
+        results.append(contentsOf: DiffableResult(identifier: "length").trackDifference(actual: self.length, expected: castObject.length))
+        return results
+    }
+// sourcery:end
+
 }
 
 """),
@@ -449,9 +731,13 @@ import Foundation
 """
 import Foundation
 
+//public typealias Class = SwiftClass
 // sourcery: skipDescription
 /// Descibes Swift class
-@objc(SwiftClass) @objcMembers public final class Class: Type {
+
+@objc(SwiftClass) extension Class { }
+
+public final class Class: Type {
     /// Returns "class"
     public override var kind: String { return "class" }
 
@@ -505,6 +791,45 @@ import Foundation
             super.encode(with: aCoder)
         }
 // sourcery:end
+
+// sourcery:inline:Class.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Class else { return false }
+        return super.isEqual(rhs)
+    }
+
+    // MARK: - Class AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(super.hash)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:Class.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = super.description
+        string += ", "
+        string += "kind = \\(String(describing: self.kind)), "
+        string += "isFinal = \\(String(describing: self.isFinal))"
+        return string
+    }
+// sourcery:end
+
+// sourcery:inline:Class.AutoDiffable
+    override public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Class else {
+            results.append("Incorrect type <expected: Class, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: super.diffAgainst(castObject))
+        return results
+    }
+// sourcery:end
+
 }
 
 """),
@@ -513,7 +838,7 @@ import Foundation
 import Foundation
 
 /// Describes closure type
-@objcMembers public final class ClosureType: NSObject, SourceryModel {
+public final class ClosureType: NSObject, SourceryModel {
 
     /// Type name used in declaration with stripped whitespaces and new lines
     public let name: String
@@ -594,13 +919,207 @@ import Foundation
         }
 // sourcery:end
 
+// sourcery:inline:ClosureType.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? ClosureType else { return false }
+        if self.name != rhs.name { return false }
+        if self.parameters != rhs.parameters { return false }
+        if self.returnTypeName != rhs.returnTypeName { return false }
+        if self.`throws` != rhs.`throws` { return false }
+        if self.throwsOrRethrowsKeyword != rhs.throwsOrRethrowsKeyword { return false }
+        return true
+    }
+
+    // MARK: - ClosureType AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.parameters)
+        hasher.combine(self.returnTypeName)
+        hasher.combine(self.`throws`)
+        hasher.combine(self.throwsOrRethrowsKeyword)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:ClosureType.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "name = \\(String(describing: self.name)), "
+        string += "parameters = \\(String(describing: self.parameters)), "
+        string += "returnTypeName = \\(String(describing: self.returnTypeName)), "
+        string += "actualReturnTypeName = \\(String(describing: self.actualReturnTypeName)), "
+        string += "`throws` = \\(String(describing: self.`throws`)), "
+        string += "throwsOrRethrowsKeyword = \\(String(describing: self.throwsOrRethrowsKeyword)), "
+        string += "asSource = \\(String(describing: self.asSource))"
+        return string
+    }
+// sourcery:end
+
+// sourcery:inline:ClosureType.AutoDiffable
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? ClosureType else {
+            results.append("Incorrect type <expected: ClosureType, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "parameters").trackDifference(actual: self.parameters, expected: castObject.parameters))
+        results.append(contentsOf: DiffableResult(identifier: "returnTypeName").trackDifference(actual: self.returnTypeName, expected: castObject.returnTypeName))
+        results.append(contentsOf: DiffableResult(identifier: "`throws`").trackDifference(actual: self.`throws`, expected: castObject.`throws`))
+        results.append(contentsOf: DiffableResult(identifier: "throwsOrRethrowsKeyword").trackDifference(actual: self.throwsOrRethrowsKeyword, expected: castObject.throwsOrRethrowsKeyword))
+        return results
+    }
+// sourcery:end
+
+}
+
+"""),
+    .init(name: "ClosureParameter.swift", content:
+"""
+import Foundation
+
+// sourcery: skipDiffing
+public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated {
+    /// Parameter external name
+    public var argumentLabel: String?
+
+    /// Parameter internal name
+    public let name: String?
+
+    /// Parameter type name
+    public let typeName: TypeName
+
+    /// Parameter flag whether it's inout or not
+    public let `inout`: Bool
+
+    // sourcery: skipEquality, skipDescription
+    /// Parameter type, if known
+    public var type: Type?
+
+    /// Parameter type attributes, i.e. `@escaping`
+    public var typeAttributes: AttributeList {
+        return typeName.attributes
+    }
+
+    /// Method parameter default value expression
+    public var defaultValue: String?
+
+    /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
+    public var annotations: Annotations = [:]
+
+    /// :nodoc:
+    public init(argumentLabel: String? = nil, name: String? = nil, typeName: TypeName, type: Type? = nil,
+                defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false) {
+        self.typeName = typeName
+        self.argumentLabel = argumentLabel
+        self.name = name
+        self.type = type
+        self.defaultValue = defaultValue
+        self.annotations = annotations
+        self.`inout` = isInout
+    }
+
+    public var asSource: String {
+        let typeInfo = "\\(`inout` ? "inout " : "")\\(typeName.asSource)"
+        if argumentLabel?.nilIfNotValidParameterName == nil, name?.nilIfNotValidParameterName == nil {
+            return typeInfo
+        }
+
+        let typeSuffix = ": \\(typeInfo)"
+        guard argumentLabel != name else {
+            return name ?? "" + typeSuffix
+        }
+
+        let labels = [argumentLabel ?? "_", name?.nilIfEmpty]
+          .compactMap { $0 }
+          .joined(separator: " ")
+
+        return (labels.nilIfEmpty ?? "_") + typeSuffix
+    }
+
+    // sourcery:inline:ClosureParameter.AutoCoding
+
+            /// :nodoc:
+            required public init?(coder aDecoder: NSCoder) {
+                self.argumentLabel = aDecoder.decode(forKey: "argumentLabel")
+                self.name = aDecoder.decode(forKey: "name")
+                guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
+                self.`inout` = aDecoder.decode(forKey: "`inout`")
+                self.type = aDecoder.decode(forKey: "type")
+                self.defaultValue = aDecoder.decode(forKey: "defaultValue")
+                guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
+            }
+
+            /// :nodoc:
+            public func encode(with aCoder: NSCoder) {
+                aCoder.encode(self.argumentLabel, forKey: "argumentLabel")
+                aCoder.encode(self.name, forKey: "name")
+                aCoder.encode(self.typeName, forKey: "typeName")
+                aCoder.encode(self.`inout`, forKey: "`inout`")
+                aCoder.encode(self.type, forKey: "type")
+                aCoder.encode(self.defaultValue, forKey: "defaultValue")
+                aCoder.encode(self.annotations, forKey: "annotations")
+            }
+    // sourcery:end
+
+// sourcery:inline:ClosureParameter.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? ClosureParameter else { return false }
+        if self.argumentLabel != rhs.argumentLabel { return false }
+        if self.name != rhs.name { return false }
+        if self.typeName != rhs.typeName { return false }
+        if self.`inout` != rhs.`inout` { return false }
+        if self.defaultValue != rhs.defaultValue { return false }
+        if self.annotations != rhs.annotations { return false }
+        return true
+    }
+
+    // MARK: - ClosureParameter AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.argumentLabel)
+        hasher.combine(self.name)
+        hasher.combine(self.typeName)
+        hasher.combine(self.`inout`)
+        hasher.combine(self.defaultValue)
+        hasher.combine(self.annotations)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:ClosureParameter.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "argumentLabel = \\(String(describing: self.argumentLabel)), "
+        string += "name = \\(String(describing: self.name)), "
+        string += "typeName = \\(String(describing: self.typeName)), "
+        string += "`inout` = \\(String(describing: self.`inout`)), "
+        string += "typeAttributes = \\(String(describing: self.typeAttributes)), "
+        string += "defaultValue = \\(String(describing: self.defaultValue)), "
+        string += "annotations = \\(String(describing: self.annotations)), "
+        string += "asSource = \\(String(describing: self.asSource))"
+        return string
+    }
+// sourcery:end
+}
+
+extension Array where Element == ClosureParameter {
+    public var asSource: String {
+        "(\\(map { $0.asSource }.joined(separator: ", ")))"
+    }
 }
 
 """),
     .init(name: "Coding.generated.swift", content:
 """
-// Generated using Sourcery 1.3.4 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.17.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
+
 // swiftlint:disable vertical_whitespace trailing_newline
 
 import Foundation
@@ -1442,361 +1961,36 @@ public protocol Definition: AnyObject {
 """),
     .init(name: "Description.generated.swift", content:
 """
-// Generated using Sourcery 1.3.4 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.17.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
+
 // swiftlint:disable vertical_whitespace
 
 
-extension ArrayType {
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "name = \\(String(describing: self.name)), "
-        string += "elementTypeName = \\(String(describing: self.elementTypeName)), "
-        string += "asGeneric = \\(String(describing: self.asGeneric)), "
-        string += "asSource = \\(String(describing: self.asSource))"
-        return string
-    }
-}
-extension AssociatedType {
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "name = \\(String(describing: self.name)), "
-        string += "typeName = \\(String(describing: self.typeName))"
-        return string
-    }
-}
-extension AssociatedValue {
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "localName = \\(String(describing: self.localName)), "
-        string += "externalName = \\(String(describing: self.externalName)), "
-        string += "typeName = \\(String(describing: self.typeName)), "
-        string += "defaultValue = \\(String(describing: self.defaultValue)), "
-        string += "annotations = \\(String(describing: self.annotations))"
-        return string
-    }
-}
-extension BytesRange {
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "offset = \\(String(describing: self.offset)), "
-        string += "length = \\(String(describing: self.length))"
-        return string
-    }
-}
-extension Class {
-    /// :nodoc:
-    override public var description: String {
-        var string = super.description
-        string += ", "
-        string += "kind = \\(String(describing: self.kind)), "
-        string += "isFinal = \\(String(describing: self.isFinal))"
-        return string
-    }
-}
-extension ClosureParameter {
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "argumentLabel = \\(String(describing: self.argumentLabel)), "
-        string += "name = \\(String(describing: self.name)), "
-        string += "typeName = \\(String(describing: self.typeName)), "
-        string += "`inout` = \\(String(describing: self.`inout`)), "
-        string += "typeAttributes = \\(String(describing: self.typeAttributes)), "
-        string += "defaultValue = \\(String(describing: self.defaultValue)), "
-        string += "annotations = \\(String(describing: self.annotations)), "
-        string += "asSource = \\(String(describing: self.asSource))"
-        return string
-    }
-}
-extension ClosureType {
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "name = \\(String(describing: self.name)), "
-        string += "parameters = \\(String(describing: self.parameters)), "
-        string += "returnTypeName = \\(String(describing: self.returnTypeName)), "
-        string += "actualReturnTypeName = \\(String(describing: self.actualReturnTypeName)), "
-        string += "`throws` = \\(String(describing: self.`throws`)), "
-        string += "throwsOrRethrowsKeyword = \\(String(describing: self.throwsOrRethrowsKeyword)), "
-        string += "asSource = \\(String(describing: self.asSource))"
-        return string
-    }
-}
-extension DictionaryType {
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "name = \\(String(describing: self.name)), "
-        string += "valueTypeName = \\(String(describing: self.valueTypeName)), "
-        string += "keyTypeName = \\(String(describing: self.keyTypeName)), "
-        string += "asGeneric = \\(String(describing: self.asGeneric)), "
-        string += "asSource = \\(String(describing: self.asSource))"
-        return string
-    }
-}
-extension Enum {
-    /// :nodoc:
-    override public var description: String {
-        var string = super.description
-        string += ", "
-        string += "cases = \\(String(describing: self.cases)), "
-        string += "rawTypeName = \\(String(describing: self.rawTypeName)), "
-        string += "hasAssociatedValues = \\(String(describing: self.hasAssociatedValues))"
-        return string
-    }
-}
-extension EnumCase {
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "name = \\(String(describing: self.name)), "
-        string += "rawValue = \\(String(describing: self.rawValue)), "
-        string += "associatedValues = \\(String(describing: self.associatedValues)), "
-        string += "annotations = \\(String(describing: self.annotations)), "
-        string += "indirect = \\(String(describing: self.indirect)), "
-        string += "hasAssociatedValue = \\(String(describing: self.hasAssociatedValue))"
-        return string
-    }
-}
-extension FileParserResult {
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "path = \\(String(describing: self.path)), "
-        string += "module = \\(String(describing: self.module)), "
-        string += "types = \\(String(describing: self.types)), "
-        string += "functions = \\(String(describing: self.functions)), "
-        string += "typealiases = \\(String(describing: self.typealiases)), "
-        string += "inlineRanges = \\(String(describing: self.inlineRanges)), "
-        string += "inlineIndentations = \\(String(describing: self.inlineIndentations)), "
-        string += "modifiedDate = \\(String(describing: self.modifiedDate)), "
-        string += "sourceryVersion = \\(String(describing: self.sourceryVersion)), "
-        string += "isEmpty = \\(String(describing: self.isEmpty))"
-        return string
-    }
-}
-extension GenericRequirement {
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "leftType = \\(String(describing: self.leftType)), "
-        string += "rightType = \\(String(describing: self.rightType)), "
-        string += "relationship = \\(String(describing: self.relationship)), "
-        string += "relationshipSyntax = \\(String(describing: self.relationshipSyntax))"
-        return string
-    }
-}
-extension GenericTypeParameter {
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "typeName = \\(String(describing: self.typeName))"
-        return string
-    }
-}
-extension Method {
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "name = \\(String(describing: self.name)), "
-        string += "selectorName = \\(String(describing: self.selectorName)), "
-        string += "parameters = \\(String(describing: self.parameters)), "
-        string += "returnTypeName = \\(String(describing: self.returnTypeName)), "
-        string += "`throws` = \\(String(describing: self.`throws`)), "
-        string += "`rethrows` = \\(String(describing: self.`rethrows`)), "
-        string += "accessLevel = \\(String(describing: self.accessLevel)), "
-        string += "isStatic = \\(String(describing: self.isStatic)), "
-        string += "isClass = \\(String(describing: self.isClass)), "
-        string += "isFailableInitializer = \\(String(describing: self.isFailableInitializer)), "
-        string += "annotations = \\(String(describing: self.annotations)), "
-        string += "definedInTypeName = \\(String(describing: self.definedInTypeName)), "
-        string += "attributes = \\(String(describing: self.attributes)), "
-        string += "modifiers = \\(String(describing: self.modifiers))"
-        return string
-    }
-}
-extension MethodParameter {
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "argumentLabel = \\(String(describing: self.argumentLabel)), "
-        string += "name = \\(String(describing: self.name)), "
-        string += "typeName = \\(String(describing: self.typeName)), "
-        string += "`inout` = \\(String(describing: self.`inout`)), "
-        string += "typeAttributes = \\(String(describing: self.typeAttributes)), "
-        string += "defaultValue = \\(String(describing: self.defaultValue)), "
-        string += "annotations = \\(String(describing: self.annotations)), "
-        string += "asSource = \\(String(describing: self.asSource))"
-        return string
-    }
-}
-extension Protocol {
-    /// :nodoc:
-    override public var description: String {
-        var string = super.description
-        string += ", "
-        string += "kind = \\(String(describing: self.kind)), "
-        string += "associatedTypes = \\(String(describing: self.associatedTypes)), "
-        string += "genericRequirements = \\(String(describing: self.genericRequirements))"
-        return string
-    }
-}
-extension ProtocolComposition {
-    /// :nodoc:
-    override public var description: String {
-        var string = super.description
-        string += ", "
-        string += "kind = \\(String(describing: self.kind)), "
-        string += "composedTypeNames = \\(String(describing: self.composedTypeNames))"
-        return string
-    }
-}
-extension Struct {
-    /// :nodoc:
-    override public var description: String {
-        var string = super.description
-        string += ", "
-        string += "kind = \\(String(describing: self.kind))"
-        return string
-    }
-}
-extension Subscript {
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "parameters = \\(String(describing: self.parameters)), "
-        string += "returnTypeName = \\(String(describing: self.returnTypeName)), "
-        string += "actualReturnTypeName = \\(String(describing: self.actualReturnTypeName)), "
-        string += "isFinal = \\(String(describing: self.isFinal)), "
-        string += "readAccess = \\(String(describing: self.readAccess)), "
-        string += "writeAccess = \\(String(describing: self.writeAccess)), "
-        string += "isMutable = \\(String(describing: self.isMutable)), "
-        string += "annotations = \\(String(describing: self.annotations)), "
-        string += "definedInTypeName = \\(String(describing: self.definedInTypeName)), "
-        string += "actualDefinedInTypeName = \\(String(describing: self.actualDefinedInTypeName)), "
-        string += "attributes = \\(String(describing: self.attributes)), "
-        string += "modifiers = \\(String(describing: self.modifiers))"
-        return string
-    }
-}
-extension TemplateContext {
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "parserResult = \\(String(describing: self.parserResult)), "
-        string += "functions = \\(String(describing: self.functions)), "
-        string += "types = \\(String(describing: self.types)), "
-        string += "argument = \\(String(describing: self.argument)), "
-        string += "stencilContext = \\(String(describing: self.stencilContext))"
-        return string
-    }
-}
-extension TupleElement {
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "name = \\(String(describing: self.name)), "
-        string += "typeName = \\(String(describing: self.typeName)), "
-        string += "asSource = \\(String(describing: self.asSource))"
-        return string
-    }
-}
-extension TupleType {
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "name = \\(String(describing: self.name)), "
-        string += "elements = \\(String(describing: self.elements))"
-        return string
-    }
-}
-extension Type {
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "module = \\(String(describing: self.module)), "
-        string += "imports = \\(String(describing: self.imports)), "
-        string += "allImports = \\(String(describing: self.allImports)), "
-        string += "typealiases = \\(String(describing: self.typealiases)), "
-        string += "isExtension = \\(String(describing: self.isExtension)), "
-        string += "kind = \\(String(describing: self.kind)), "
-        string += "accessLevel = \\(String(describing: self.accessLevel)), "
-        string += "name = \\(String(describing: self.name)), "
-        string += "isUnknownExtension = \\(String(describing: self.isUnknownExtension)), "
-        string += "isGeneric = \\(String(describing: self.isGeneric)), "
-        string += "localName = \\(String(describing: self.localName)), "
-        string += "rawVariables = \\(String(describing: self.rawVariables)), "
-        string += "rawMethods = \\(String(describing: self.rawMethods)), "
-        string += "rawSubscripts = \\(String(describing: self.rawSubscripts)), "
-        string += "initializers = \\(String(describing: self.initializers)), "
-        string += "annotations = \\(String(describing: self.annotations)), "
-        string += "staticVariables = \\(String(describing: self.staticVariables)), "
-        string += "staticMethods = \\(String(describing: self.staticMethods)), "
-        string += "classMethods = \\(String(describing: self.classMethods)), "
-        string += "instanceVariables = \\(String(describing: self.instanceVariables)), "
-        string += "instanceMethods = \\(String(describing: self.instanceMethods)), "
-        string += "computedVariables = \\(String(describing: self.computedVariables)), "
-        string += "storedVariables = \\(String(describing: self.storedVariables)), "
-        string += "inheritedTypes = \\(String(describing: self.inheritedTypes)), "
-        string += "inherits = \\(String(describing: self.inherits)), "
-        string += "containedTypes = \\(String(describing: self.containedTypes)), "
-        string += "parentName = \\(String(describing: self.parentName)), "
-        string += "parentTypes = \\(String(describing: self.parentTypes)), "
-        string += "attributes = \\(String(describing: self.attributes)), "
-        string += "modifiers = \\(String(describing: self.modifiers))"
-        return string
-    }
-}
-extension Typealias {
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "aliasName = \\(String(describing: self.aliasName)), "
-        string += "typeName = \\(String(describing: self.typeName)), "
-        string += "module = \\(String(describing: self.module)), "
-        string += "accessLevel = \\(String(describing: self.accessLevel)), "
-        string += "parentName = \\(String(describing: self.parentName)), "
-        string += "name = \\(String(describing: self.name))"
-        return string
-    }
-}
-extension Types {
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "types = \\(String(describing: self.types)), "
-        string += "typealiases = \\(String(describing: self.typealiases))"
-        return string
-    }
-}
-extension Variable {
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "name = \\(String(describing: self.name)), "
-        string += "typeName = \\(String(describing: self.typeName)), "
-        string += "isComputed = \\(String(describing: self.isComputed)), "
-        string += "isStatic = \\(String(describing: self.isStatic)), "
-        string += "readAccess = \\(String(describing: self.readAccess)), "
-        string += "writeAccess = \\(String(describing: self.writeAccess)), "
-        string += "accessLevel = \\(String(describing: self.accessLevel)), "
-        string += "isMutable = \\(String(describing: self.isMutable)), "
-        string += "defaultValue = \\(String(describing: self.defaultValue)), "
-        string += "annotations = \\(String(describing: self.annotations)), "
-        string += "attributes = \\(String(describing: self.attributes)), "
-        string += "modifiers = \\(String(describing: self.modifiers)), "
-        string += "isFinal = \\(String(describing: self.isFinal)), "
-        string += "isLazy = \\(String(describing: self.isLazy)), "
-        string += "definedInTypeName = \\(String(describing: self.definedInTypeName)), "
-        string += "actualDefinedInTypeName = \\(String(describing: self.actualDefinedInTypeName))"
-        return string
-    }
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 """),
     .init(name: "Dictionary.swift", content:
@@ -1804,7 +1998,7 @@ extension Variable {
 import Foundation
 
 /// Describes dictionary type
-@objcMembers public final class DictionaryType: NSObject, SourceryModel {
+public final class DictionaryType: NSObject, SourceryModel {
     /// Type name used in declaration
     public var name: String
 
@@ -1863,107 +2057,42 @@ import Foundation
             aCoder.encode(self.keyType, forKey: "keyType")
         }
 // sourcery:end
-}
 
-"""),
-    .init(name: "Diffable.generated.swift", content:
-"""
-// Generated using Sourcery 1.3.4 — https://github.com/krzysztofzablocki/Sourcery
-// DO NOT EDIT
-import Foundation
+// sourcery:inline:DictionaryType.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? DictionaryType else { return false }
+        if self.name != rhs.name { return false }
+        if self.valueTypeName != rhs.valueTypeName { return false }
+        if self.keyTypeName != rhs.keyTypeName { return false }
+        return true
+    }
 
-extension ArrayType: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? ArrayType else {
-            results.append("Incorrect type <expected: ArrayType, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
-        results.append(contentsOf: DiffableResult(identifier: "elementTypeName").trackDifference(actual: self.elementTypeName, expected: castObject.elementTypeName))
-        return results
+    // MARK: - DictionaryType AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.valueTypeName)
+        hasher.combine(self.keyTypeName)
+        return hasher.finalize()
     }
-}
-extension AssociatedType: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? AssociatedType else {
-            results.append("Incorrect type <expected: AssociatedType, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
-        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
-        return results
+// sourcery:end
+
+// sourcery:inline:DictionaryType.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "name = \\(String(describing: self.name)), "
+        string += "valueTypeName = \\(String(describing: self.valueTypeName)), "
+        string += "keyTypeName = \\(String(describing: self.keyTypeName)), "
+        string += "asGeneric = \\(String(describing: self.asGeneric)), "
+        string += "asSource = \\(String(describing: self.asSource))"
+        return string
     }
-}
-extension AssociatedValue: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? AssociatedValue else {
-            results.append("Incorrect type <expected: AssociatedValue, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "localName").trackDifference(actual: self.localName, expected: castObject.localName))
-        results.append(contentsOf: DiffableResult(identifier: "externalName").trackDifference(actual: self.externalName, expected: castObject.externalName))
-        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
-        results.append(contentsOf: DiffableResult(identifier: "defaultValue").trackDifference(actual: self.defaultValue, expected: castObject.defaultValue))
-        results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
-        return results
-    }
-}
-extension Attribute: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? Attribute else {
-            results.append("Incorrect type <expected: Attribute, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
-        results.append(contentsOf: DiffableResult(identifier: "arguments").trackDifference(actual: self.arguments, expected: castObject.arguments))
-        results.append(contentsOf: DiffableResult(identifier: "_description").trackDifference(actual: self._description, expected: castObject._description))
-        return results
-    }
-}
-extension BytesRange: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? BytesRange else {
-            results.append("Incorrect type <expected: BytesRange, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "offset").trackDifference(actual: self.offset, expected: castObject.offset))
-        results.append(contentsOf: DiffableResult(identifier: "length").trackDifference(actual: self.length, expected: castObject.length))
-        return results
-    }
-}
-extension Class {
-    override public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? Class else {
-            results.append("Incorrect type <expected: Class, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: super.diffAgainst(castObject))
-        return results
-    }
-}
-extension ClosureType: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? ClosureType else {
-            results.append("Incorrect type <expected: ClosureType, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
-        results.append(contentsOf: DiffableResult(identifier: "parameters").trackDifference(actual: self.parameters, expected: castObject.parameters))
-        results.append(contentsOf: DiffableResult(identifier: "returnTypeName").trackDifference(actual: self.returnTypeName, expected: castObject.returnTypeName))
-        results.append(contentsOf: DiffableResult(identifier: "`throws`").trackDifference(actual: self.`throws`, expected: castObject.`throws`))
-        results.append(contentsOf: DiffableResult(identifier: "throwsOrRethrowsKeyword").trackDifference(actual: self.throwsOrRethrowsKeyword, expected: castObject.throwsOrRethrowsKeyword))
-        return results
-    }
-}
-extension DictionaryType: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+// sourcery:end
+
+// sourcery:inline:DictionaryType.AutoDiffable
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? DictionaryType else {
             results.append("Incorrect type <expected: DictionaryType, received: \\(Swift.type(of: object))>")
@@ -1974,342 +2103,73 @@ extension DictionaryType: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "keyTypeName").trackDifference(actual: self.keyTypeName, expected: castObject.keyTypeName))
         return results
     }
+// sourcery:end
+
 }
-extension Enum {
-    override public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? Enum else {
-            results.append("Incorrect type <expected: Enum, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "cases").trackDifference(actual: self.cases, expected: castObject.cases))
-        results.append(contentsOf: DiffableResult(identifier: "rawTypeName").trackDifference(actual: self.rawTypeName, expected: castObject.rawTypeName))
-        results.append(contentsOf: super.diffAgainst(castObject))
-        return results
-    }
-}
-extension EnumCase: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? EnumCase else {
-            results.append("Incorrect type <expected: EnumCase, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
-        results.append(contentsOf: DiffableResult(identifier: "rawValue").trackDifference(actual: self.rawValue, expected: castObject.rawValue))
-        results.append(contentsOf: DiffableResult(identifier: "associatedValues").trackDifference(actual: self.associatedValues, expected: castObject.associatedValues))
-        results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
-        results.append(contentsOf: DiffableResult(identifier: "indirect").trackDifference(actual: self.indirect, expected: castObject.indirect))
-        return results
-    }
-}
-extension FileParserResult: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? FileParserResult else {
-            results.append("Incorrect type <expected: FileParserResult, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "path").trackDifference(actual: self.path, expected: castObject.path))
-        results.append(contentsOf: DiffableResult(identifier: "module").trackDifference(actual: self.module, expected: castObject.module))
-        results.append(contentsOf: DiffableResult(identifier: "types").trackDifference(actual: self.types, expected: castObject.types))
-        results.append(contentsOf: DiffableResult(identifier: "functions").trackDifference(actual: self.functions, expected: castObject.functions))
-        results.append(contentsOf: DiffableResult(identifier: "typealiases").trackDifference(actual: self.typealiases, expected: castObject.typealiases))
-        results.append(contentsOf: DiffableResult(identifier: "inlineRanges").trackDifference(actual: self.inlineRanges, expected: castObject.inlineRanges))
-        results.append(contentsOf: DiffableResult(identifier: "inlineIndentations").trackDifference(actual: self.inlineIndentations, expected: castObject.inlineIndentations))
-        results.append(contentsOf: DiffableResult(identifier: "modifiedDate").trackDifference(actual: self.modifiedDate, expected: castObject.modifiedDate))
-        results.append(contentsOf: DiffableResult(identifier: "sourceryVersion").trackDifference(actual: self.sourceryVersion, expected: castObject.sourceryVersion))
-        return results
-    }
-}
-extension GenericRequirement: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? GenericRequirement else {
-            results.append("Incorrect type <expected: GenericRequirement, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "leftType").trackDifference(actual: self.leftType, expected: castObject.leftType))
-        results.append(contentsOf: DiffableResult(identifier: "rightType").trackDifference(actual: self.rightType, expected: castObject.rightType))
-        results.append(contentsOf: DiffableResult(identifier: "relationship").trackDifference(actual: self.relationship, expected: castObject.relationship))
-        results.append(contentsOf: DiffableResult(identifier: "relationshipSyntax").trackDifference(actual: self.relationshipSyntax, expected: castObject.relationshipSyntax))
-        return results
-    }
-}
-extension GenericType: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? GenericType else {
-            results.append("Incorrect type <expected: GenericType, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
-        results.append(contentsOf: DiffableResult(identifier: "typeParameters").trackDifference(actual: self.typeParameters, expected: castObject.typeParameters))
-        return results
-    }
-}
-extension GenericTypeParameter: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? GenericTypeParameter else {
-            results.append("Incorrect type <expected: GenericTypeParameter, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
-        return results
-    }
-}
-extension Import: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? Import else {
-            results.append("Incorrect type <expected: Import, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "kind").trackDifference(actual: self.kind, expected: castObject.kind))
-        results.append(contentsOf: DiffableResult(identifier: "path").trackDifference(actual: self.path, expected: castObject.path))
-        return results
-    }
-}
-extension Method: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? Method else {
-            results.append("Incorrect type <expected: Method, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
-        results.append(contentsOf: DiffableResult(identifier: "selectorName").trackDifference(actual: self.selectorName, expected: castObject.selectorName))
-        results.append(contentsOf: DiffableResult(identifier: "parameters").trackDifference(actual: self.parameters, expected: castObject.parameters))
-        results.append(contentsOf: DiffableResult(identifier: "returnTypeName").trackDifference(actual: self.returnTypeName, expected: castObject.returnTypeName))
-        results.append(contentsOf: DiffableResult(identifier: "`throws`").trackDifference(actual: self.`throws`, expected: castObject.`throws`))
-        results.append(contentsOf: DiffableResult(identifier: "`rethrows`").trackDifference(actual: self.`rethrows`, expected: castObject.`rethrows`))
-        results.append(contentsOf: DiffableResult(identifier: "accessLevel").trackDifference(actual: self.accessLevel, expected: castObject.accessLevel))
-        results.append(contentsOf: DiffableResult(identifier: "isStatic").trackDifference(actual: self.isStatic, expected: castObject.isStatic))
-        results.append(contentsOf: DiffableResult(identifier: "isClass").trackDifference(actual: self.isClass, expected: castObject.isClass))
-        results.append(contentsOf: DiffableResult(identifier: "isFailableInitializer").trackDifference(actual: self.isFailableInitializer, expected: castObject.isFailableInitializer))
-        results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
-        results.append(contentsOf: DiffableResult(identifier: "definedInTypeName").trackDifference(actual: self.definedInTypeName, expected: castObject.definedInTypeName))
-        results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
-        results.append(contentsOf: DiffableResult(identifier: "modifiers").trackDifference(actual: self.modifiers, expected: castObject.modifiers))
-        return results
-    }
-}
-extension MethodParameter: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? MethodParameter else {
-            results.append("Incorrect type <expected: MethodParameter, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "argumentLabel").trackDifference(actual: self.argumentLabel, expected: castObject.argumentLabel))
-        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
-        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
-        results.append(contentsOf: DiffableResult(identifier: "`inout`").trackDifference(actual: self.`inout`, expected: castObject.`inout`))
-        results.append(contentsOf: DiffableResult(identifier: "defaultValue").trackDifference(actual: self.defaultValue, expected: castObject.defaultValue))
-        results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
-        return results
-    }
-}
-extension Modifier: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? Modifier else {
-            results.append("Incorrect type <expected: Modifier, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
-        results.append(contentsOf: DiffableResult(identifier: "detail").trackDifference(actual: self.detail, expected: castObject.detail))
-        return results
-    }
-}
-extension Protocol {
-    override public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? Protocol else {
-            results.append("Incorrect type <expected: Protocol, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "associatedTypes").trackDifference(actual: self.associatedTypes, expected: castObject.associatedTypes))
-        results.append(contentsOf: DiffableResult(identifier: "genericRequirements").trackDifference(actual: self.genericRequirements, expected: castObject.genericRequirements))
-        results.append(contentsOf: super.diffAgainst(castObject))
-        return results
-    }
-}
-extension ProtocolComposition {
-    override public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? ProtocolComposition else {
-            results.append("Incorrect type <expected: ProtocolComposition, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "composedTypeNames").trackDifference(actual: self.composedTypeNames, expected: castObject.composedTypeNames))
-        results.append(contentsOf: super.diffAgainst(castObject))
-        return results
-    }
-}
-extension Struct {
-    override public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? Struct else {
-            results.append("Incorrect type <expected: Struct, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: super.diffAgainst(castObject))
-        return results
-    }
-}
-extension Subscript: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? Subscript else {
-            results.append("Incorrect type <expected: Subscript, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "parameters").trackDifference(actual: self.parameters, expected: castObject.parameters))
-        results.append(contentsOf: DiffableResult(identifier: "returnTypeName").trackDifference(actual: self.returnTypeName, expected: castObject.returnTypeName))
-        results.append(contentsOf: DiffableResult(identifier: "readAccess").trackDifference(actual: self.readAccess, expected: castObject.readAccess))
-        results.append(contentsOf: DiffableResult(identifier: "writeAccess").trackDifference(actual: self.writeAccess, expected: castObject.writeAccess))
-        results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
-        results.append(contentsOf: DiffableResult(identifier: "definedInTypeName").trackDifference(actual: self.definedInTypeName, expected: castObject.definedInTypeName))
-        results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
-        results.append(contentsOf: DiffableResult(identifier: "modifiers").trackDifference(actual: self.modifiers, expected: castObject.modifiers))
-        return results
-    }
-}
-extension TemplateContext: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? TemplateContext else {
-            results.append("Incorrect type <expected: TemplateContext, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "parserResult").trackDifference(actual: self.parserResult, expected: castObject.parserResult))
-        results.append(contentsOf: DiffableResult(identifier: "functions").trackDifference(actual: self.functions, expected: castObject.functions))
-        results.append(contentsOf: DiffableResult(identifier: "types").trackDifference(actual: self.types, expected: castObject.types))
-        results.append(contentsOf: DiffableResult(identifier: "argument").trackDifference(actual: self.argument, expected: castObject.argument))
-        return results
-    }
-}
-extension TupleElement: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? TupleElement else {
-            results.append("Incorrect type <expected: TupleElement, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
-        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
-        return results
-    }
-}
-extension TupleType: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? TupleType else {
-            results.append("Incorrect type <expected: TupleType, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
-        results.append(contentsOf: DiffableResult(identifier: "elements").trackDifference(actual: self.elements, expected: castObject.elements))
-        return results
-    }
-}
-extension Type: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? Type else {
-            results.append("Incorrect type <expected: Type, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "module").trackDifference(actual: self.module, expected: castObject.module))
-        results.append(contentsOf: DiffableResult(identifier: "imports").trackDifference(actual: self.imports, expected: castObject.imports))
-        results.append(contentsOf: DiffableResult(identifier: "typealiases").trackDifference(actual: self.typealiases, expected: castObject.typealiases))
-        results.append(contentsOf: DiffableResult(identifier: "isExtension").trackDifference(actual: self.isExtension, expected: castObject.isExtension))
-        results.append(contentsOf: DiffableResult(identifier: "accessLevel").trackDifference(actual: self.accessLevel, expected: castObject.accessLevel))
-        results.append(contentsOf: DiffableResult(identifier: "isUnknownExtension").trackDifference(actual: self.isUnknownExtension, expected: castObject.isUnknownExtension))
-        results.append(contentsOf: DiffableResult(identifier: "isGeneric").trackDifference(actual: self.isGeneric, expected: castObject.isGeneric))
-        results.append(contentsOf: DiffableResult(identifier: "localName").trackDifference(actual: self.localName, expected: castObject.localName))
-        results.append(contentsOf: DiffableResult(identifier: "rawVariables").trackDifference(actual: self.rawVariables, expected: castObject.rawVariables))
-        results.append(contentsOf: DiffableResult(identifier: "rawMethods").trackDifference(actual: self.rawMethods, expected: castObject.rawMethods))
-        results.append(contentsOf: DiffableResult(identifier: "rawSubscripts").trackDifference(actual: self.rawSubscripts, expected: castObject.rawSubscripts))
-        results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
-        results.append(contentsOf: DiffableResult(identifier: "inheritedTypes").trackDifference(actual: self.inheritedTypes, expected: castObject.inheritedTypes))
-        results.append(contentsOf: DiffableResult(identifier: "inherits").trackDifference(actual: self.inherits, expected: castObject.inherits))
-        results.append(contentsOf: DiffableResult(identifier: "containedTypes").trackDifference(actual: self.containedTypes, expected: castObject.containedTypes))
-        results.append(contentsOf: DiffableResult(identifier: "parentName").trackDifference(actual: self.parentName, expected: castObject.parentName))
-        results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
-        results.append(contentsOf: DiffableResult(identifier: "modifiers").trackDifference(actual: self.modifiers, expected: castObject.modifiers))
-        return results
-    }
-}
-extension TypeName: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? TypeName else {
-            results.append("Incorrect type <expected: TypeName, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
-        results.append(contentsOf: DiffableResult(identifier: "generic").trackDifference(actual: self.generic, expected: castObject.generic))
-        results.append(contentsOf: DiffableResult(identifier: "isProtocolComposition").trackDifference(actual: self.isProtocolComposition, expected: castObject.isProtocolComposition))
-        results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
-        results.append(contentsOf: DiffableResult(identifier: "modifiers").trackDifference(actual: self.modifiers, expected: castObject.modifiers))
-        results.append(contentsOf: DiffableResult(identifier: "tuple").trackDifference(actual: self.tuple, expected: castObject.tuple))
-        results.append(contentsOf: DiffableResult(identifier: "array").trackDifference(actual: self.array, expected: castObject.array))
-        results.append(contentsOf: DiffableResult(identifier: "dictionary").trackDifference(actual: self.dictionary, expected: castObject.dictionary))
-        results.append(contentsOf: DiffableResult(identifier: "closure").trackDifference(actual: self.closure, expected: castObject.closure))
-        return results
-    }
-}
-extension Typealias: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? Typealias else {
-            results.append("Incorrect type <expected: Typealias, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "aliasName").trackDifference(actual: self.aliasName, expected: castObject.aliasName))
-        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
-        results.append(contentsOf: DiffableResult(identifier: "module").trackDifference(actual: self.module, expected: castObject.module))
-        results.append(contentsOf: DiffableResult(identifier: "accessLevel").trackDifference(actual: self.accessLevel, expected: castObject.accessLevel))
-        results.append(contentsOf: DiffableResult(identifier: "parentName").trackDifference(actual: self.parentName, expected: castObject.parentName))
-        return results
-    }
-}
-extension Types: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? Types else {
-            results.append("Incorrect type <expected: Types, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "types").trackDifference(actual: self.types, expected: castObject.types))
-        results.append(contentsOf: DiffableResult(identifier: "typealiases").trackDifference(actual: self.typealiases, expected: castObject.typealiases))
-        return results
-    }
-}
-extension Variable: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? Variable else {
-            results.append("Incorrect type <expected: Variable, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
-        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
-        results.append(contentsOf: DiffableResult(identifier: "isComputed").trackDifference(actual: self.isComputed, expected: castObject.isComputed))
-        results.append(contentsOf: DiffableResult(identifier: "isStatic").trackDifference(actual: self.isStatic, expected: castObject.isStatic))
-        results.append(contentsOf: DiffableResult(identifier: "readAccess").trackDifference(actual: self.readAccess, expected: castObject.readAccess))
-        results.append(contentsOf: DiffableResult(identifier: "writeAccess").trackDifference(actual: self.writeAccess, expected: castObject.writeAccess))
-        results.append(contentsOf: DiffableResult(identifier: "defaultValue").trackDifference(actual: self.defaultValue, expected: castObject.defaultValue))
-        results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
-        results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
-        results.append(contentsOf: DiffableResult(identifier: "modifiers").trackDifference(actual: self.modifiers, expected: castObject.modifiers))
-        results.append(contentsOf: DiffableResult(identifier: "definedInTypeName").trackDifference(actual: self.definedInTypeName, expected: castObject.definedInTypeName))
-        return results
-    }
-}
+
+"""),
+    .init(name: "Diffable.generated.swift", content:
+"""
+// Generated using Sourcery 0.17.0 — https://github.com/krzysztofzablocki/Sourcery
+// DO NOT EDIT
+
+import Foundation
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+extension ArrayType: Diffable { }
+extension AssociatedType: Diffable { }
+extension AssociatedValue: Diffable { }
+extension Attribute: Diffable { }
+extension BytesRange: Diffable { }
+extension ClosureType: Diffable { }
+extension DictionaryType: Diffable { }
+extension EnumCase: Diffable { }
+extension FileParserResult: Diffable { }
+extension GenericRequirement: Diffable { }
+extension GenericType: Diffable { }
+extension GenericTypeParameter: Diffable { }
+extension Import: Diffable { }
+extension Method: Diffable { }
+extension MethodParameter: Diffable { }
+extension Modifier: Diffable { }
+extension Subscript: Diffable { }
+extension TemplateContext: Diffable { }
+extension TupleElement: Diffable { }
+extension TupleType: Diffable { }
+extension Type: Diffable { }
+extension TypeName: Diffable { }
+extension Typealias: Diffable { }
+extension Types: Diffable { }
+extension Variable: Diffable { }
 
 """),
     .init(name: "Diffable.swift", content:
@@ -2352,7 +2212,7 @@ extension NSRange: Diffable {
     }
 }
 
-@objcMembers public class DiffableResult: NSObject, AutoEquatable {
+public class DiffableResult: NSObject, AutoEquatable {
     // sourcery: skipEquality
     private var results: [String]
     internal var identifier: String?
@@ -2378,6 +2238,22 @@ extension NSRange: Diffable {
         guard !results.isEmpty else { return "" }
         return "\\(identifier.flatMap { "\\($0) " } ?? "")" + results.joined(separator: "\\n")
     }
+
+// sourcery:inline:DiffableResult.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? DiffableResult else { return false }
+        if self.identifier != rhs.identifier { return false }
+        return true
+    }
+
+    // MARK: - DiffableResult AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.identifier)
+        return hasher.finalize()
+    }
+// sourcery:end
 }
 
 public extension DiffableResult {
@@ -2532,130 +2408,8 @@ public extension DiffableResult {
 
 import Foundation
 
-/// Defines enum case associated value
-@objcMembers public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed, Annotated {
-
-    /// Associated value local name.
-    /// This is a name to be used to construct enum case value
-    public let localName: String?
-
-    /// Associated value external name.
-    /// This is a name to be used to access value in value-bindig
-    public let externalName: String?
-
-    /// Associated value type name
-    public let typeName: TypeName
-
-    // sourcery: skipEquality, skipDescription
-    /// Associated value type, if known
-    public var type: Type?
-
-    /// Associated value default value
-    public let defaultValue: String?
-
-    /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
-    public var annotations: Annotations = [:]
-
-    /// :nodoc:
-    public init(localName: String?, externalName: String?, typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:]) {
-        self.localName = localName
-        self.externalName = externalName
-        self.typeName = typeName
-        self.type = type
-        self.defaultValue = defaultValue
-        self.annotations = annotations
-    }
-
-    convenience init(name: String? = nil, typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:]) {
-        self.init(localName: name, externalName: name, typeName: typeName, type: type, defaultValue: defaultValue, annotations: annotations)
-    }
-
-// sourcery:inline:AssociatedValue.AutoCoding
-
-        /// :nodoc:
-        required public init?(coder aDecoder: NSCoder) {
-            self.localName = aDecoder.decode(forKey: "localName")
-            self.externalName = aDecoder.decode(forKey: "externalName")
-            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
-            self.type = aDecoder.decode(forKey: "type")
-            self.defaultValue = aDecoder.decode(forKey: "defaultValue")
-            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
-        }
-
-        /// :nodoc:
-        public func encode(with aCoder: NSCoder) {
-            aCoder.encode(self.localName, forKey: "localName")
-            aCoder.encode(self.externalName, forKey: "externalName")
-            aCoder.encode(self.typeName, forKey: "typeName")
-            aCoder.encode(self.type, forKey: "type")
-            aCoder.encode(self.defaultValue, forKey: "defaultValue")
-            aCoder.encode(self.annotations, forKey: "annotations")
-        }
-// sourcery:end
-
-}
-
-/// Defines enum case
-@objcMembers public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated {
-
-    /// Enum case name
-    public let name: String
-
-    /// Enum case raw value, if any
-    public let rawValue: String?
-
-    /// Enum case associated values
-    public let associatedValues: [AssociatedValue]
-
-    /// Enum case annotations
-    public var annotations: Annotations = [:]
-
-    /// Whether enum case is indirect
-    public let indirect: Bool
-
-    /// Whether enum case has associated value
-    public var hasAssociatedValue: Bool {
-        return !associatedValues.isEmpty
-    }
-
-    // Underlying parser data, never to be used by anything else
-    // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
-    /// :nodoc:
-    public var __parserData: Any?
-
-    /// :nodoc:
-    public init(name: String, rawValue: String? = nil, associatedValues: [AssociatedValue] = [], annotations: [String: NSObject] = [:], indirect: Bool = false) {
-        self.name = name
-        self.rawValue = rawValue
-        self.associatedValues = associatedValues
-        self.annotations = annotations
-        self.indirect = indirect
-    }
-
-// sourcery:inline:EnumCase.AutoCoding
-
-        /// :nodoc:
-        required public init?(coder aDecoder: NSCoder) {
-            guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
-            self.rawValue = aDecoder.decode(forKey: "rawValue")
-            guard let associatedValues: [AssociatedValue] = aDecoder.decode(forKey: "associatedValues") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["associatedValues"])); fatalError() }; self.associatedValues = associatedValues
-            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
-            self.indirect = aDecoder.decode(forKey: "indirect")
-        }
-
-        /// :nodoc:
-        public func encode(with aCoder: NSCoder) {
-            aCoder.encode(self.name, forKey: "name")
-            aCoder.encode(self.rawValue, forKey: "rawValue")
-            aCoder.encode(self.associatedValues, forKey: "associatedValues")
-            aCoder.encode(self.annotations, forKey: "annotations")
-            aCoder.encode(self.indirect, forKey: "indirect")
-        }
-// sourcery:end
-}
-
 /// Defines Swift enum
-@objcMembers public final class Enum: Type {
+public final class Enum: Type {
 
     // sourcery: skipDescription
     /// Returns "enum"
@@ -2757,116 +2511,8 @@ import Foundation
             aCoder.encode(self.rawType, forKey: "rawType")
         }
 // sourcery:end
-}
 
-"""),
-    .init(name: "Equality.generated.swift", content:
-"""
-// Generated using Sourcery 1.3.4 — https://github.com/krzysztofzablocki/Sourcery
-// DO NOT EDIT
-// swiftlint:disable vertical_whitespace
-
-
-extension ArrayType {
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? ArrayType else { return false }
-        if self.name != rhs.name { return false }
-        if self.elementTypeName != rhs.elementTypeName { return false }
-        return true
-    }
-}
-extension AssociatedType {
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? AssociatedType else { return false }
-        if self.name != rhs.name { return false }
-        if self.typeName != rhs.typeName { return false }
-        return true
-    }
-}
-extension AssociatedValue {
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? AssociatedValue else { return false }
-        if self.localName != rhs.localName { return false }
-        if self.externalName != rhs.externalName { return false }
-        if self.typeName != rhs.typeName { return false }
-        if self.defaultValue != rhs.defaultValue { return false }
-        if self.annotations != rhs.annotations { return false }
-        return true
-    }
-}
-extension Attribute {
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? Attribute else { return false }
-        if self.name != rhs.name { return false }
-        if self.arguments != rhs.arguments { return false }
-        if self._description != rhs._description { return false }
-        return true
-    }
-}
-extension BytesRange {
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? BytesRange else { return false }
-        if self.offset != rhs.offset { return false }
-        if self.length != rhs.length { return false }
-        return true
-    }
-}
-extension Class {
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? Class else { return false }
-        return super.isEqual(rhs)
-    }
-}
-extension ClosureParameter {
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? ClosureParameter else { return false }
-        if self.argumentLabel != rhs.argumentLabel { return false }
-        if self.name != rhs.name { return false }
-        if self.typeName != rhs.typeName { return false }
-        if self.`inout` != rhs.`inout` { return false }
-        if self.defaultValue != rhs.defaultValue { return false }
-        if self.annotations != rhs.annotations { return false }
-        return true
-    }
-}
-extension ClosureType {
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? ClosureType else { return false }
-        if self.name != rhs.name { return false }
-        if self.parameters != rhs.parameters { return false }
-        if self.returnTypeName != rhs.returnTypeName { return false }
-        if self.`throws` != rhs.`throws` { return false }
-        if self.throwsOrRethrowsKeyword != rhs.throwsOrRethrowsKeyword { return false }
-        return true
-    }
-}
-extension DictionaryType {
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? DictionaryType else { return false }
-        if self.name != rhs.name { return false }
-        if self.valueTypeName != rhs.valueTypeName { return false }
-        if self.keyTypeName != rhs.keyTypeName { return false }
-        return true
-    }
-}
-extension DiffableResult {
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? DiffableResult else { return false }
-        if self.identifier != rhs.identifier { return false }
-        return true
-    }
-}
-extension Enum {
+// sourcery:inline:Enum.Equality
     /// :nodoc:
     public override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Enum else { return false }
@@ -2874,8 +2520,109 @@ extension Enum {
         if self.rawTypeName != rhs.rawTypeName { return false }
         return super.isEqual(rhs)
     }
+
+    // MARK: - Enum AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.cases)
+        hasher.combine(self.rawTypeName)
+        hasher.combine(super.hash)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:Enum.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = super.description
+        string += ", "
+        string += "cases = \\(String(describing: self.cases)), "
+        string += "rawTypeName = \\(String(describing: self.rawTypeName)), "
+        string += "hasAssociatedValues = \\(String(describing: self.hasAssociatedValues))"
+        return string
+    }
+// sourcery:end
+
+// sourcery:inline:Enum.AutoDiffable
+    override public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Enum else {
+            results.append("Incorrect type <expected: Enum, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "cases").trackDifference(actual: self.cases, expected: castObject.cases))
+        results.append(contentsOf: DiffableResult(identifier: "rawTypeName").trackDifference(actual: self.rawTypeName, expected: castObject.rawTypeName))
+        results.append(contentsOf: super.diffAgainst(castObject))
+        return results
+    }
+// sourcery:end
+
 }
-extension EnumCase {
+
+"""),
+    .init(name: "EnumCase.swift", content:
+"""
+import Foundation
+
+/// Defines enum case
+public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated {
+
+    /// Enum case name
+    public let name: String
+
+    /// Enum case raw value, if any
+    public let rawValue: String?
+
+    /// Enum case associated values
+    public let associatedValues: [AssociatedValue]
+
+    /// Enum case annotations
+    public var annotations: Annotations = [:]
+
+    /// Whether enum case is indirect
+    public let indirect: Bool
+
+    /// Whether enum case has associated value
+    public var hasAssociatedValue: Bool {
+        return !associatedValues.isEmpty
+    }
+
+    // Underlying parser data, never to be used by anything else
+    // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
+    /// :nodoc:
+    public var __parserData: Any?
+
+    /// :nodoc:
+    public init(name: String, rawValue: String? = nil, associatedValues: [AssociatedValue] = [], annotations: [String: NSObject] = [:], indirect: Bool = false) {
+        self.name = name
+        self.rawValue = rawValue
+        self.associatedValues = associatedValues
+        self.annotations = annotations
+        self.indirect = indirect
+    }
+
+// sourcery:inline:EnumCase.AutoCoding
+
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
+            guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
+            self.rawValue = aDecoder.decode(forKey: "rawValue")
+            guard let associatedValues: [AssociatedValue] = aDecoder.decode(forKey: "associatedValues") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["associatedValues"])); fatalError() }; self.associatedValues = associatedValues
+            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
+            self.indirect = aDecoder.decode(forKey: "indirect")
+        }
+
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
+            aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.rawValue, forKey: "rawValue")
+            aCoder.encode(self.associatedValues, forKey: "associatedValues")
+            aCoder.encode(self.annotations, forKey: "annotations")
+            aCoder.encode(self.indirect, forKey: "indirect")
+        }
+// sourcery:end
+
+// sourcery:inline:EnumCase.Equality
     /// :nodoc:
     public override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? EnumCase else { return false }
@@ -2886,365 +2633,8 @@ extension EnumCase {
         if self.indirect != rhs.indirect { return false }
         return true
     }
-}
-extension FileParserResult {
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? FileParserResult else { return false }
-        if self.path != rhs.path { return false }
-        if self.module != rhs.module { return false }
-        if self.types != rhs.types { return false }
-        if self.functions != rhs.functions { return false }
-        if self.typealiases != rhs.typealiases { return false }
-        if self.inlineRanges != rhs.inlineRanges { return false }
-        if self.inlineIndentations != rhs.inlineIndentations { return false }
-        if self.modifiedDate != rhs.modifiedDate { return false }
-        if self.sourceryVersion != rhs.sourceryVersion { return false }
-        return true
-    }
-}
-extension GenericRequirement {
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? GenericRequirement else { return false }
-        if self.leftType != rhs.leftType { return false }
-        if self.rightType != rhs.rightType { return false }
-        if self.relationship != rhs.relationship { return false }
-        if self.relationshipSyntax != rhs.relationshipSyntax { return false }
-        return true
-    }
-}
-extension GenericType {
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? GenericType else { return false }
-        if self.name != rhs.name { return false }
-        if self.typeParameters != rhs.typeParameters { return false }
-        return true
-    }
-}
-extension GenericTypeParameter {
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? GenericTypeParameter else { return false }
-        if self.typeName != rhs.typeName { return false }
-        return true
-    }
-}
-extension Import {
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? Import else { return false }
-        if self.kind != rhs.kind { return false }
-        if self.path != rhs.path { return false }
-        return true
-    }
-}
-extension Method {
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? Method else { return false }
-        if self.name != rhs.name { return false }
-        if self.selectorName != rhs.selectorName { return false }
-        if self.parameters != rhs.parameters { return false }
-        if self.returnTypeName != rhs.returnTypeName { return false }
-        if self.`throws` != rhs.`throws` { return false }
-        if self.`rethrows` != rhs.`rethrows` { return false }
-        if self.accessLevel != rhs.accessLevel { return false }
-        if self.isStatic != rhs.isStatic { return false }
-        if self.isClass != rhs.isClass { return false }
-        if self.isFailableInitializer != rhs.isFailableInitializer { return false }
-        if self.annotations != rhs.annotations { return false }
-        if self.definedInTypeName != rhs.definedInTypeName { return false }
-        if self.attributes != rhs.attributes { return false }
-        if self.modifiers != rhs.modifiers { return false }
-        return true
-    }
-}
-extension MethodParameter {
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? MethodParameter else { return false }
-        if self.argumentLabel != rhs.argumentLabel { return false }
-        if self.name != rhs.name { return false }
-        if self.typeName != rhs.typeName { return false }
-        if self.`inout` != rhs.`inout` { return false }
-        if self.defaultValue != rhs.defaultValue { return false }
-        if self.annotations != rhs.annotations { return false }
-        return true
-    }
-}
-extension Modifier {
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? Modifier else { return false }
-        if self.name != rhs.name { return false }
-        if self.detail != rhs.detail { return false }
-        return true
-    }
-}
-extension Protocol {
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? Protocol else { return false }
-        if self.associatedTypes != rhs.associatedTypes { return false }
-        if self.genericRequirements != rhs.genericRequirements { return false }
-        return super.isEqual(rhs)
-    }
-}
-extension ProtocolComposition {
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? ProtocolComposition else { return false }
-        if self.composedTypeNames != rhs.composedTypeNames { return false }
-        return super.isEqual(rhs)
-    }
-}
-extension Struct {
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? Struct else { return false }
-        return super.isEqual(rhs)
-    }
-}
-extension Subscript {
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? Subscript else { return false }
-        if self.parameters != rhs.parameters { return false }
-        if self.returnTypeName != rhs.returnTypeName { return false }
-        if self.readAccess != rhs.readAccess { return false }
-        if self.writeAccess != rhs.writeAccess { return false }
-        if self.annotations != rhs.annotations { return false }
-        if self.definedInTypeName != rhs.definedInTypeName { return false }
-        if self.attributes != rhs.attributes { return false }
-        if self.modifiers != rhs.modifiers { return false }
-        return true
-    }
-}
-extension TemplateContext {
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? TemplateContext else { return false }
-        if self.parserResult != rhs.parserResult { return false }
-        if self.functions != rhs.functions { return false }
-        if self.types != rhs.types { return false }
-        if self.argument != rhs.argument { return false }
-        return true
-    }
-}
-extension TupleElement {
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? TupleElement else { return false }
-        if self.name != rhs.name { return false }
-        if self.typeName != rhs.typeName { return false }
-        return true
-    }
-}
-extension TupleType {
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? TupleType else { return false }
-        if self.name != rhs.name { return false }
-        if self.elements != rhs.elements { return false }
-        return true
-    }
-}
-extension Type {
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? Type else { return false }
-        if self.module != rhs.module { return false }
-        if self.imports != rhs.imports { return false }
-        if self.typealiases != rhs.typealiases { return false }
-        if self.isExtension != rhs.isExtension { return false }
-        if self.accessLevel != rhs.accessLevel { return false }
-        if self.isUnknownExtension != rhs.isUnknownExtension { return false }
-        if self.isGeneric != rhs.isGeneric { return false }
-        if self.localName != rhs.localName { return false }
-        if self.rawVariables != rhs.rawVariables { return false }
-        if self.rawMethods != rhs.rawMethods { return false }
-        if self.rawSubscripts != rhs.rawSubscripts { return false }
-        if self.annotations != rhs.annotations { return false }
-        if self.inheritedTypes != rhs.inheritedTypes { return false }
-        if self.inherits != rhs.inherits { return false }
-        if self.containedTypes != rhs.containedTypes { return false }
-        if self.parentName != rhs.parentName { return false }
-        if self.attributes != rhs.attributes { return false }
-        if self.modifiers != rhs.modifiers { return false }
-        if self.kind != rhs.kind { return false }
-        return true
-    }
-}
-extension TypeName {
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? TypeName else { return false }
-        if self.name != rhs.name { return false }
-        if self.generic != rhs.generic { return false }
-        if self.isProtocolComposition != rhs.isProtocolComposition { return false }
-        if self.attributes != rhs.attributes { return false }
-        if self.modifiers != rhs.modifiers { return false }
-        if self.tuple != rhs.tuple { return false }
-        if self.array != rhs.array { return false }
-        if self.dictionary != rhs.dictionary { return false }
-        if self.closure != rhs.closure { return false }
-        return true
-    }
-}
-extension Typealias {
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? Typealias else { return false }
-        if self.aliasName != rhs.aliasName { return false }
-        if self.typeName != rhs.typeName { return false }
-        if self.module != rhs.module { return false }
-        if self.accessLevel != rhs.accessLevel { return false }
-        if self.parentName != rhs.parentName { return false }
-        return true
-    }
-}
-extension Types {
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? Types else { return false }
-        if self.types != rhs.types { return false }
-        if self.typealiases != rhs.typealiases { return false }
-        return true
-    }
-}
-extension Variable {
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? Variable else { return false }
-        if self.name != rhs.name { return false }
-        if self.typeName != rhs.typeName { return false }
-        if self.isComputed != rhs.isComputed { return false }
-        if self.isStatic != rhs.isStatic { return false }
-        if self.readAccess != rhs.readAccess { return false }
-        if self.writeAccess != rhs.writeAccess { return false }
-        if self.defaultValue != rhs.defaultValue { return false }
-        if self.annotations != rhs.annotations { return false }
-        if self.attributes != rhs.attributes { return false }
-        if self.modifiers != rhs.modifiers { return false }
-        if self.definedInTypeName != rhs.definedInTypeName { return false }
-        return true
-    }
-}
 
-// MARK: - ArrayType AutoHashable
-extension ArrayType {
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.name)
-        hasher.combine(self.elementTypeName)
-        return hasher.finalize()
-    }
-}
-// MARK: - AssociatedType AutoHashable
-extension AssociatedType {
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.name)
-        hasher.combine(self.typeName)
-        return hasher.finalize()
-    }
-}
-// MARK: - AssociatedValue AutoHashable
-extension AssociatedValue {
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.localName)
-        hasher.combine(self.externalName)
-        hasher.combine(self.typeName)
-        hasher.combine(self.defaultValue)
-        hasher.combine(self.annotations)
-        return hasher.finalize()
-    }
-}
-// MARK: - Attribute AutoHashable
-extension Attribute {
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.name)
-        hasher.combine(self.arguments)
-        hasher.combine(self._description)
-        return hasher.finalize()
-    }
-}
-// MARK: - BytesRange AutoHashable
-extension BytesRange {
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.offset)
-        hasher.combine(self.length)
-        return hasher.finalize()
-    }
-}
-// MARK: - Class AutoHashable
-extension Class {
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(super.hash)
-        return hasher.finalize()
-    }
-}
-// MARK: - ClosureParameter AutoHashable
-extension ClosureParameter {
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.argumentLabel)
-        hasher.combine(self.name)
-        hasher.combine(self.typeName)
-        hasher.combine(self.`inout`)
-        hasher.combine(self.defaultValue)
-        hasher.combine(self.annotations)
-        return hasher.finalize()
-    }
-}
-// MARK: - ClosureType AutoHashable
-extension ClosureType {
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.name)
-        hasher.combine(self.parameters)
-        hasher.combine(self.returnTypeName)
-        hasher.combine(self.`throws`)
-        hasher.combine(self.throwsOrRethrowsKeyword)
-        return hasher.finalize()
-    }
-}
-// MARK: - DictionaryType AutoHashable
-extension DictionaryType {
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.name)
-        hasher.combine(self.valueTypeName)
-        hasher.combine(self.keyTypeName)
-        return hasher.finalize()
-    }
-}
-// MARK: - DiffableResult AutoHashable
-extension DiffableResult {
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.identifier)
-        return hasher.finalize()
-    }
-}
-// MARK: - Enum AutoHashable
-extension Enum {
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.cases)
-        hasher.combine(self.rawTypeName)
-        hasher.combine(super.hash)
-        return hasher.finalize()
-    }
-}
-// MARK: - EnumCase AutoHashable
-extension EnumCase {
+    // MARK: - EnumCase AutoHashable
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.name)
@@ -3254,255 +2644,79 @@ extension EnumCase {
         hasher.combine(self.indirect)
         return hasher.finalize()
     }
-}
-// MARK: - FileParserResult AutoHashable
-extension FileParserResult {
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.path)
-        hasher.combine(self.module)
-        hasher.combine(self.types)
-        hasher.combine(self.functions)
-        hasher.combine(self.typealiases)
-        hasher.combine(self.inlineRanges)
-        hasher.combine(self.inlineIndentations)
-        hasher.combine(self.modifiedDate)
-        hasher.combine(self.sourceryVersion)
-        return hasher.finalize()
+// sourcery:end
+
+// sourcery:inline:EnumCase.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "name = \\(String(describing: self.name)), "
+        string += "rawValue = \\(String(describing: self.rawValue)), "
+        string += "associatedValues = \\(String(describing: self.associatedValues)), "
+        string += "annotations = \\(String(describing: self.annotations)), "
+        string += "indirect = \\(String(describing: self.indirect)), "
+        string += "hasAssociatedValue = \\(String(describing: self.hasAssociatedValue))"
+        return string
     }
-}
-// MARK: - GenericRequirement AutoHashable
-extension GenericRequirement {
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.leftType)
-        hasher.combine(self.rightType)
-        hasher.combine(self.relationship)
-        hasher.combine(self.relationshipSyntax)
-        return hasher.finalize()
+// sourcery:end
+
+// sourcery:inline:EnumCase.AutoDiffable
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? EnumCase else {
+            results.append("Incorrect type <expected: EnumCase, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "rawValue").trackDifference(actual: self.rawValue, expected: castObject.rawValue))
+        results.append(contentsOf: DiffableResult(identifier: "associatedValues").trackDifference(actual: self.associatedValues, expected: castObject.associatedValues))
+        results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
+        results.append(contentsOf: DiffableResult(identifier: "indirect").trackDifference(actual: self.indirect, expected: castObject.indirect))
+        return results
     }
+// sourcery:end
+
 }
-// MARK: - GenericType AutoHashable
-extension GenericType {
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.name)
-        hasher.combine(self.typeParameters)
-        return hasher.finalize()
-    }
-}
-// MARK: - GenericTypeParameter AutoHashable
-extension GenericTypeParameter {
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.typeName)
-        return hasher.finalize()
-    }
-}
-// MARK: - Import AutoHashable
-extension Import {
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.kind)
-        hasher.combine(self.path)
-        return hasher.finalize()
-    }
-}
-// MARK: - Method AutoHashable
-extension Method {
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.name)
-        hasher.combine(self.selectorName)
-        hasher.combine(self.parameters)
-        hasher.combine(self.returnTypeName)
-        hasher.combine(self.`throws`)
-        hasher.combine(self.`rethrows`)
-        hasher.combine(self.accessLevel)
-        hasher.combine(self.isStatic)
-        hasher.combine(self.isClass)
-        hasher.combine(self.isFailableInitializer)
-        hasher.combine(self.annotations)
-        hasher.combine(self.definedInTypeName)
-        hasher.combine(self.attributes)
-        hasher.combine(self.modifiers)
-        return hasher.finalize()
-    }
-}
-// MARK: - MethodParameter AutoHashable
-extension MethodParameter {
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.argumentLabel)
-        hasher.combine(self.name)
-        hasher.combine(self.typeName)
-        hasher.combine(self.`inout`)
-        hasher.combine(self.defaultValue)
-        hasher.combine(self.annotations)
-        return hasher.finalize()
-    }
-}
-// MARK: - Modifier AutoHashable
-extension Modifier {
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.name)
-        hasher.combine(self.detail)
-        return hasher.finalize()
-    }
-}
-// MARK: - Protocol AutoHashable
-extension Protocol {
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.associatedTypes)
-        hasher.combine(self.genericRequirements)
-        hasher.combine(super.hash)
-        return hasher.finalize()
-    }
-}
-// MARK: - ProtocolComposition AutoHashable
-extension ProtocolComposition {
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.composedTypeNames)
-        hasher.combine(super.hash)
-        return hasher.finalize()
-    }
-}
-// MARK: - Struct AutoHashable
-extension Struct {
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(super.hash)
-        return hasher.finalize()
-    }
-}
-// MARK: - Subscript AutoHashable
-extension Subscript {
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.parameters)
-        hasher.combine(self.returnTypeName)
-        hasher.combine(self.readAccess)
-        hasher.combine(self.writeAccess)
-        hasher.combine(self.annotations)
-        hasher.combine(self.definedInTypeName)
-        hasher.combine(self.attributes)
-        hasher.combine(self.modifiers)
-        return hasher.finalize()
-    }
-}
-// MARK: - TemplateContext AutoHashable
-extension TemplateContext {
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.parserResult)
-        hasher.combine(self.functions)
-        hasher.combine(self.types)
-        hasher.combine(self.argument)
-        return hasher.finalize()
-    }
-}
-// MARK: - TupleElement AutoHashable
-extension TupleElement {
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.name)
-        hasher.combine(self.typeName)
-        return hasher.finalize()
-    }
-}
-// MARK: - TupleType AutoHashable
-extension TupleType {
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.name)
-        hasher.combine(self.elements)
-        return hasher.finalize()
-    }
-}
-// MARK: - Type AutoHashable
-extension Type {
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.module)
-        hasher.combine(self.imports)
-        hasher.combine(self.typealiases)
-        hasher.combine(self.isExtension)
-        hasher.combine(self.accessLevel)
-        hasher.combine(self.isUnknownExtension)
-        hasher.combine(self.isGeneric)
-        hasher.combine(self.localName)
-        hasher.combine(self.rawVariables)
-        hasher.combine(self.rawMethods)
-        hasher.combine(self.rawSubscripts)
-        hasher.combine(self.annotations)
-        hasher.combine(self.inheritedTypes)
-        hasher.combine(self.inherits)
-        hasher.combine(self.containedTypes)
-        hasher.combine(self.parentName)
-        hasher.combine(self.attributes)
-        hasher.combine(self.modifiers)
-        hasher.combine(kind)
-        return hasher.finalize()
-    }
-}
-// MARK: - TypeName AutoHashable
-extension TypeName {
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.name)
-        hasher.combine(self.generic)
-        hasher.combine(self.isProtocolComposition)
-        hasher.combine(self.attributes)
-        hasher.combine(self.modifiers)
-        hasher.combine(self.tuple)
-        hasher.combine(self.array)
-        hasher.combine(self.dictionary)
-        hasher.combine(self.closure)
-        return hasher.finalize()
-    }
-}
-// MARK: - Typealias AutoHashable
-extension Typealias {
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.aliasName)
-        hasher.combine(self.typeName)
-        hasher.combine(self.module)
-        hasher.combine(self.accessLevel)
-        hasher.combine(self.parentName)
-        return hasher.finalize()
-    }
-}
-// MARK: - Types AutoHashable
-extension Types {
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.types)
-        hasher.combine(self.typealiases)
-        return hasher.finalize()
-    }
-}
-// MARK: - Variable AutoHashable
-extension Variable {
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.name)
-        hasher.combine(self.typeName)
-        hasher.combine(self.isComputed)
-        hasher.combine(self.isStatic)
-        hasher.combine(self.readAccess)
-        hasher.combine(self.writeAccess)
-        hasher.combine(self.defaultValue)
-        hasher.combine(self.annotations)
-        hasher.combine(self.attributes)
-        hasher.combine(self.modifiers)
-        hasher.combine(self.definedInTypeName)
-        return hasher.finalize()
-    }
-}
+
+"""),
+    .init(name: "Equality.generated.swift", content:
+"""
+// Generated using Sourcery 0.17.0 — https://github.com/krzysztofzablocki/Sourcery
+// DO NOT EDIT
+
+// swiftlint:disable vertical_whitespace
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 """),
     .init(name: "Extensions.swift", content:
@@ -3750,7 +2964,7 @@ import Foundation
 
 // sourcery: skipJSExport
 /// :nodoc:
-@objcMembers public final class FileParserResult: NSObject, SourceryModel {
+public final class FileParserResult: NSObject, SourceryModel {
     public let path: String?
     public let module: String?
     public var types = [Type]() {
@@ -3815,6 +3029,77 @@ import Foundation
             aCoder.encode(self.sourceryVersion, forKey: "sourceryVersion")
         }
 // sourcery:end
+
+// sourcery:inline:FileParserResult.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? FileParserResult else { return false }
+        if self.path != rhs.path { return false }
+        if self.module != rhs.module { return false }
+        if self.types != rhs.types { return false }
+        if self.functions != rhs.functions { return false }
+        if self.typealiases != rhs.typealiases { return false }
+        if self.inlineRanges != rhs.inlineRanges { return false }
+        if self.inlineIndentations != rhs.inlineIndentations { return false }
+        if self.modifiedDate != rhs.modifiedDate { return false }
+        if self.sourceryVersion != rhs.sourceryVersion { return false }
+        return true
+    }
+
+    // MARK: - FileParserResult AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.path)
+        hasher.combine(self.module)
+        hasher.combine(self.types)
+        hasher.combine(self.functions)
+        hasher.combine(self.typealiases)
+        hasher.combine(self.inlineRanges)
+        hasher.combine(self.inlineIndentations)
+        hasher.combine(self.modifiedDate)
+        hasher.combine(self.sourceryVersion)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:FileParserResult.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "path = \\(String(describing: self.path)), "
+        string += "module = \\(String(describing: self.module)), "
+        string += "types = \\(String(describing: self.types)), "
+        string += "functions = \\(String(describing: self.functions)), "
+        string += "typealiases = \\(String(describing: self.typealiases)), "
+        string += "inlineRanges = \\(String(describing: self.inlineRanges)), "
+        string += "inlineIndentations = \\(String(describing: self.inlineIndentations)), "
+        string += "modifiedDate = \\(String(describing: self.modifiedDate)), "
+        string += "sourceryVersion = \\(String(describing: self.sourceryVersion)), "
+        string += "isEmpty = \\(String(describing: self.isEmpty))"
+        return string
+    }
+// sourcery:end
+
+// sourcery:inline:FileParserResult.AutoDiffable
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? FileParserResult else {
+            results.append("Incorrect type <expected: FileParserResult, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "path").trackDifference(actual: self.path, expected: castObject.path))
+        results.append(contentsOf: DiffableResult(identifier: "module").trackDifference(actual: self.module, expected: castObject.module))
+        results.append(contentsOf: DiffableResult(identifier: "types").trackDifference(actual: self.types, expected: castObject.types))
+        results.append(contentsOf: DiffableResult(identifier: "functions").trackDifference(actual: self.functions, expected: castObject.functions))
+        results.append(contentsOf: DiffableResult(identifier: "typealiases").trackDifference(actual: self.typealiases, expected: castObject.typealiases))
+        results.append(contentsOf: DiffableResult(identifier: "inlineRanges").trackDifference(actual: self.inlineRanges, expected: castObject.inlineRanges))
+        results.append(contentsOf: DiffableResult(identifier: "inlineIndentations").trackDifference(actual: self.inlineIndentations, expected: castObject.inlineIndentations))
+        results.append(contentsOf: DiffableResult(identifier: "modifiedDate").trackDifference(actual: self.modifiedDate, expected: castObject.modifiedDate))
+        results.append(contentsOf: DiffableResult(identifier: "sourceryVersion").trackDifference(actual: self.sourceryVersion, expected: castObject.sourceryVersion))
+        return results
+    }
+// sourcery:end
+
 }
 
 """),
@@ -3823,7 +3108,7 @@ import Foundation
 import Foundation
 
 /// Descibes Swift generic type
-@objcMembers public final class GenericType: NSObject, SourceryModelWithoutDescription {
+public final class GenericType: NSObject, SourceryModelWithoutDescription {
     /// The name of the base type, i.e. `Array` for `Array<Int>`
     public var name: String
 
@@ -3862,39 +3147,38 @@ import Foundation
         }
 
 // sourcery:end
-}
 
-/// Descibes Swift generic type parameter
-@objcMembers public final class GenericTypeParameter: NSObject, SourceryModel {
-
-    /// Generic parameter type name
-    public var typeName: TypeName
-
-    // sourcery: skipEquality, skipDescription
-    /// Generic parameter type, if known
-    public var type: Type?
-
+// sourcery:inline:GenericType.Equality
     /// :nodoc:
-    public init(typeName: TypeName, type: Type? = nil) {
-        self.typeName = typeName
-        self.type = type
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? GenericType else { return false }
+        if self.name != rhs.name { return false }
+        if self.typeParameters != rhs.typeParameters { return false }
+        return true
     }
 
-// sourcery:inline:GenericTypeParameter.AutoCoding
-
-        /// :nodoc:
-        required public init?(coder aDecoder: NSCoder) {
-            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
-            self.type = aDecoder.decode(forKey: "type")
-        }
-
-        /// :nodoc:
-        public func encode(with aCoder: NSCoder) {
-            aCoder.encode(self.typeName, forKey: "typeName")
-            aCoder.encode(self.type, forKey: "type")
-        }
-
+    // MARK: - GenericType AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.typeParameters)
+        return hasher.finalize()
+    }
 // sourcery:end
+
+// sourcery:inline:GenericType.AutoDiffable
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? GenericType else {
+            results.append("Incorrect type <expected: GenericType, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "typeParameters").trackDifference(actual: self.typeParameters, expected: castObject.typeParameters))
+        return results
+    }
+// sourcery:end
+
 }
 
 """),
@@ -3904,7 +3188,7 @@ import Foundation
 
 /// modifier can be thing like `private`, `class`, `nonmutating`
 /// if a declaration has modifier like `private(set)` it's name will be `private` and detail will be `set`
-@objcMembers public class GenericRequirement: NSObject, SourceryModel {
+public class GenericRequirement: NSObject, SourceryModel {
 
     public enum Relationship: String {
         case equals
@@ -3954,6 +3238,132 @@ import Foundation
                 aCoder.encode(self.relationshipSyntax, forKey: "relationshipSyntax")
             }
     // sourcery:end
+
+    // sourcery:inline:GenericRequirement.Equality
+        /// :nodoc:
+        public override func isEqual(_ object: Any?) -> Bool {
+            guard let rhs = object as? GenericRequirement else { return false }
+            if self.leftType != rhs.leftType { return false }
+            if self.rightType != rhs.rightType { return false }
+            if self.relationship != rhs.relationship { return false }
+            if self.relationshipSyntax != rhs.relationshipSyntax { return false }
+            return true
+        }
+
+        // MARK: - GenericRequirement AutoHashable
+        public override var hash: Int {
+            var hasher = Hasher()
+            hasher.combine(self.leftType)
+            hasher.combine(self.rightType)
+            hasher.combine(self.relationship)
+            hasher.combine(self.relationshipSyntax)
+            return hasher.finalize()
+        }
+    // sourcery:end
+
+    // sourcery:inline:GenericRequirement.Description
+        /// :nodoc:
+        override public var description: String {
+            var string = "\\(Swift.type(of: self)): "
+            string += "leftType = \\(String(describing: self.leftType)), "
+            string += "rightType = \\(String(describing: self.rightType)), "
+            string += "relationship = \\(String(describing: self.relationship)), "
+            string += "relationshipSyntax = \\(String(describing: self.relationshipSyntax))"
+            return string
+        }
+    // sourcery:end
+
+    // sourcery:inline:GenericRequirement.AutoDiffable
+        public func diffAgainst(_ object: Any?) -> DiffableResult {
+            let results = DiffableResult()
+            guard let castObject = object as? GenericRequirement else {
+                results.append("Incorrect type <expected: GenericRequirement, received: \\(Swift.type(of: object))>")
+                return results
+            }
+            results.append(contentsOf: DiffableResult(identifier: "leftType").trackDifference(actual: self.leftType, expected: castObject.leftType))
+            results.append(contentsOf: DiffableResult(identifier: "rightType").trackDifference(actual: self.rightType, expected: castObject.rightType))
+            results.append(contentsOf: DiffableResult(identifier: "relationship").trackDifference(actual: self.relationship, expected: castObject.relationship))
+            results.append(contentsOf: DiffableResult(identifier: "relationshipSyntax").trackDifference(actual: self.relationshipSyntax, expected: castObject.relationshipSyntax))
+            return results
+        }
+    // sourcery:end
+
+}
+
+"""),
+    .init(name: "GenericTypeParameter.swift", content:
+"""
+import Foundation
+
+/// Descibes Swift generic type parameter
+public final class GenericTypeParameter: NSObject, SourceryModel {
+
+    /// Generic parameter type name
+    public var typeName: TypeName
+
+    // sourcery: skipEquality, skipDescription
+    /// Generic parameter type, if known
+    public var type: Type?
+
+    /// :nodoc:
+    public init(typeName: TypeName, type: Type? = nil) {
+        self.typeName = typeName
+        self.type = type
+    }
+
+// sourcery:inline:GenericTypeParameter.AutoCoding
+
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
+            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
+            self.type = aDecoder.decode(forKey: "type")
+        }
+
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
+            aCoder.encode(self.typeName, forKey: "typeName")
+            aCoder.encode(self.type, forKey: "type")
+        }
+
+// sourcery:end
+
+// sourcery:inline:GenericTypeParameter.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? GenericTypeParameter else { return false }
+        if self.typeName != rhs.typeName { return false }
+        return true
+    }
+
+    // MARK: - GenericTypeParameter AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.typeName)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:GenericTypeParameter.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "typeName = \\(String(describing: self.typeName))"
+        return string
+    }
+// sourcery:end
+
+// sourcery:inline:GenericTypeParameter.AutoDiffable
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? GenericTypeParameter else {
+            results.append("Incorrect type <expected: GenericTypeParameter, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
+        return results
+    }
+// sourcery:end
+
 }
 
 """),
@@ -3962,7 +3372,7 @@ import Foundation
 import Foundation
 
 /// Defines import type
-@objcMembers public class Import: NSObject, SourceryModelWithoutDescription {
+public class Import: NSObject, SourceryModelWithoutDescription {
     /// Import kind, e.g. class, struct in `import class Module.ClassName`
     public var kind: String?
 
@@ -4012,13 +3422,46 @@ import Foundation
         }
 
 // sourcery:end
+
+// sourcery:inline:Import.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Import else { return false }
+        if self.kind != rhs.kind { return false }
+        if self.path != rhs.path { return false }
+        return true
+    }
+
+    // MARK: - Import AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.kind)
+        hasher.combine(self.path)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:Import.AutoDiffable
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Import else {
+            results.append("Incorrect type <expected: Import, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "kind").trackDifference(actual: self.kind, expected: castObject.kind))
+        results.append(contentsOf: DiffableResult(identifier: "path").trackDifference(actual: self.path, expected: castObject.path))
+        return results
+    }
+// sourcery:end
+
 }
 
 """),
     .init(name: "JSExport.generated.swift", content:
 """
-// Generated using Sourcery 1.3.4 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.17.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
+
 // swiftlint:disable vertical_whitespace trailing_newline
 
 import JavaScriptCore
@@ -4643,199 +4086,12 @@ import Foundation
 
 /// :nodoc:
 public typealias SourceryMethod = Method
+//public typealias Method = SwiftMethod
 
-/// Describes method parameter
-@objcMembers public class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
-    /// Parameter external name
-    public var argumentLabel: String?
-
-    /// Parameter internal name
-    // Note: although method parameter can have no name, this property is not optional,
-    // this is so to maintain compatibility with existing templates.
-    public let name: String
-
-    /// Parameter type name
-    public let typeName: TypeName
-
-    /// Parameter flag whether it's inout or not
-    public let `inout`: Bool
-
-    // sourcery: skipEquality, skipDescription
-    /// Parameter type, if known
-    public var type: Type?
-
-    /// Parameter type attributes, i.e. `@escaping`
-    public var typeAttributes: AttributeList {
-        return typeName.attributes
-    }
-
-    /// Method parameter default value expression
-    public var defaultValue: String?
-
-    /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
-    public var annotations: Annotations = [:]
-
-    /// :nodoc:
-    public init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false) {
-        self.typeName = typeName
-        self.argumentLabel = argumentLabel
-        self.name = name
-        self.type = type
-        self.defaultValue = defaultValue
-        self.annotations = annotations
-        self.`inout` = isInout
-    }
-
-    /// :nodoc:
-    public init(name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false) {
-        self.typeName = typeName
-        self.argumentLabel = name
-        self.name = name
-        self.type = type
-        self.defaultValue = defaultValue
-        self.annotations = annotations
-        self.`inout` = isInout
-    }
-
-    public var asSource: String {
-        let typeSuffix = ": \\(`inout` ? "inout " : "")\\(typeName.asSource)\\(defaultValue.map { " = \\($0)" } ?? "")"
-        guard argumentLabel != name else {
-            return name + typeSuffix
-        }
-
-        let labels = [argumentLabel ?? "_", name.nilIfEmpty]
-          .compactMap { $0 }
-          .joined(separator: " ")
-
-        return (labels.nilIfEmpty ?? "_") + typeSuffix
-    }
-
-// sourcery:inline:MethodParameter.AutoCoding
-
-        /// :nodoc:
-        required public init?(coder aDecoder: NSCoder) {
-            self.argumentLabel = aDecoder.decode(forKey: "argumentLabel")
-            guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
-            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
-            self.`inout` = aDecoder.decode(forKey: "`inout`")
-            self.type = aDecoder.decode(forKey: "type")
-            self.defaultValue = aDecoder.decode(forKey: "defaultValue")
-            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
-        }
-
-        /// :nodoc:
-        public func encode(with aCoder: NSCoder) {
-            aCoder.encode(self.argumentLabel, forKey: "argumentLabel")
-            aCoder.encode(self.name, forKey: "name")
-            aCoder.encode(self.typeName, forKey: "typeName")
-            aCoder.encode(self.`inout`, forKey: "`inout`")
-            aCoder.encode(self.type, forKey: "type")
-            aCoder.encode(self.defaultValue, forKey: "defaultValue")
-            aCoder.encode(self.annotations, forKey: "annotations")
-        }
-// sourcery:end
-}
-
-extension Array where Element == MethodParameter {
-    public var asSource: String {
-        "(\\(map { $0.asSource }.joined(separator: ", ")))"
-    }
-}
-
-// sourcery: skipDiffing
-@objcMembers public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated {
-    /// Parameter external name
-    public var argumentLabel: String?
-
-    /// Parameter internal name
-    public let name: String?
-
-    /// Parameter type name
-    public let typeName: TypeName
-
-    /// Parameter flag whether it's inout or not
-    public let `inout`: Bool
-
-    // sourcery: skipEquality, skipDescription
-    /// Parameter type, if known
-    public var type: Type?
-
-    /// Parameter type attributes, i.e. `@escaping`
-    public var typeAttributes: AttributeList {
-        return typeName.attributes
-    }
-
-    /// Method parameter default value expression
-    public var defaultValue: String?
-
-    /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
-    public var annotations: Annotations = [:]
-
-    /// :nodoc:
-    public init(argumentLabel: String? = nil, name: String? = nil, typeName: TypeName, type: Type? = nil,
-                defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false) {
-        self.typeName = typeName
-        self.argumentLabel = argumentLabel
-        self.name = name
-        self.type = type
-        self.defaultValue = defaultValue
-        self.annotations = annotations
-        self.`inout` = isInout
-    }
-
-    public var asSource: String {
-        let typeInfo = "\\(`inout` ? "inout " : "")\\(typeName.asSource)"
-        if argumentLabel?.nilIfNotValidParameterName == nil, name?.nilIfNotValidParameterName == nil {
-            return typeInfo
-        }
-
-        let typeSuffix = ": \\(typeInfo)"
-        guard argumentLabel != name else {
-            return name ?? "" + typeSuffix
-        }
-
-        let labels = [argumentLabel ?? "_", name?.nilIfEmpty]
-          .compactMap { $0 }
-          .joined(separator: " ")
-
-        return (labels.nilIfEmpty ?? "_") + typeSuffix
-    }
-
-    // sourcery:inline:ClosureParameter.AutoCoding
-
-            /// :nodoc:
-            required public init?(coder aDecoder: NSCoder) {
-                self.argumentLabel = aDecoder.decode(forKey: "argumentLabel")
-                self.name = aDecoder.decode(forKey: "name")
-                guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
-                self.`inout` = aDecoder.decode(forKey: "`inout`")
-                self.type = aDecoder.decode(forKey: "type")
-                self.defaultValue = aDecoder.decode(forKey: "defaultValue")
-                guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
-            }
-
-            /// :nodoc:
-            public func encode(with aCoder: NSCoder) {
-                aCoder.encode(self.argumentLabel, forKey: "argumentLabel")
-                aCoder.encode(self.name, forKey: "name")
-                aCoder.encode(self.typeName, forKey: "typeName")
-                aCoder.encode(self.`inout`, forKey: "`inout`")
-                aCoder.encode(self.type, forKey: "type")
-                aCoder.encode(self.defaultValue, forKey: "defaultValue")
-                aCoder.encode(self.annotations, forKey: "annotations")
-            }
-
-    // sourcery:end
-}
-
-extension Array where Element == ClosureParameter {
-    public var asSource: String {
-        "(\\(map { $0.asSource }.joined(separator: ", ")))"
-    }
-}
+@objc(SwiftMethod) extension Method { }
 
 /// Describes method
-@objc(SwiftMethod) @objcMembers public final class Method: NSObject, SourceryModel, Annotated, Definition {
+public final class Method: NSObject, SourceryModel, Annotated, Definition {
 
     /// Full method name, including generic constraints, i.e. `foo<T>(bar: T)`
     public let name: String
@@ -5064,6 +4320,259 @@ extension Array where Element == ClosureParameter {
             aCoder.encode(self.modifiers, forKey: "modifiers")
         }
 // sourcery:end
+
+// sourcery:inline:Method.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Method else { return false }
+        if self.name != rhs.name { return false }
+        if self.selectorName != rhs.selectorName { return false }
+        if self.parameters != rhs.parameters { return false }
+        if self.returnTypeName != rhs.returnTypeName { return false }
+        if self.`throws` != rhs.`throws` { return false }
+        if self.`rethrows` != rhs.`rethrows` { return false }
+        if self.accessLevel != rhs.accessLevel { return false }
+        if self.isStatic != rhs.isStatic { return false }
+        if self.isClass != rhs.isClass { return false }
+        if self.isFailableInitializer != rhs.isFailableInitializer { return false }
+        if self.annotations != rhs.annotations { return false }
+        if self.definedInTypeName != rhs.definedInTypeName { return false }
+        if self.attributes != rhs.attributes { return false }
+        if self.modifiers != rhs.modifiers { return false }
+        return true
+    }
+
+    // MARK: - Method AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.selectorName)
+        hasher.combine(self.parameters)
+        hasher.combine(self.returnTypeName)
+        hasher.combine(self.`throws`)
+        hasher.combine(self.`rethrows`)
+        hasher.combine(self.accessLevel)
+        hasher.combine(self.isStatic)
+        hasher.combine(self.isClass)
+        hasher.combine(self.isFailableInitializer)
+        hasher.combine(self.annotations)
+        hasher.combine(self.definedInTypeName)
+        hasher.combine(self.attributes)
+        hasher.combine(self.modifiers)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:Method.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "name = \\(String(describing: self.name)), "
+        string += "selectorName = \\(String(describing: self.selectorName)), "
+        string += "parameters = \\(String(describing: self.parameters)), "
+        string += "returnTypeName = \\(String(describing: self.returnTypeName)), "
+        string += "`throws` = \\(String(describing: self.`throws`)), "
+        string += "`rethrows` = \\(String(describing: self.`rethrows`)), "
+        string += "accessLevel = \\(String(describing: self.accessLevel)), "
+        string += "isStatic = \\(String(describing: self.isStatic)), "
+        string += "isClass = \\(String(describing: self.isClass)), "
+        string += "isFailableInitializer = \\(String(describing: self.isFailableInitializer)), "
+        string += "annotations = \\(String(describing: self.annotations)), "
+        string += "definedInTypeName = \\(String(describing: self.definedInTypeName)), "
+        string += "attributes = \\(String(describing: self.attributes)), "
+        string += "modifiers = \\(String(describing: self.modifiers))"
+        return string
+    }
+// sourcery:end
+
+// sourcery:inline:Method.AutoDiffable
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Method else {
+            results.append("Incorrect type <expected: Method, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "selectorName").trackDifference(actual: self.selectorName, expected: castObject.selectorName))
+        results.append(contentsOf: DiffableResult(identifier: "parameters").trackDifference(actual: self.parameters, expected: castObject.parameters))
+        results.append(contentsOf: DiffableResult(identifier: "returnTypeName").trackDifference(actual: self.returnTypeName, expected: castObject.returnTypeName))
+        results.append(contentsOf: DiffableResult(identifier: "`throws`").trackDifference(actual: self.`throws`, expected: castObject.`throws`))
+        results.append(contentsOf: DiffableResult(identifier: "`rethrows`").trackDifference(actual: self.`rethrows`, expected: castObject.`rethrows`))
+        results.append(contentsOf: DiffableResult(identifier: "accessLevel").trackDifference(actual: self.accessLevel, expected: castObject.accessLevel))
+        results.append(contentsOf: DiffableResult(identifier: "isStatic").trackDifference(actual: self.isStatic, expected: castObject.isStatic))
+        results.append(contentsOf: DiffableResult(identifier: "isClass").trackDifference(actual: self.isClass, expected: castObject.isClass))
+        results.append(contentsOf: DiffableResult(identifier: "isFailableInitializer").trackDifference(actual: self.isFailableInitializer, expected: castObject.isFailableInitializer))
+        results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
+        results.append(contentsOf: DiffableResult(identifier: "definedInTypeName").trackDifference(actual: self.definedInTypeName, expected: castObject.definedInTypeName))
+        results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
+        results.append(contentsOf: DiffableResult(identifier: "modifiers").trackDifference(actual: self.modifiers, expected: castObject.modifiers))
+        return results
+    }
+// sourcery:end
+
+}
+
+"""),
+    .init(name: "MethodParameter.swift", content:
+"""
+import Foundation
+
+/// Describes method parameter
+public class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
+    /// Parameter external name
+    public var argumentLabel: String?
+
+    /// Parameter internal name
+    // Note: although method parameter can have no name, this property is not optional,
+    // this is so to maintain compatibility with existing templates.
+    public let name: String
+
+    /// Parameter type name
+    public let typeName: TypeName
+
+    /// Parameter flag whether it's inout or not
+    public let `inout`: Bool
+
+    // sourcery: skipEquality, skipDescription
+    /// Parameter type, if known
+    public var type: Type?
+
+    /// Parameter type attributes, i.e. `@escaping`
+    public var typeAttributes: AttributeList {
+        return typeName.attributes
+    }
+
+    /// Method parameter default value expression
+    public var defaultValue: String?
+
+    /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
+    public var annotations: Annotations = [:]
+
+    /// :nodoc:
+    public init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false) {
+        self.typeName = typeName
+        self.argumentLabel = argumentLabel
+        self.name = name
+        self.type = type
+        self.defaultValue = defaultValue
+        self.annotations = annotations
+        self.`inout` = isInout
+    }
+
+    /// :nodoc:
+    public init(name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false) {
+        self.typeName = typeName
+        self.argumentLabel = name
+        self.name = name
+        self.type = type
+        self.defaultValue = defaultValue
+        self.annotations = annotations
+        self.`inout` = isInout
+    }
+
+    public var asSource: String {
+        let typeSuffix = ": \\(`inout` ? "inout " : "")\\(typeName.asSource)\\(defaultValue.map { " = \\($0)" } ?? "")"
+        guard argumentLabel != name else {
+            return name + typeSuffix
+        }
+
+        let labels = [argumentLabel ?? "_", name.nilIfEmpty]
+          .compactMap { $0 }
+          .joined(separator: " ")
+
+        return (labels.nilIfEmpty ?? "_") + typeSuffix
+    }
+
+// sourcery:inline:MethodParameter.AutoCoding
+
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
+            self.argumentLabel = aDecoder.decode(forKey: "argumentLabel")
+            guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
+            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
+            self.`inout` = aDecoder.decode(forKey: "`inout`")
+            self.type = aDecoder.decode(forKey: "type")
+            self.defaultValue = aDecoder.decode(forKey: "defaultValue")
+            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
+        }
+
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
+            aCoder.encode(self.argumentLabel, forKey: "argumentLabel")
+            aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.typeName, forKey: "typeName")
+            aCoder.encode(self.`inout`, forKey: "`inout`")
+            aCoder.encode(self.type, forKey: "type")
+            aCoder.encode(self.defaultValue, forKey: "defaultValue")
+            aCoder.encode(self.annotations, forKey: "annotations")
+        }
+// sourcery:end
+
+// sourcery:inline:MethodParameter.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? MethodParameter else { return false }
+        if self.argumentLabel != rhs.argumentLabel { return false }
+        if self.name != rhs.name { return false }
+        if self.typeName != rhs.typeName { return false }
+        if self.`inout` != rhs.`inout` { return false }
+        if self.defaultValue != rhs.defaultValue { return false }
+        if self.annotations != rhs.annotations { return false }
+        return true
+    }
+
+    // MARK: - MethodParameter AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.argumentLabel)
+        hasher.combine(self.name)
+        hasher.combine(self.typeName)
+        hasher.combine(self.`inout`)
+        hasher.combine(self.defaultValue)
+        hasher.combine(self.annotations)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:MethodParameter.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "argumentLabel = \\(String(describing: self.argumentLabel)), "
+        string += "name = \\(String(describing: self.name)), "
+        string += "typeName = \\(String(describing: self.typeName)), "
+        string += "`inout` = \\(String(describing: self.`inout`)), "
+        string += "typeAttributes = \\(String(describing: self.typeAttributes)), "
+        string += "defaultValue = \\(String(describing: self.defaultValue)), "
+        string += "annotations = \\(String(describing: self.annotations)), "
+        string += "asSource = \\(String(describing: self.asSource))"
+        return string
+    }
+// sourcery:end
+
+// sourcery:inline:MethodParameter.AutoDiffable
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? MethodParameter else {
+            results.append("Incorrect type <expected: MethodParameter, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "argumentLabel").trackDifference(actual: self.argumentLabel, expected: castObject.argumentLabel))
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
+        results.append(contentsOf: DiffableResult(identifier: "`inout`").trackDifference(actual: self.`inout`, expected: castObject.`inout`))
+        results.append(contentsOf: DiffableResult(identifier: "defaultValue").trackDifference(actual: self.defaultValue, expected: castObject.defaultValue))
+        results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
+        return results
+    }
+// sourcery:end
+
+}
+
+extension Array where Element == MethodParameter {
+    public var asSource: String {
+        "(\\(map { $0.asSource }.joined(separator: ", ")))"
+    }
 }
 
 """),
@@ -5074,7 +4583,7 @@ import Foundation
 public typealias SourceryModifier = Modifier
 /// modifier can be thing like `private`, `class`, `nonmutating`
 /// if a declaration has modifier like `private(set)` it's name will be `private` and detail will be `set`
-@objcMembers public class Modifier: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
+public class Modifier: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
 
     /// The declaration modifier name.
     public let name: String
@@ -5109,6 +4618,38 @@ public typealias SourceryModifier = Modifier
                 aCoder.encode(self.detail, forKey: "detail")
             }
     // sourcery:end
+
+    // sourcery:inline:Modifier.Equality
+        /// :nodoc:
+        public override func isEqual(_ object: Any?) -> Bool {
+            guard let rhs = object as? Modifier else { return false }
+            if self.name != rhs.name { return false }
+            if self.detail != rhs.detail { return false }
+            return true
+        }
+
+        // MARK: - Modifier AutoHashable
+        public override var hash: Int {
+            var hasher = Hasher()
+            hasher.combine(self.name)
+            hasher.combine(self.detail)
+            return hasher.finalize()
+        }
+    // sourcery:end
+
+    // sourcery:inline:Modifier.AutoDiffable
+        public func diffAgainst(_ object: Any?) -> DiffableResult {
+            let results = DiffableResult()
+            guard let castObject = object as? Modifier else {
+                results.append("Incorrect type <expected: Modifier, received: \\(Swift.type(of: object))>")
+                return results
+            }
+            results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+            results.append(contentsOf: DiffableResult(identifier: "detail").trackDifference(actual: self.detail, expected: castObject.detail))
+            return results
+        }
+    // sourcery:end
+
 }
 
 """),
@@ -5157,7 +4698,7 @@ import Foundation
 public typealias SourceryProtocol = Protocol
 
 /// Describes Swift protocol
-@objcMembers public final class Protocol: Type {
+public final class Protocol: Type {
 
     /// Returns "protocol"
     public override var kind: String { return "protocol" }
@@ -5228,6 +4769,52 @@ public typealias SourceryProtocol = Protocol
             aCoder.encode(self.genericRequirements, forKey: "genericRequirements")
         }
 // sourcery:end
+
+// sourcery:inline:Protocol.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Protocol else { return false }
+        if self.associatedTypes != rhs.associatedTypes { return false }
+        if self.genericRequirements != rhs.genericRequirements { return false }
+        return super.isEqual(rhs)
+    }
+
+    // MARK: - Protocol AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.associatedTypes)
+        hasher.combine(self.genericRequirements)
+        hasher.combine(super.hash)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:Protocol.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = super.description
+        string += ", "
+        string += "kind = \\(String(describing: self.kind)), "
+        string += "associatedTypes = \\(String(describing: self.associatedTypes)), "
+        string += "genericRequirements = \\(String(describing: self.genericRequirements))"
+        return string
+    }
+// sourcery:end
+
+// sourcery:inline:Protocol.AutoDiffable
+    override public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Protocol else {
+            results.append("Incorrect type <expected: Protocol, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "associatedTypes").trackDifference(actual: self.associatedTypes, expected: castObject.associatedTypes))
+        results.append(contentsOf: DiffableResult(identifier: "genericRequirements").trackDifference(actual: self.genericRequirements, expected: castObject.genericRequirements))
+        results.append(contentsOf: super.diffAgainst(castObject))
+        return results
+    }
+// sourcery:end
+
 }
 
 """),
@@ -5240,7 +4827,7 @@ import Foundation
 
 // sourcery: skipJSExport
 /// Describes a Swift [protocol composition](https://docs.swift.org/swift-book/ReferenceManual/Types.html#ID454).
-@objcMembers public final class ProtocolComposition: Type {
+public final class ProtocolComposition: Type {
 
     /// Returns "protocolComposition"
     public override var kind: String { return "protocolComposition" }
@@ -5303,6 +4890,47 @@ import Foundation
         }
 // sourcery:end
 
+// sourcery:inline:ProtocolComposition.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? ProtocolComposition else { return false }
+        if self.composedTypeNames != rhs.composedTypeNames { return false }
+        return super.isEqual(rhs)
+    }
+
+    // MARK: - ProtocolComposition AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.composedTypeNames)
+        hasher.combine(super.hash)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:ProtocolComposition.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = super.description
+        string += ", "
+        string += "kind = \\(String(describing: self.kind)), "
+        string += "composedTypeNames = \\(String(describing: self.composedTypeNames))"
+        return string
+    }
+// sourcery:end
+
+// sourcery:inline:ProtocolComposition.AutoDiffable
+    override public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? ProtocolComposition else {
+            results.append("Incorrect type <expected: ProtocolComposition, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "composedTypeNames").trackDifference(actual: self.composedTypeNames, expected: castObject.composedTypeNames))
+        results.append(contentsOf: super.diffAgainst(castObject))
+        return results
+    }
+// sourcery:end
+
 }
 
 """),
@@ -5320,7 +4948,7 @@ import Foundation
 
 // sourcery: skipDescription
 /// Describes Swift struct
-@objcMembers public final class Struct: Type {
+public final class Struct: Type {
 
     /// Returns "struct"
     public override var kind: String { return "struct" }
@@ -5370,6 +4998,44 @@ import Foundation
             super.encode(with: aCoder)
         }
 // sourcery:end
+
+// sourcery:inline:Struct.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Struct else { return false }
+        return super.isEqual(rhs)
+    }
+
+    // MARK: - Struct AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(super.hash)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:Struct.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = super.description
+        string += ", "
+        string += "kind = \\(String(describing: self.kind))"
+        return string
+    }
+// sourcery:end
+
+// sourcery:inline:Struct.AutoDiffable
+    override public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Struct else {
+            results.append("Incorrect type <expected: Struct, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: super.diffAgainst(castObject))
+        return results
+    }
+// sourcery:end
+
 }
 
 """),
@@ -5378,7 +5044,7 @@ import Foundation
 import Foundation
 
 /// Describes subscript
-@objcMembers public final class Subscript: NSObject, SourceryModel, Annotated, Definition {
+public final class Subscript: NSObject, SourceryModel, Annotated, Definition {
 
     /// Method parameters
     public var parameters: [MethodParameter]
@@ -5508,6 +5174,75 @@ import Foundation
         }
 // sourcery:end
 
+// sourcery:inline:Subscript.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Subscript else { return false }
+        if self.parameters != rhs.parameters { return false }
+        if self.returnTypeName != rhs.returnTypeName { return false }
+        if self.readAccess != rhs.readAccess { return false }
+        if self.writeAccess != rhs.writeAccess { return false }
+        if self.annotations != rhs.annotations { return false }
+        if self.definedInTypeName != rhs.definedInTypeName { return false }
+        if self.attributes != rhs.attributes { return false }
+        if self.modifiers != rhs.modifiers { return false }
+        return true
+    }
+
+    // MARK: - Subscript AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.parameters)
+        hasher.combine(self.returnTypeName)
+        hasher.combine(self.readAccess)
+        hasher.combine(self.writeAccess)
+        hasher.combine(self.annotations)
+        hasher.combine(self.definedInTypeName)
+        hasher.combine(self.attributes)
+        hasher.combine(self.modifiers)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:Subscript.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "parameters = \\(String(describing: self.parameters)), "
+        string += "returnTypeName = \\(String(describing: self.returnTypeName)), "
+        string += "actualReturnTypeName = \\(String(describing: self.actualReturnTypeName)), "
+        string += "isFinal = \\(String(describing: self.isFinal)), "
+        string += "readAccess = \\(String(describing: self.readAccess)), "
+        string += "writeAccess = \\(String(describing: self.writeAccess)), "
+        string += "isMutable = \\(String(describing: self.isMutable)), "
+        string += "annotations = \\(String(describing: self.annotations)), "
+        string += "definedInTypeName = \\(String(describing: self.definedInTypeName)), "
+        string += "actualDefinedInTypeName = \\(String(describing: self.actualDefinedInTypeName)), "
+        string += "attributes = \\(String(describing: self.attributes)), "
+        string += "modifiers = \\(String(describing: self.modifiers))"
+        return string
+    }
+// sourcery:end
+
+// sourcery:inline:Subscript.AutoDiffable
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Subscript else {
+            results.append("Incorrect type <expected: Subscript, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "parameters").trackDifference(actual: self.parameters, expected: castObject.parameters))
+        results.append(contentsOf: DiffableResult(identifier: "returnTypeName").trackDifference(actual: self.returnTypeName, expected: castObject.returnTypeName))
+        results.append(contentsOf: DiffableResult(identifier: "readAccess").trackDifference(actual: self.readAccess, expected: castObject.readAccess))
+        results.append(contentsOf: DiffableResult(identifier: "writeAccess").trackDifference(actual: self.writeAccess, expected: castObject.writeAccess))
+        results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
+        results.append(contentsOf: DiffableResult(identifier: "definedInTypeName").trackDifference(actual: self.definedInTypeName, expected: castObject.definedInTypeName))
+        results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
+        results.append(contentsOf: DiffableResult(identifier: "modifiers").trackDifference(actual: self.modifiers, expected: castObject.modifiers))
+        return results
+    }
+// sourcery:end
+
 }
 
 """),
@@ -5522,7 +5257,7 @@ import Foundation
 
 /// :nodoc:
 // sourcery: skipCoding
-@objcMembers public final class TemplateContext: NSObject, SourceryModel, NSCoding {
+public final class TemplateContext: NSObject, SourceryModel, NSCoding {
     // sourcery: skipJSExport
     public let parserResult: FileParserResult?
     public let functions: [SourceryMethod]
@@ -5593,6 +5328,56 @@ import Foundation
         ]
     }
 
+    // sourcery:inline:TemplateContext.Equality
+        /// :nodoc:
+        public override func isEqual(_ object: Any?) -> Bool {
+            guard let rhs = object as? TemplateContext else { return false }
+            if self.parserResult != rhs.parserResult { return false }
+            if self.functions != rhs.functions { return false }
+            if self.types != rhs.types { return false }
+            if self.argument != rhs.argument { return false }
+            return true
+        }
+
+        // MARK: - TemplateContext AutoHashable
+        public override var hash: Int {
+            var hasher = Hasher()
+            hasher.combine(self.parserResult)
+            hasher.combine(self.functions)
+            hasher.combine(self.types)
+            hasher.combine(self.argument)
+            return hasher.finalize()
+        }
+    // sourcery:end
+
+    // sourcery:inline:TemplateContext.Description
+        /// :nodoc:
+        override public var description: String {
+            var string = "\\(Swift.type(of: self)): "
+            string += "parserResult = \\(String(describing: self.parserResult)), "
+            string += "functions = \\(String(describing: self.functions)), "
+            string += "types = \\(String(describing: self.types)), "
+            string += "argument = \\(String(describing: self.argument)), "
+            string += "stencilContext = \\(String(describing: self.stencilContext))"
+            return string
+        }
+    // sourcery:end
+
+    // sourcery:inline:TemplateContext.AutoDiffable
+        public func diffAgainst(_ object: Any?) -> DiffableResult {
+            let results = DiffableResult()
+            guard let castObject = object as? TemplateContext else {
+                results.append("Incorrect type <expected: TemplateContext, received: \\(Swift.type(of: object))>")
+                return results
+            }
+            results.append(contentsOf: DiffableResult(identifier: "parserResult").trackDifference(actual: self.parserResult, expected: castObject.parserResult))
+            results.append(contentsOf: DiffableResult(identifier: "functions").trackDifference(actual: self.functions, expected: castObject.functions))
+            results.append(contentsOf: DiffableResult(identifier: "types").trackDifference(actual: self.types, expected: castObject.types))
+            results.append(contentsOf: DiffableResult(identifier: "argument").trackDifference(actual: self.argument, expected: castObject.argument))
+            return results
+        }
+    // sourcery:end
+
 }
 
 extension ProcessInfo {
@@ -5602,136 +5387,8 @@ extension ProcessInfo {
     }
 }
 
-// sourcery: skipJSExport
-/// Collection of scanned types for accessing in templates
-@objcMembers public final class Types: NSObject, SourceryModel {
-
-    /// :nodoc:
-    public let types: [Type]
-
-    /// All known typealiases
-    public let typealiases: [Typealias]
-
-    /// :nodoc:
-    public init(types: [Type], typealiases: [Typealias] = []) {
-        self.types = types
-        self.typealiases = typealiases
-    }
-
-// sourcery:inline:Types.AutoCoding
-
-        /// :nodoc:
-        required public init?(coder aDecoder: NSCoder) {
-            guard let types: [Type] = aDecoder.decode(forKey: "types") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["types"])); fatalError() }; self.types = types
-            guard let typealiases: [Typealias] = aDecoder.decode(forKey: "typealiases") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typealiases"])); fatalError() }; self.typealiases = typealiases
-        }
-
-        /// :nodoc:
-        public func encode(with aCoder: NSCoder) {
-            aCoder.encode(self.types, forKey: "types")
-            aCoder.encode(self.typealiases, forKey: "typealiases")
-        }
-// sourcery:end
-
-    // sourcery: skipDescription, skipEquality, skipCoding
-    /// :nodoc:
-    public lazy internal(set) var typesByName: [String: Type] = {
-        var typesByName = [String: Type]()
-        self.types.forEach { typesByName[$0.globalName] = $0 }
-        return typesByName
-    }()
-
-    // sourcery: skipDescription, skipEquality, skipCoding
-    /// :nodoc:
-    public lazy internal(set) var typesaliasesByName: [String: Typealias] = {
-        var typesaliasesByName = [String: Typealias]()
-        self.typealiases.forEach { typesaliasesByName[$0.name] = $0 }
-        return typesaliasesByName
-    }()
-
-    // sourcery: skipDescription, skipEquality, skipCoding
-    /// All known types, excluding protocols or protocol compositions.
-    public lazy internal(set) var all: [Type] = {
-        return self.types.filter { !($0 is Protocol || $0 is ProtocolComposition) }
-    }()
-
-    // sourcery: skipDescription, skipEquality, skipCoding
-    /// All known protocols
-    public lazy internal(set) var protocols: [Protocol] = {
-        return self.types.compactMap { $0 as? Protocol }
-    }()
-
-    // sourcery: skipDescription, skipEquality, skipCoding
-    /// All known protocol compositions
-    public lazy internal(set) var protocolCompositions: [ProtocolComposition] = {
-        return self.types.compactMap { $0 as? ProtocolComposition }
-    }()
-
-    // sourcery: skipDescription, skipEquality, skipCoding
-    /// All known classes
-    public lazy internal(set) var classes: [Class] = {
-        return self.all.compactMap { $0 as? Class }
-    }()
-
-    // sourcery: skipDescription, skipEquality, skipCoding
-    /// All known structs
-    public lazy internal(set) var structs: [Struct] = {
-        return self.all.compactMap { $0 as? Struct }
-    }()
-
-    // sourcery: skipDescription, skipEquality, skipCoding
-    /// All known enums
-    public lazy internal(set) var enums: [Enum] = {
-        return self.all.compactMap { $0 as? Enum }
-    }()
-
-    // sourcery: skipDescription, skipEquality, skipCoding
-    /// All known extensions
-    public lazy internal(set) var extensions: [Type] = {
-        return self.all.compactMap { $0.isExtension ? $0 : nil }
-    }()
-
-    // sourcery: skipDescription, skipEquality, skipCoding
-    /// Types based on any other type, grouped by its name, even if they are not known.
-    /// `types.based.MyType` returns list of types based on `MyType`
-    public lazy internal(set) var based: TypesCollection = {
-        TypesCollection(
-            types: self.types,
-            collection: { Array($0.based.keys) }
-        )
-    }()
-
-    // sourcery: skipDescription, skipEquality, skipCoding
-    /// Classes inheriting from any known class, grouped by its name.
-    /// `types.inheriting.MyClass` returns list of types inheriting from `MyClass`
-    public lazy internal(set) var inheriting: TypesCollection = {
-        TypesCollection(
-            types: self.types,
-            collection: { Array($0.inherits.keys) },
-            validate: { type in
-                guard type is Class else {
-                    throw "\\(type.name) is not a class and should be used with `implementing` or `based`"
-                }
-            })
-    }()
-
-    // sourcery: skipDescription, skipEquality, skipCoding
-    /// Types implementing known protocol, grouped by its name.
-    /// `types.implementing.MyProtocol` returns list of types implementing `MyProtocol`
-    public lazy internal(set) var implementing: TypesCollection = {
-        TypesCollection(
-            types: self.types,
-            collection: { Array($0.implements.keys) },
-            validate: { type in
-                guard type is Protocol else {
-                    throw "\\(type.name) is a class and should be used with `inheriting` or `based`"
-                }
-        })
-    }()
-}
-
 /// :nodoc:
-@objcMembers public class TypesCollection: NSObject, AutoJSExport {
+public class TypesCollection: NSObject, AutoJSExport {
 
     // sourcery:begin: skipJSExport
     let all: [Type]
@@ -5813,7 +5470,7 @@ extension ProcessInfo {
 import Foundation
 
 /// Describes tuple type
-@objcMembers public final class TupleType: NSObject, SourceryModel {
+public final class TupleType: NSObject, SourceryModel {
 
     /// Type name used in declaration
     public var name: String
@@ -5847,10 +5504,57 @@ import Foundation
             aCoder.encode(self.elements, forKey: "elements")
         }
 // sourcery:end
+
+// sourcery:inline:TupleType.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? TupleType else { return false }
+        if self.name != rhs.name { return false }
+        if self.elements != rhs.elements { return false }
+        return true
+    }
+
+    // MARK: - TupleType AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.elements)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:TupleType.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "name = \\(String(describing: self.name)), "
+        string += "elements = \\(String(describing: self.elements))"
+        return string
+    }
+// sourcery:end
+
+// sourcery:inline:TupleType.AutoDiffable
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? TupleType else {
+            results.append("Incorrect type <expected: TupleType, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "elements").trackDifference(actual: self.elements, expected: castObject.elements))
+        return results
+    }
+// sourcery:end
+
 }
 
+"""),
+    .init(name: "TupleElement.swift", content:
+"""
+import Foundation
+
 /// Describes tuple type element
-@objcMembers public final class TupleElement: NSObject, SourceryModel, Typed {
+public final class TupleElement: NSObject, SourceryModel, Typed {
 
     /// Tuple element name
     public let name: String?
@@ -5890,6 +5594,49 @@ import Foundation
             aCoder.encode(self.type, forKey: "type")
         }
 // sourcery:end
+
+// sourcery:inline:TupleElement.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? TupleElement else { return false }
+        if self.name != rhs.name { return false }
+        if self.typeName != rhs.typeName { return false }
+        return true
+    }
+
+    // MARK: - TupleElement AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.typeName)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:TupleElement.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "name = \\(String(describing: self.name)), "
+        string += "typeName = \\(String(describing: self.typeName)), "
+        string += "asSource = \\(String(describing: self.asSource))"
+        return string
+    }
+// sourcery:end
+
+// sourcery:inline:TupleElement.AutoDiffable
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? TupleElement else {
+            results.append("Incorrect type <expected: TupleElement, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
+        return results
+    }
+// sourcery:end
+
 }
 
 extension Array where Element == TupleElement {
@@ -5916,7 +5663,7 @@ import Foundation
 public typealias AttributeList = [String: [Attribute]]
 
 /// Defines Swift type
-@objcMembers public class Type: NSObject, SourceryModel, Annotated {
+public class Type: NSObject, SourceryModel, Annotated {
 
     /// :nodoc:
     public var module: String?
@@ -6363,6 +6110,126 @@ public typealias AttributeList = [String: [Attribute]]
             aCoder.encode(self.path, forKey: "path")
         }
 // sourcery:end
+
+// sourcery:inline:Type.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Type else { return false }
+        if self.module != rhs.module { return false }
+        if self.imports != rhs.imports { return false }
+        if self.typealiases != rhs.typealiases { return false }
+        if self.isExtension != rhs.isExtension { return false }
+        if self.accessLevel != rhs.accessLevel { return false }
+        if self.isUnknownExtension != rhs.isUnknownExtension { return false }
+        if self.isGeneric != rhs.isGeneric { return false }
+        if self.localName != rhs.localName { return false }
+        if self.rawVariables != rhs.rawVariables { return false }
+        if self.rawMethods != rhs.rawMethods { return false }
+        if self.rawSubscripts != rhs.rawSubscripts { return false }
+        if self.annotations != rhs.annotations { return false }
+        if self.inheritedTypes != rhs.inheritedTypes { return false }
+        if self.inherits != rhs.inherits { return false }
+        if self.containedTypes != rhs.containedTypes { return false }
+        if self.parentName != rhs.parentName { return false }
+        if self.attributes != rhs.attributes { return false }
+        if self.modifiers != rhs.modifiers { return false }
+        if self.kind != rhs.kind { return false }
+        return true
+    }
+
+    // MARK: - Type AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.module)
+        hasher.combine(self.imports)
+        hasher.combine(self.typealiases)
+        hasher.combine(self.isExtension)
+        hasher.combine(self.accessLevel)
+        hasher.combine(self.isUnknownExtension)
+        hasher.combine(self.isGeneric)
+        hasher.combine(self.localName)
+        hasher.combine(self.rawVariables)
+        hasher.combine(self.rawMethods)
+        hasher.combine(self.rawSubscripts)
+        hasher.combine(self.annotations)
+        hasher.combine(self.inheritedTypes)
+        hasher.combine(self.inherits)
+        hasher.combine(self.containedTypes)
+        hasher.combine(self.parentName)
+        hasher.combine(self.attributes)
+        hasher.combine(self.modifiers)
+        hasher.combine(kind)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:Type.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "module = \\(String(describing: self.module)), "
+        string += "imports = \\(String(describing: self.imports)), "
+        string += "allImports = \\(String(describing: self.allImports)), "
+        string += "typealiases = \\(String(describing: self.typealiases)), "
+        string += "isExtension = \\(String(describing: self.isExtension)), "
+        string += "kind = \\(String(describing: self.kind)), "
+        string += "accessLevel = \\(String(describing: self.accessLevel)), "
+        string += "name = \\(String(describing: self.name)), "
+        string += "isUnknownExtension = \\(String(describing: self.isUnknownExtension)), "
+        string += "isGeneric = \\(String(describing: self.isGeneric)), "
+        string += "localName = \\(String(describing: self.localName)), "
+        string += "rawVariables = \\(String(describing: self.rawVariables)), "
+        string += "rawMethods = \\(String(describing: self.rawMethods)), "
+        string += "rawSubscripts = \\(String(describing: self.rawSubscripts)), "
+        string += "initializers = \\(String(describing: self.initializers)), "
+        string += "annotations = \\(String(describing: self.annotations)), "
+        string += "staticVariables = \\(String(describing: self.staticVariables)), "
+        string += "staticMethods = \\(String(describing: self.staticMethods)), "
+        string += "classMethods = \\(String(describing: self.classMethods)), "
+        string += "instanceVariables = \\(String(describing: self.instanceVariables)), "
+        string += "instanceMethods = \\(String(describing: self.instanceMethods)), "
+        string += "computedVariables = \\(String(describing: self.computedVariables)), "
+        string += "storedVariables = \\(String(describing: self.storedVariables)), "
+        string += "inheritedTypes = \\(String(describing: self.inheritedTypes)), "
+        string += "inherits = \\(String(describing: self.inherits)), "
+        string += "containedTypes = \\(String(describing: self.containedTypes)), "
+        string += "parentName = \\(String(describing: self.parentName)), "
+        string += "parentTypes = \\(String(describing: self.parentTypes)), "
+        string += "attributes = \\(String(describing: self.attributes)), "
+        string += "modifiers = \\(String(describing: self.modifiers))"
+        return string
+    }
+// sourcery:end
+
+// sourcery:inline:Type.AutoDiffable
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Type else {
+            results.append("Incorrect type <expected: Type, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "module").trackDifference(actual: self.module, expected: castObject.module))
+        results.append(contentsOf: DiffableResult(identifier: "imports").trackDifference(actual: self.imports, expected: castObject.imports))
+        results.append(contentsOf: DiffableResult(identifier: "typealiases").trackDifference(actual: self.typealiases, expected: castObject.typealiases))
+        results.append(contentsOf: DiffableResult(identifier: "isExtension").trackDifference(actual: self.isExtension, expected: castObject.isExtension))
+        results.append(contentsOf: DiffableResult(identifier: "accessLevel").trackDifference(actual: self.accessLevel, expected: castObject.accessLevel))
+        results.append(contentsOf: DiffableResult(identifier: "isUnknownExtension").trackDifference(actual: self.isUnknownExtension, expected: castObject.isUnknownExtension))
+        results.append(contentsOf: DiffableResult(identifier: "isGeneric").trackDifference(actual: self.isGeneric, expected: castObject.isGeneric))
+        results.append(contentsOf: DiffableResult(identifier: "localName").trackDifference(actual: self.localName, expected: castObject.localName))
+        results.append(contentsOf: DiffableResult(identifier: "rawVariables").trackDifference(actual: self.rawVariables, expected: castObject.rawVariables))
+        results.append(contentsOf: DiffableResult(identifier: "rawMethods").trackDifference(actual: self.rawMethods, expected: castObject.rawMethods))
+        results.append(contentsOf: DiffableResult(identifier: "rawSubscripts").trackDifference(actual: self.rawSubscripts, expected: castObject.rawSubscripts))
+        results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
+        results.append(contentsOf: DiffableResult(identifier: "inheritedTypes").trackDifference(actual: self.inheritedTypes, expected: castObject.inheritedTypes))
+        results.append(contentsOf: DiffableResult(identifier: "inherits").trackDifference(actual: self.inherits, expected: castObject.inherits))
+        results.append(contentsOf: DiffableResult(identifier: "containedTypes").trackDifference(actual: self.containedTypes, expected: castObject.containedTypes))
+        results.append(contentsOf: DiffableResult(identifier: "parentName").trackDifference(actual: self.parentName, expected: castObject.parentName))
+        results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
+        results.append(contentsOf: DiffableResult(identifier: "modifiers").trackDifference(actual: self.modifiers, expected: castObject.modifiers))
+        return results
+    }
+// sourcery:end
+
 }
 
 extension Type {
@@ -6398,7 +6265,7 @@ extension Type {
 import Foundation
 
 /// Describes name of the type used in typed declaration (variable, method parameter or return value etc.)
-@objcMembers public final class TypeName: NSObject, SourceryModelWithoutDescription, LosslessStringConvertible {
+public final class TypeName: NSObject, SourceryModelWithoutDescription, LosslessStringConvertible {
     /// :nodoc:
     public init(name: String,
                 actualTypeName: TypeName? = nil,
@@ -6595,6 +6462,58 @@ import Foundation
         }
 // sourcery:end
 
+// sourcery:inline:TypeName.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? TypeName else { return false }
+        if self.name != rhs.name { return false }
+        if self.generic != rhs.generic { return false }
+        if self.isProtocolComposition != rhs.isProtocolComposition { return false }
+        if self.attributes != rhs.attributes { return false }
+        if self.modifiers != rhs.modifiers { return false }
+        if self.tuple != rhs.tuple { return false }
+        if self.array != rhs.array { return false }
+        if self.dictionary != rhs.dictionary { return false }
+        if self.closure != rhs.closure { return false }
+        return true
+    }
+
+    // MARK: - TypeName AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.generic)
+        hasher.combine(self.isProtocolComposition)
+        hasher.combine(self.attributes)
+        hasher.combine(self.modifiers)
+        hasher.combine(self.tuple)
+        hasher.combine(self.array)
+        hasher.combine(self.dictionary)
+        hasher.combine(self.closure)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:TypeName.AutoDiffable
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? TypeName else {
+            results.append("Incorrect type <expected: TypeName, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "generic").trackDifference(actual: self.generic, expected: castObject.generic))
+        results.append(contentsOf: DiffableResult(identifier: "isProtocolComposition").trackDifference(actual: self.isProtocolComposition, expected: castObject.isProtocolComposition))
+        results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
+        results.append(contentsOf: DiffableResult(identifier: "modifiers").trackDifference(actual: self.modifiers, expected: castObject.modifiers))
+        results.append(contentsOf: DiffableResult(identifier: "tuple").trackDifference(actual: self.tuple, expected: castObject.tuple))
+        results.append(contentsOf: DiffableResult(identifier: "array").trackDifference(actual: self.array, expected: castObject.array))
+        results.append(contentsOf: DiffableResult(identifier: "dictionary").trackDifference(actual: self.dictionary, expected: castObject.dictionary))
+        results.append(contentsOf: DiffableResult(identifier: "closure").trackDifference(actual: self.closure, expected: castObject.closure))
+        return results
+    }
+// sourcery:end
+
     // sourcery: skipEquality, skipDescription
     /// :nodoc:
     public override var debugDescription: String {
@@ -6624,7 +6543,7 @@ import Foundation
 
 // sourcery: skipJSExport
 /// :nodoc:
-@objcMembers public final class Typealias: NSObject, Typed, SourceryModel {
+public final class Typealias: NSObject, Typed, SourceryModel {
     // New typealias name
     public let aliasName: String
 
@@ -6690,17 +6609,73 @@ import Foundation
             aCoder.encode(self.parentName, forKey: "parentName")
         }
 // sourcery:end
+
+// sourcery:inline:Typealias.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Typealias else { return false }
+        if self.aliasName != rhs.aliasName { return false }
+        if self.typeName != rhs.typeName { return false }
+        if self.module != rhs.module { return false }
+        if self.accessLevel != rhs.accessLevel { return false }
+        if self.parentName != rhs.parentName { return false }
+        return true
+    }
+
+    // MARK: - Typealias AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.aliasName)
+        hasher.combine(self.typeName)
+        hasher.combine(self.module)
+        hasher.combine(self.accessLevel)
+        hasher.combine(self.parentName)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:Typealias.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "aliasName = \\(String(describing: self.aliasName)), "
+        string += "typeName = \\(String(describing: self.typeName)), "
+        string += "module = \\(String(describing: self.module)), "
+        string += "accessLevel = \\(String(describing: self.accessLevel)), "
+        string += "parentName = \\(String(describing: self.parentName)), "
+        string += "name = \\(String(describing: self.name))"
+        return string
+    }
+// sourcery:end
+
+// sourcery:inline:Typealias.AutoDiffable
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Typealias else {
+            results.append("Incorrect type <expected: Typealias, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "aliasName").trackDifference(actual: self.aliasName, expected: castObject.aliasName))
+        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
+        results.append(contentsOf: DiffableResult(identifier: "module").trackDifference(actual: self.module, expected: castObject.module))
+        results.append(contentsOf: DiffableResult(identifier: "accessLevel").trackDifference(actual: self.accessLevel, expected: castObject.accessLevel))
+        results.append(contentsOf: DiffableResult(identifier: "parentName").trackDifference(actual: self.parentName, expected: castObject.parentName))
+        return results
+    }
+// sourcery:end
+
 }
 
 """),
     .init(name: "Typed.generated.swift", content:
 """
-// Generated using Sourcery 1.3.4 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.17.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
+
 // swiftlint:disable vertical_whitespace
+import Foundation
 
-
-extension AssociatedValue {
+@objc extension AssociatedValue {
     /// Whether type is optional. Shorthand for `typeName.isOptional`
     public var isOptional: Bool { return typeName.isOptional }
     /// Whether type is implicitly unwrapped optional. Shorthand for `typeName.isImplicitlyUnwrappedOptional`
@@ -6718,7 +6693,7 @@ extension AssociatedValue {
     /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
     public var isDictionary: Bool { return typeName.isDictionary }
 }
-extension ClosureParameter {
+@objc extension ClosureParameter {
     /// Whether type is optional. Shorthand for `typeName.isOptional`
     public var isOptional: Bool { return typeName.isOptional }
     /// Whether type is implicitly unwrapped optional. Shorthand for `typeName.isImplicitlyUnwrappedOptional`
@@ -6736,7 +6711,7 @@ extension ClosureParameter {
     /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
     public var isDictionary: Bool { return typeName.isDictionary }
 }
-extension MethodParameter {
+@objc extension MethodParameter {
     /// Whether type is optional. Shorthand for `typeName.isOptional`
     public var isOptional: Bool { return typeName.isOptional }
     /// Whether type is implicitly unwrapped optional. Shorthand for `typeName.isImplicitlyUnwrappedOptional`
@@ -6754,7 +6729,7 @@ extension MethodParameter {
     /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
     public var isDictionary: Bool { return typeName.isDictionary }
 }
-extension TupleElement {
+@objc extension TupleElement {
     /// Whether type is optional. Shorthand for `typeName.isOptional`
     public var isOptional: Bool { return typeName.isOptional }
     /// Whether type is implicitly unwrapped optional. Shorthand for `typeName.isImplicitlyUnwrappedOptional`
@@ -6772,7 +6747,7 @@ extension TupleElement {
     /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
     public var isDictionary: Bool { return typeName.isDictionary }
 }
-extension Typealias {
+@objc extension Typealias {
     /// Whether type is optional. Shorthand for `typeName.isOptional`
     public var isOptional: Bool { return typeName.isOptional }
     /// Whether type is implicitly unwrapped optional. Shorthand for `typeName.isImplicitlyUnwrappedOptional`
@@ -6790,7 +6765,7 @@ extension Typealias {
     /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
     public var isDictionary: Bool { return typeName.isDictionary }
 }
-extension Variable {
+@objc extension Variable {
     /// Whether type is optional. Shorthand for `typeName.isOptional`
     public var isOptional: Bool { return typeName.isOptional }
     /// Whether type is implicitly unwrapped optional. Shorthand for `typeName.isImplicitlyUnwrappedOptional`
@@ -6839,6 +6814,199 @@ public protocol Typed {
 }
 
 """),
+    .init(name: "Types.swift", content:
+"""
+import Foundation
+
+// sourcery: skipJSExport
+/// Collection of scanned types for accessing in templates
+public final class Types: NSObject, SourceryModel {
+
+    /// :nodoc:
+    public let types: [Type]
+
+    /// All known typealiases
+    public let typealiases: [Typealias]
+
+    /// :nodoc:
+    public init(types: [Type], typealiases: [Typealias] = []) {
+        self.types = types
+        self.typealiases = typealiases
+    }
+
+// sourcery:inline:Types.AutoCoding
+
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
+            guard let types: [Type] = aDecoder.decode(forKey: "types") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["types"])); fatalError() }; self.types = types
+            guard let typealiases: [Typealias] = aDecoder.decode(forKey: "typealiases") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typealiases"])); fatalError() }; self.typealiases = typealiases
+        }
+
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
+            aCoder.encode(self.types, forKey: "types")
+            aCoder.encode(self.typealiases, forKey: "typealiases")
+        }
+// sourcery:end
+
+// sourcery:inline:Types.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Types else { return false }
+        if self.types != rhs.types { return false }
+        if self.typealiases != rhs.typealiases { return false }
+        return true
+    }
+
+    // MARK: - Types AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.types)
+        hasher.combine(self.typealiases)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:Types.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "types = \\(String(describing: self.types)), "
+        string += "typealiases = \\(String(describing: self.typealiases))"
+        return string
+    }
+// sourcery:end
+
+// sourcery:inline:Types.AutoDiffable
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Types else {
+            results.append("Incorrect type <expected: Types, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "types").trackDifference(actual: self.types, expected: castObject.types))
+        results.append(contentsOf: DiffableResult(identifier: "typealiases").trackDifference(actual: self.typealiases, expected: castObject.typealiases))
+        return results
+    }
+// sourcery:end
+
+    // sourcery: skipDescription, skipEquality, skipCoding
+    /// :nodoc:
+    public lazy internal(set) var typesByName: [String: Type] = {
+        var typesByName = [String: Type]()
+        self.types.forEach { typesByName[$0.globalName] = $0 }
+        return typesByName
+    }()
+
+    // sourcery: skipDescription, skipEquality, skipCoding
+    /// :nodoc:
+    public lazy internal(set) var typesaliasesByName: [String: Typealias] = {
+        var typesaliasesByName = [String: Typealias]()
+        self.typealiases.forEach { typesaliasesByName[$0.name] = $0 }
+        return typesaliasesByName
+    }()
+
+    // sourcery: skipDescription, skipEquality, skipCoding
+    /// All known types, excluding protocols or protocol compositions.
+    public lazy internal(set) var all: [Type] = {
+        return self.types.filter { !($0 is Protocol || $0 is ProtocolComposition) }
+    }()
+
+    // sourcery: skipDescription, skipEquality, skipCoding
+    /// All known protocols
+    public lazy internal(set) var protocols: [Protocol] = {
+        return self.types.compactMap { $0 as? Protocol }
+    }()
+
+    // sourcery: skipDescription, skipEquality, skipCoding
+    /// All known protocol compositions
+    public lazy internal(set) var protocolCompositions: [ProtocolComposition] = {
+        return self.types.compactMap { $0 as? ProtocolComposition }
+    }()
+
+    // sourcery: skipDescription, skipEquality, skipCoding
+    /// All known classes
+    public lazy internal(set) var classes: [Class] = {
+        return self.all.compactMap { $0 as? Class }
+    }()
+
+    // sourcery: skipDescription, skipEquality, skipCoding
+    /// All known structs
+    public lazy internal(set) var structs: [Struct] = {
+        return self.all.compactMap { $0 as? Struct }
+    }()
+
+    // sourcery: skipDescription, skipEquality, skipCoding
+    /// All known enums
+    public lazy internal(set) var enums: [Enum] = {
+        return self.all.compactMap { $0 as? Enum }
+    }()
+
+    // sourcery: skipDescription, skipEquality, skipCoding
+    /// All known extensions
+    public lazy internal(set) var extensions: [Type] = {
+        return self.all.compactMap { $0.isExtension ? $0 : nil }
+    }()
+
+    // sourcery: skipDescription, skipEquality, skipCoding
+    /// Types based on any other type, grouped by its name, even if they are not known.
+    /// `types.based.MyType` returns list of types based on `MyType`
+    public lazy internal(set) var based: TypesCollection = {
+        TypesCollection(
+            types: self.types,
+            collection: { Array($0.based.keys) }
+        )
+    }()
+
+    // sourcery: skipDescription, skipEquality, skipCoding
+    /// Classes inheriting from any known class, grouped by its name.
+    /// `types.inheriting.MyClass` returns list of types inheriting from `MyClass`
+    public lazy internal(set) var inheriting: TypesCollection = {
+        TypesCollection(
+            types: self.types,
+            collection: { Array($0.inherits.keys) },
+            validate: { type in
+                guard type is Class else {
+                    throw "\\(type.name) is not a class and should be used with `implementing` or `based`"
+                }
+            })
+    }()
+
+    // sourcery: skipDescription, skipEquality, skipCoding
+    /// Types implementing known protocol, grouped by its name.
+    /// `types.implementing.MyProtocol` returns list of types implementing `MyProtocol`
+    public lazy internal(set) var implementing: TypesCollection = {
+        TypesCollection(
+            types: self.types,
+            collection: { Array($0.implements.keys) },
+            validate: { type in
+                guard type is Protocol else {
+                    throw "\\(type.name) is a class and should be used with `inheriting` or `based`"
+                }
+        })
+    }()
+}
+
+@objc protocol TypesObjCExport {
+    var types: [Type] { get }
+    var typealiases: [Typealias] { get }
+    var typesByName: [String: Type] { get }
+    var typesaliasesByName: [String: Typealias] { get }
+    var all: [Type] { get }
+    var protocols: [Protocol] { get }
+    var protocolCompositions: [ProtocolComposition] { get }
+    var classes: [Class] { get }
+    var structs: [Struct] { get }
+    var enums: [Enum] { get }
+    var extensions: [Type] { get }
+    var based: TypesCollection { get }
+    var inheriting: TypesCollection { get }
+    var implementing: TypesCollection { get }
+}
+
+extension Types: TypesObjCExport { }
+
+"""),
     .init(name: "Variable.swift", content:
 """
 //
@@ -6852,7 +7020,7 @@ import Foundation
 public typealias SourceryVariable = Variable
 
 /// Defines variable
-@objcMembers public final class Variable: NSObject, SourceryModel, Typed, Annotated, Definition {
+public final class Variable: NSObject, SourceryModel, Typed, Annotated, Definition {
     /// Variable name
     public let name: String
 
@@ -6987,6 +7155,89 @@ public typealias SourceryVariable = Variable
             aCoder.encode(self.definedInType, forKey: "definedInType")
         }
 // sourcery:end
+
+// sourcery:inline:Variable.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Variable else { return false }
+        if self.name != rhs.name { return false }
+        if self.typeName != rhs.typeName { return false }
+        if self.isComputed != rhs.isComputed { return false }
+        if self.isStatic != rhs.isStatic { return false }
+        if self.readAccess != rhs.readAccess { return false }
+        if self.writeAccess != rhs.writeAccess { return false }
+        if self.defaultValue != rhs.defaultValue { return false }
+        if self.annotations != rhs.annotations { return false }
+        if self.attributes != rhs.attributes { return false }
+        if self.modifiers != rhs.modifiers { return false }
+        if self.definedInTypeName != rhs.definedInTypeName { return false }
+        return true
+    }
+
+    // MARK: - Variable AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.typeName)
+        hasher.combine(self.isComputed)
+        hasher.combine(self.isStatic)
+        hasher.combine(self.readAccess)
+        hasher.combine(self.writeAccess)
+        hasher.combine(self.defaultValue)
+        hasher.combine(self.annotations)
+        hasher.combine(self.attributes)
+        hasher.combine(self.modifiers)
+        hasher.combine(self.definedInTypeName)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:Variable.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "name = \\(String(describing: self.name)), "
+        string += "typeName = \\(String(describing: self.typeName)), "
+        string += "isComputed = \\(String(describing: self.isComputed)), "
+        string += "isStatic = \\(String(describing: self.isStatic)), "
+        string += "readAccess = \\(String(describing: self.readAccess)), "
+        string += "writeAccess = \\(String(describing: self.writeAccess)), "
+        string += "accessLevel = \\(String(describing: self.accessLevel)), "
+        string += "isMutable = \\(String(describing: self.isMutable)), "
+        string += "defaultValue = \\(String(describing: self.defaultValue)), "
+        string += "annotations = \\(String(describing: self.annotations)), "
+        string += "attributes = \\(String(describing: self.attributes)), "
+        string += "modifiers = \\(String(describing: self.modifiers)), "
+        string += "isFinal = \\(String(describing: self.isFinal)), "
+        string += "isLazy = \\(String(describing: self.isLazy)), "
+        string += "definedInTypeName = \\(String(describing: self.definedInTypeName)), "
+        string += "actualDefinedInTypeName = \\(String(describing: self.actualDefinedInTypeName))"
+        return string
+    }
+// sourcery:end
+
+// sourcery:inline:Variable.AutoDiffable
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Variable else {
+            results.append("Incorrect type <expected: Variable, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
+        results.append(contentsOf: DiffableResult(identifier: "isComputed").trackDifference(actual: self.isComputed, expected: castObject.isComputed))
+        results.append(contentsOf: DiffableResult(identifier: "isStatic").trackDifference(actual: self.isStatic, expected: castObject.isStatic))
+        results.append(contentsOf: DiffableResult(identifier: "readAccess").trackDifference(actual: self.readAccess, expected: castObject.readAccess))
+        results.append(contentsOf: DiffableResult(identifier: "writeAccess").trackDifference(actual: self.writeAccess, expected: castObject.writeAccess))
+        results.append(contentsOf: DiffableResult(identifier: "defaultValue").trackDifference(actual: self.defaultValue, expected: castObject.defaultValue))
+        results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
+        results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
+        results.append(contentsOf: DiffableResult(identifier: "modifiers").trackDifference(actual: self.modifiers, expected: castObject.modifiers))
+        results.append(contentsOf: DiffableResult(identifier: "definedInTypeName").trackDifference(actual: self.definedInTypeName, expected: castObject.definedInTypeName))
+        return results
+    }
+// sourcery:end
+
 }
 
 """),
