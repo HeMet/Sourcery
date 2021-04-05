@@ -4,10 +4,10 @@ import Quick
 @testable import SourceryLibTests
 
 QCKMain([
-    // SourcerySpecTests.self,
+//    SourcerySpecTests.self,
     AnnotationsParserSpec.self,
     TemplateAnnotationsParserSpec.self,
     VerifierSpec.self,
-    // FileParserAssociatedTypeSpec.self
+    FileParserAssociatedTypeSpec.self,
     ParserComposerSpec.self,
 ])
