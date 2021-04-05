@@ -5,6 +5,18 @@ import Quick
 
 QCKMain([
 //    SourcerySpecTests.self,
+    // Models
+    ClassSpec.self,
+    DiffableSpec.self,
+    EnumSpec.self,
+    MethodSpec.self,
+    ProtocolSpec.self,
+    StructSpec.self,
+    TypealiasSpec.self,
+//    TypedSpec.self, (KVC)
+    TypeSpec.self,
+    VariableSpec.self,
+    // Parsing
     AnnotationsParserSpec.self,
     TemplateAnnotationsParserSpec.self,
     VerifierSpec.self,
