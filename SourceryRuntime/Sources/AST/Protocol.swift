@@ -12,7 +12,7 @@ import Foundation
 public typealias SourceryProtocol = Protocol
 
 /// Describes Swift protocol
-@objcMembers public final class Protocol: Type {
+public final class Protocol: Type {
 
     /// Returns "protocol"
     public override var kind: String { return "protocol" }
@@ -83,4 +83,50 @@ public typealias SourceryProtocol = Protocol
             aCoder.encode(self.genericRequirements, forKey: "genericRequirements")
         }
 // sourcery:end
+
+// sourcery:inline:Protocol.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Protocol else { return false }
+        if self.associatedTypes != rhs.associatedTypes { return false }
+        if self.genericRequirements != rhs.genericRequirements { return false }
+        return super.isEqual(rhs)
+    }
+
+    // MARK: - Protocol AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.associatedTypes)
+        hasher.combine(self.genericRequirements)
+        hasher.combine(super.hash)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:Protocol.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = super.description
+        string += ", "
+        string += "kind = \(String(describing: self.kind)), "
+        string += "associatedTypes = \(String(describing: self.associatedTypes)), "
+        string += "genericRequirements = \(String(describing: self.genericRequirements))"
+        return string
+    }
+// sourcery:end
+
+// sourcery:inline:Protocol.AutoDiffable
+    override public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Protocol else {
+            results.append("Incorrect type <expected: Protocol, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "associatedTypes").trackDifference(actual: self.associatedTypes, expected: castObject.associatedTypes))
+        results.append(contentsOf: DiffableResult(identifier: "genericRequirements").trackDifference(actual: self.genericRequirements, expected: castObject.genericRequirements))
+        results.append(contentsOf: super.diffAgainst(castObject))
+        return results
+    }
+// sourcery:end
+
 }

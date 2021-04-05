@@ -1,7 +1,7 @@
 import Foundation
 
 /// Describes dictionary type
-@objcMembers public final class DictionaryType: NSObject, SourceryModel {
+public final class DictionaryType: NSObject, SourceryModel {
     /// Type name used in declaration
     public var name: String
 
@@ -60,4 +60,52 @@ import Foundation
             aCoder.encode(self.keyType, forKey: "keyType")
         }
 // sourcery:end
+
+// sourcery:inline:DictionaryType.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? DictionaryType else { return false }
+        if self.name != rhs.name { return false }
+        if self.valueTypeName != rhs.valueTypeName { return false }
+        if self.keyTypeName != rhs.keyTypeName { return false }
+        return true
+    }
+
+    // MARK: - DictionaryType AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.valueTypeName)
+        hasher.combine(self.keyTypeName)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:DictionaryType.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "name = \(String(describing: self.name)), "
+        string += "valueTypeName = \(String(describing: self.valueTypeName)), "
+        string += "keyTypeName = \(String(describing: self.keyTypeName)), "
+        string += "asGeneric = \(String(describing: self.asGeneric)), "
+        string += "asSource = \(String(describing: self.asSource))"
+        return string
+    }
+// sourcery:end
+
+// sourcery:inline:DictionaryType.AutoDiffable
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? DictionaryType else {
+            results.append("Incorrect type <expected: DictionaryType, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "valueTypeName").trackDifference(actual: self.valueTypeName, expected: castObject.valueTypeName))
+        results.append(contentsOf: DiffableResult(identifier: "keyTypeName").trackDifference(actual: self.keyTypeName, expected: castObject.keyTypeName))
+        return results
+    }
+// sourcery:end
+
 }

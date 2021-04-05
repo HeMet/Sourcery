@@ -36,7 +36,7 @@ extension NSRange: Diffable {
     }
 }
 
-@objcMembers public class DiffableResult: NSObject, AutoEquatable {
+public class DiffableResult: NSObject, AutoEquatable {
     // sourcery: skipEquality
     private var results: [String]
     internal var identifier: String?
@@ -62,6 +62,22 @@ extension NSRange: Diffable {
         guard !results.isEmpty else { return "" }
         return "\(identifier.flatMap { "\($0) " } ?? "")" + results.joined(separator: "\n")
     }
+
+// sourcery:inline:DiffableResult.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? DiffableResult else { return false }
+        if self.identifier != rhs.identifier { return false }
+        return true
+    }
+
+    // MARK: - DiffableResult AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.identifier)
+        return hasher.finalize()
+    }
+// sourcery:end
 }
 
 public extension DiffableResult {

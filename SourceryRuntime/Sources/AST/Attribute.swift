@@ -1,7 +1,7 @@
 import Foundation
 
 /// Describes Swift attribute
-@objcMembers public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
+public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
 
     /// Attribute name
     public let name: String
@@ -162,6 +162,40 @@ import Foundation
             aCoder.encode(self.arguments, forKey: "arguments")
             aCoder.encode(self._description, forKey: "_description")
         }
+// sourcery:end
+
+// sourcery:inline:Attribute.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Attribute else { return false }
+        if self.name != rhs.name { return false }
+        if self.arguments != rhs.arguments { return false }
+        if self._description != rhs._description { return false }
+        return true
+    }
+
+    // MARK: - Attribute AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.arguments)
+        hasher.combine(self._description)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:Attribute.AutoDiffable
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Attribute else {
+            results.append("Incorrect type <expected: Attribute, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "arguments").trackDifference(actual: self.arguments, expected: castObject.arguments))
+        results.append(contentsOf: DiffableResult(identifier: "_description").trackDifference(actual: self._description, expected: castObject._description))
+        return results
+    }
 // sourcery:end
 
 }

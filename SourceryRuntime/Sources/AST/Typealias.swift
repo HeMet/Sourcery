@@ -2,7 +2,7 @@ import Foundation
 
 // sourcery: skipJSExport
 /// :nodoc:
-@objcMembers public final class Typealias: NSObject, Typed, SourceryModel {
+public final class Typealias: NSObject, Typed, SourceryModel {
     // New typealias name
     public let aliasName: String
 
@@ -68,4 +68,59 @@ import Foundation
             aCoder.encode(self.parentName, forKey: "parentName")
         }
 // sourcery:end
+
+// sourcery:inline:Typealias.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Typealias else { return false }
+        if self.aliasName != rhs.aliasName { return false }
+        if self.typeName != rhs.typeName { return false }
+        if self.module != rhs.module { return false }
+        if self.accessLevel != rhs.accessLevel { return false }
+        if self.parentName != rhs.parentName { return false }
+        return true
+    }
+
+    // MARK: - Typealias AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.aliasName)
+        hasher.combine(self.typeName)
+        hasher.combine(self.module)
+        hasher.combine(self.accessLevel)
+        hasher.combine(self.parentName)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:Typealias.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "aliasName = \(String(describing: self.aliasName)), "
+        string += "typeName = \(String(describing: self.typeName)), "
+        string += "module = \(String(describing: self.module)), "
+        string += "accessLevel = \(String(describing: self.accessLevel)), "
+        string += "parentName = \(String(describing: self.parentName)), "
+        string += "name = \(String(describing: self.name))"
+        return string
+    }
+// sourcery:end
+
+// sourcery:inline:Typealias.AutoDiffable
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Typealias else {
+            results.append("Incorrect type <expected: Typealias, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "aliasName").trackDifference(actual: self.aliasName, expected: castObject.aliasName))
+        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
+        results.append(contentsOf: DiffableResult(identifier: "module").trackDifference(actual: self.module, expected: castObject.module))
+        results.append(contentsOf: DiffableResult(identifier: "accessLevel").trackDifference(actual: self.accessLevel, expected: castObject.accessLevel))
+        results.append(contentsOf: DiffableResult(identifier: "parentName").trackDifference(actual: self.parentName, expected: castObject.parentName))
+        return results
+    }
+// sourcery:end
+
 }

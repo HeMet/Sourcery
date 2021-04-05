@@ -10,7 +10,7 @@ import Foundation
 
 // sourcery: skipJSExport
 /// :nodoc:
-@objcMembers public final class FileParserResult: NSObject, SourceryModel {
+public final class FileParserResult: NSObject, SourceryModel {
     public let path: String?
     public let module: String?
     public var types = [Type]() {
@@ -75,4 +75,75 @@ import Foundation
             aCoder.encode(self.sourceryVersion, forKey: "sourceryVersion")
         }
 // sourcery:end
+
+// sourcery:inline:FileParserResult.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? FileParserResult else { return false }
+        if self.path != rhs.path { return false }
+        if self.module != rhs.module { return false }
+        if self.types != rhs.types { return false }
+        if self.functions != rhs.functions { return false }
+        if self.typealiases != rhs.typealiases { return false }
+        if self.inlineRanges != rhs.inlineRanges { return false }
+        if self.inlineIndentations != rhs.inlineIndentations { return false }
+        if self.modifiedDate != rhs.modifiedDate { return false }
+        if self.sourceryVersion != rhs.sourceryVersion { return false }
+        return true
+    }
+
+    // MARK: - FileParserResult AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.path)
+        hasher.combine(self.module)
+        hasher.combine(self.types)
+        hasher.combine(self.functions)
+        hasher.combine(self.typealiases)
+        hasher.combine(self.inlineRanges)
+        hasher.combine(self.inlineIndentations)
+        hasher.combine(self.modifiedDate)
+        hasher.combine(self.sourceryVersion)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:FileParserResult.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "path = \(String(describing: self.path)), "
+        string += "module = \(String(describing: self.module)), "
+        string += "types = \(String(describing: self.types)), "
+        string += "functions = \(String(describing: self.functions)), "
+        string += "typealiases = \(String(describing: self.typealiases)), "
+        string += "inlineRanges = \(String(describing: self.inlineRanges)), "
+        string += "inlineIndentations = \(String(describing: self.inlineIndentations)), "
+        string += "modifiedDate = \(String(describing: self.modifiedDate)), "
+        string += "sourceryVersion = \(String(describing: self.sourceryVersion)), "
+        string += "isEmpty = \(String(describing: self.isEmpty))"
+        return string
+    }
+// sourcery:end
+
+// sourcery:inline:FileParserResult.AutoDiffable
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? FileParserResult else {
+            results.append("Incorrect type <expected: FileParserResult, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "path").trackDifference(actual: self.path, expected: castObject.path))
+        results.append(contentsOf: DiffableResult(identifier: "module").trackDifference(actual: self.module, expected: castObject.module))
+        results.append(contentsOf: DiffableResult(identifier: "types").trackDifference(actual: self.types, expected: castObject.types))
+        results.append(contentsOf: DiffableResult(identifier: "functions").trackDifference(actual: self.functions, expected: castObject.functions))
+        results.append(contentsOf: DiffableResult(identifier: "typealiases").trackDifference(actual: self.typealiases, expected: castObject.typealiases))
+        results.append(contentsOf: DiffableResult(identifier: "inlineRanges").trackDifference(actual: self.inlineRanges, expected: castObject.inlineRanges))
+        results.append(contentsOf: DiffableResult(identifier: "inlineIndentations").trackDifference(actual: self.inlineIndentations, expected: castObject.inlineIndentations))
+        results.append(contentsOf: DiffableResult(identifier: "modifiedDate").trackDifference(actual: self.modifiedDate, expected: castObject.modifiedDate))
+        results.append(contentsOf: DiffableResult(identifier: "sourceryVersion").trackDifference(actual: self.sourceryVersion, expected: castObject.sourceryVersion))
+        return results
+    }
+// sourcery:end
+
 }

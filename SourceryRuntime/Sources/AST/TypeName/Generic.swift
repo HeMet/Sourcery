@@ -1,7 +1,7 @@
 import Foundation
 
 /// Descibes Swift generic type
-@objcMembers public final class GenericType: NSObject, SourceryModelWithoutDescription {
+public final class GenericType: NSObject, SourceryModelWithoutDescription {
     /// The name of the base type, i.e. `Array` for `Array<Int>`
     public var name: String
 
@@ -40,37 +40,36 @@ import Foundation
         }
 
 // sourcery:end
-}
 
-/// Descibes Swift generic type parameter
-@objcMembers public final class GenericTypeParameter: NSObject, SourceryModel {
-
-    /// Generic parameter type name
-    public var typeName: TypeName
-
-    // sourcery: skipEquality, skipDescription
-    /// Generic parameter type, if known
-    public var type: Type?
-
+// sourcery:inline:GenericType.Equality
     /// :nodoc:
-    public init(typeName: TypeName, type: Type? = nil) {
-        self.typeName = typeName
-        self.type = type
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? GenericType else { return false }
+        if self.name != rhs.name { return false }
+        if self.typeParameters != rhs.typeParameters { return false }
+        return true
     }
 
-// sourcery:inline:GenericTypeParameter.AutoCoding
-
-        /// :nodoc:
-        required public init?(coder aDecoder: NSCoder) {
-            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
-            self.type = aDecoder.decode(forKey: "type")
-        }
-
-        /// :nodoc:
-        public func encode(with aCoder: NSCoder) {
-            aCoder.encode(self.typeName, forKey: "typeName")
-            aCoder.encode(self.type, forKey: "type")
-        }
-
+    // MARK: - GenericType AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.typeParameters)
+        return hasher.finalize()
+    }
 // sourcery:end
+
+// sourcery:inline:GenericType.AutoDiffable
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? GenericType else {
+            results.append("Incorrect type <expected: GenericType, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "typeParameters").trackDifference(actual: self.typeParameters, expected: castObject.typeParameters))
+        return results
+    }
+// sourcery:end
+
 }

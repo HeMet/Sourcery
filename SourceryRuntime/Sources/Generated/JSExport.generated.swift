@@ -1,5 +1,6 @@
-// Generated using Sourcery 1.3.4 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.17.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
+
 // swiftlint:disable vertical_whitespace trailing_newline
 
 import JavaScriptCore
@@ -57,6 +58,7 @@ extension BytesRange: BytesRangeAutoJSExport {}
     var isFinal: Bool { get }
     var module: String? { get }
     var imports: [Import] { get }
+    var allImports: [Import] { get }
     var accessLevel: String { get }
     var name: String { get }
     var isUnknownExtension: Bool { get }
@@ -83,6 +85,7 @@ extension BytesRange: BytesRangeAutoJSExport {}
     var storedVariables: [Variable] { get }
     var inheritedTypes: [String] { get }
     var based: [String: String] { get }
+    var basedTypes: [String: Type] { get }
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
     var containedTypes: [Type] { get }
@@ -151,6 +154,7 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var hasAssociatedValues: Bool { get }
     var module: String? { get }
     var imports: [Import] { get }
+    var allImports: [Import] { get }
     var accessLevel: String { get }
     var name: String { get }
     var isUnknownExtension: Bool { get }
@@ -176,6 +180,7 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var computedVariables: [Variable] { get }
     var storedVariables: [Variable] { get }
     var inheritedTypes: [String] { get }
+    var basedTypes: [String: Type] { get }
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
     var containedTypes: [Type] { get }
@@ -302,6 +307,7 @@ extension Modifier: ModifierAutoJSExport {}
     var genericRequirements: [GenericRequirement] { get }
     var module: String? { get }
     var imports: [Import] { get }
+    var allImports: [Import] { get }
     var accessLevel: String { get }
     var name: String { get }
     var isUnknownExtension: Bool { get }
@@ -328,6 +334,7 @@ extension Modifier: ModifierAutoJSExport {}
     var storedVariables: [Variable] { get }
     var inheritedTypes: [String] { get }
     var based: [String: String] { get }
+    var basedTypes: [String: Type] { get }
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
     var containedTypes: [Type] { get }
@@ -348,6 +355,7 @@ extension Protocol: ProtocolAutoJSExport {}
     var kind: String { get }
     var module: String? { get }
     var imports: [Import] { get }
+    var allImports: [Import] { get }
     var accessLevel: String { get }
     var name: String { get }
     var isUnknownExtension: Bool { get }
@@ -374,6 +382,7 @@ extension Protocol: ProtocolAutoJSExport {}
     var storedVariables: [Variable] { get }
     var inheritedTypes: [String] { get }
     var based: [String: String] { get }
+    var basedTypes: [String: Type] { get }
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
     var containedTypes: [Type] { get }
@@ -442,6 +451,7 @@ extension TupleType: TupleTypeAutoJSExport {}
 @objc protocol TypeAutoJSExport: JSExport {
     var module: String? { get }
     var imports: [Import] { get }
+    var allImports: [Import] { get }
     var kind: String { get }
     var accessLevel: String { get }
     var name: String { get }
@@ -469,6 +479,7 @@ extension TupleType: TupleTypeAutoJSExport {}
     var storedVariables: [Variable] { get }
     var inheritedTypes: [String] { get }
     var based: [String: String] { get }
+    var basedTypes: [String: Type] { get }
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
     var containedTypes: [Type] { get }

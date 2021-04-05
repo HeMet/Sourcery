@@ -1,30 +1,36 @@
 import Foundation
 
-/// Describes Swift AssociatedType
-public final class AssociatedType: NSObject, SourceryModel {
-    /// Associated type name
-    public let name: String
+/// Describes tuple type element
+public final class TupleElement: NSObject, SourceryModel, Typed {
 
-    /// Associated type type constraint name, if specified
-    public let typeName: TypeName?
+    /// Tuple element name
+    public let name: String?
+
+    /// Tuple element type name
+    public var typeName: TypeName
 
     // sourcery: skipEquality, skipDescription
-    /// Associated type constrained type, if known, i.e. if the type is declared in the scanned sources.
+    /// Tuple element type, if known
     public var type: Type?
 
     /// :nodoc:
-    public init(name: String, typeName: TypeName? = nil, type: Type? = nil) {
+    public init(name: String? = nil, typeName: TypeName, type: Type? = nil) {
         self.name = name
         self.typeName = typeName
         self.type = type
     }
 
-// sourcery:inline:AssociatedType.AutoCoding
+    public var asSource: String {
+        // swiftlint:disable:next force_unwrapping
+        "\(name != nil ? "\(name!): " : "")\(typeName.asSource)"
+    }
+
+// sourcery:inline:TupleElement.AutoCoding
 
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
-            guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
-            self.typeName = aDecoder.decode(forKey: "typeName")
+            self.name = aDecoder.decode(forKey: "name")
+            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
             self.type = aDecoder.decode(forKey: "type")
         }
 
@@ -36,16 +42,16 @@ public final class AssociatedType: NSObject, SourceryModel {
         }
 // sourcery:end
 
-// sourcery:inline:AssociatedType.Equality
+// sourcery:inline:TupleElement.Equality
     /// :nodoc:
     public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? AssociatedType else { return false }
+        guard let rhs = object as? TupleElement else { return false }
         if self.name != rhs.name { return false }
         if self.typeName != rhs.typeName { return false }
         return true
     }
 
-    // MARK: - AssociatedType AutoHashable
+    // MARK: - TupleElement AutoHashable
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.name)
@@ -54,21 +60,22 @@ public final class AssociatedType: NSObject, SourceryModel {
     }
 // sourcery:end
 
-// sourcery:inline:AssociatedType.Description
+// sourcery:inline:TupleElement.Description
     /// :nodoc:
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
         string += "name = \(String(describing: self.name)), "
-        string += "typeName = \(String(describing: self.typeName))"
+        string += "typeName = \(String(describing: self.typeName)), "
+        string += "asSource = \(String(describing: self.asSource))"
         return string
     }
 // sourcery:end
 
-// sourcery:inline:AssociatedType.AutoDiffable
+// sourcery:inline:TupleElement.AutoDiffable
     public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
-        guard let castObject = object as? AssociatedType else {
-            results.append("Incorrect type <expected: AssociatedType, received: \(Swift.type(of: object))>")
+        guard let castObject = object as? TupleElement else {
+            results.append("Incorrect type <expected: TupleElement, received: \(Swift.type(of: object))>")
             return results
         }
         results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
@@ -77,4 +84,14 @@ public final class AssociatedType: NSObject, SourceryModel {
     }
 // sourcery:end
 
+}
+
+extension Array where Element == TupleElement {
+    public var asSource: String {
+        "(\(map { $0.asSource }.joined(separator: ", ")))"
+    }
+
+    public var asTypeName: String {
+        "(\(map { $0.typeName.asSource }.joined(separator: ", ")))"
+    }
 }

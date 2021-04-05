@@ -1,8 +1,13 @@
-// Generated using Sourcery 1.3.4 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.17.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
+
 import Quick
 import Nimble
+#if SWIFT_PACKAGE
+import SourceryLib
+#else
 import Sourcery
+#endif
 @testable import SourceryFramework
 @testable import SourceryRuntime
 

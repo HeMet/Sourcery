@@ -5,16 +5,32 @@
 
 import Foundation
 
+/// :nodoc:
 public typealias AttributeList = [String: [Attribute]]
 
 /// Defines Swift type
-@objcMembers public class Type: NSObject, SourceryModel, Annotated {
+public class Type: NSObject, SourceryModel, Annotated {
 
     /// :nodoc:
     public var module: String?
 
     /// Imports that existed in the file that contained this type declaration
     public var imports: [Import] = []
+
+    // sourcery: skipEquality
+    /// Imports existed in all files containing this type and all its super classes/protocols
+    public var allImports: [Import] {
+        return self.unique({ $0.gatherAllImports() }, filter: { $0 == $1 })
+    }
+
+    private func gatherAllImports() -> [Import] {
+        var allImports: [Import] = Array(self.imports)
+
+        self.basedTypes.values.forEach { (basedType) in
+            allImports.append(contentsOf: basedType.imports)
+        }
+        return allImports
+    }
 
     // All local typealiases
     // sourcery: skipJSExport
@@ -42,8 +58,8 @@ public typealias AttributeList = [String: [Attribute]]
         return "\(parentName).\(localName)"
     }
 
-    /// Whether the type has been resolved as unknown extension
     // sourcery: skipCoding
+    /// Whether the type has been resolved as unknown extension
     public var isUnknownExtension: Bool = false
 
     // sourcery: skipDescription
@@ -144,6 +160,10 @@ public typealias AttributeList = [String: [Attribute]]
     // sourcery: skipEquality, skipDescription, skipJSExport
     /// Bytes position of the body of this type in its declaration file if available.
     public var bodyBytesRange: BytesRange?
+
+    // sourcery: skipEquality, skipDescription, skipJSExport
+    /// Bytes position of the whole declaration of this type in its declaration file if available.
+    public var completeDeclarationRange: BytesRange?
 
     private func flattenAll<T>(_ extraction: @escaping (Type) -> [T], isExtension: (T) -> Bool, filter: ([T], T) -> Bool) -> [T] {
         let all = NSMutableOrderedSet()
@@ -255,6 +275,9 @@ public typealias AttributeList = [String: [Attribute]]
     public var based = [String: String]()
 
     // sourcery: skipEquality, skipDescription
+    /// Types this type inherits from or implements, including unknown (not scanned) types with extensions defined
+    public var basedTypes = [String: Type]()
+
     /// Types this type inherits from
     public var inherits = [String: Type]()
 
@@ -386,9 +409,11 @@ public typealias AttributeList = [String: [Attribute]]
             guard let rawMethods: [Method] = aDecoder.decode(forKey: "rawMethods") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["rawMethods"])); fatalError() }; self.rawMethods = rawMethods
             guard let rawSubscripts: [Subscript] = aDecoder.decode(forKey: "rawSubscripts") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["rawSubscripts"])); fatalError() }; self.rawSubscripts = rawSubscripts
             self.bodyBytesRange = aDecoder.decode(forKey: "bodyBytesRange")
+            self.completeDeclarationRange = aDecoder.decode(forKey: "completeDeclarationRange")
             guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
             guard let inheritedTypes: [String] = aDecoder.decode(forKey: "inheritedTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inheritedTypes"])); fatalError() }; self.inheritedTypes = inheritedTypes
             guard let based: [String: String] = aDecoder.decode(forKey: "based") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["based"])); fatalError() }; self.based = based
+            guard let basedTypes: [String: Type] = aDecoder.decode(forKey: "basedTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["basedTypes"])); fatalError() }; self.basedTypes = basedTypes
             guard let inherits: [String: Type] = aDecoder.decode(forKey: "inherits") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inherits"])); fatalError() }; self.inherits = inherits
             guard let implements: [String: Type] = aDecoder.decode(forKey: "implements") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["implements"])); fatalError() }; self.implements = implements
             guard let containedTypes: [Type] = aDecoder.decode(forKey: "containedTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["containedTypes"])); fatalError() }; self.containedTypes = containedTypes
@@ -414,9 +439,11 @@ public typealias AttributeList = [String: [Attribute]]
             aCoder.encode(self.rawMethods, forKey: "rawMethods")
             aCoder.encode(self.rawSubscripts, forKey: "rawSubscripts")
             aCoder.encode(self.bodyBytesRange, forKey: "bodyBytesRange")
+            aCoder.encode(self.completeDeclarationRange, forKey: "completeDeclarationRange")
             aCoder.encode(self.annotations, forKey: "annotations")
             aCoder.encode(self.inheritedTypes, forKey: "inheritedTypes")
             aCoder.encode(self.based, forKey: "based")
+            aCoder.encode(self.basedTypes, forKey: "basedTypes")
             aCoder.encode(self.inherits, forKey: "inherits")
             aCoder.encode(self.implements, forKey: "implements")
             aCoder.encode(self.containedTypes, forKey: "containedTypes")
@@ -429,6 +456,126 @@ public typealias AttributeList = [String: [Attribute]]
             aCoder.encode(self.path, forKey: "path")
         }
 // sourcery:end
+
+// sourcery:inline:Type.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Type else { return false }
+        if self.module != rhs.module { return false }
+        if self.imports != rhs.imports { return false }
+        if self.typealiases != rhs.typealiases { return false }
+        if self.isExtension != rhs.isExtension { return false }
+        if self.accessLevel != rhs.accessLevel { return false }
+        if self.isUnknownExtension != rhs.isUnknownExtension { return false }
+        if self.isGeneric != rhs.isGeneric { return false }
+        if self.localName != rhs.localName { return false }
+        if self.rawVariables != rhs.rawVariables { return false }
+        if self.rawMethods != rhs.rawMethods { return false }
+        if self.rawSubscripts != rhs.rawSubscripts { return false }
+        if self.annotations != rhs.annotations { return false }
+        if self.inheritedTypes != rhs.inheritedTypes { return false }
+        if self.inherits != rhs.inherits { return false }
+        if self.containedTypes != rhs.containedTypes { return false }
+        if self.parentName != rhs.parentName { return false }
+        if self.attributes != rhs.attributes { return false }
+        if self.modifiers != rhs.modifiers { return false }
+        if self.kind != rhs.kind { return false }
+        return true
+    }
+
+    // MARK: - Type AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.module)
+        hasher.combine(self.imports)
+        hasher.combine(self.typealiases)
+        hasher.combine(self.isExtension)
+        hasher.combine(self.accessLevel)
+        hasher.combine(self.isUnknownExtension)
+        hasher.combine(self.isGeneric)
+        hasher.combine(self.localName)
+        hasher.combine(self.rawVariables)
+        hasher.combine(self.rawMethods)
+        hasher.combine(self.rawSubscripts)
+        hasher.combine(self.annotations)
+        hasher.combine(self.inheritedTypes)
+        hasher.combine(self.inherits)
+        hasher.combine(self.containedTypes)
+        hasher.combine(self.parentName)
+        hasher.combine(self.attributes)
+        hasher.combine(self.modifiers)
+        hasher.combine(kind)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:Type.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "module = \(String(describing: self.module)), "
+        string += "imports = \(String(describing: self.imports)), "
+        string += "allImports = \(String(describing: self.allImports)), "
+        string += "typealiases = \(String(describing: self.typealiases)), "
+        string += "isExtension = \(String(describing: self.isExtension)), "
+        string += "kind = \(String(describing: self.kind)), "
+        string += "accessLevel = \(String(describing: self.accessLevel)), "
+        string += "name = \(String(describing: self.name)), "
+        string += "isUnknownExtension = \(String(describing: self.isUnknownExtension)), "
+        string += "isGeneric = \(String(describing: self.isGeneric)), "
+        string += "localName = \(String(describing: self.localName)), "
+        string += "rawVariables = \(String(describing: self.rawVariables)), "
+        string += "rawMethods = \(String(describing: self.rawMethods)), "
+        string += "rawSubscripts = \(String(describing: self.rawSubscripts)), "
+        string += "initializers = \(String(describing: self.initializers)), "
+        string += "annotations = \(String(describing: self.annotations)), "
+        string += "staticVariables = \(String(describing: self.staticVariables)), "
+        string += "staticMethods = \(String(describing: self.staticMethods)), "
+        string += "classMethods = \(String(describing: self.classMethods)), "
+        string += "instanceVariables = \(String(describing: self.instanceVariables)), "
+        string += "instanceMethods = \(String(describing: self.instanceMethods)), "
+        string += "computedVariables = \(String(describing: self.computedVariables)), "
+        string += "storedVariables = \(String(describing: self.storedVariables)), "
+        string += "inheritedTypes = \(String(describing: self.inheritedTypes)), "
+        string += "inherits = \(String(describing: self.inherits)), "
+        string += "containedTypes = \(String(describing: self.containedTypes)), "
+        string += "parentName = \(String(describing: self.parentName)), "
+        string += "parentTypes = \(String(describing: self.parentTypes)), "
+        string += "attributes = \(String(describing: self.attributes)), "
+        string += "modifiers = \(String(describing: self.modifiers))"
+        return string
+    }
+// sourcery:end
+
+// sourcery:inline:Type.AutoDiffable
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Type else {
+            results.append("Incorrect type <expected: Type, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "module").trackDifference(actual: self.module, expected: castObject.module))
+        results.append(contentsOf: DiffableResult(identifier: "imports").trackDifference(actual: self.imports, expected: castObject.imports))
+        results.append(contentsOf: DiffableResult(identifier: "typealiases").trackDifference(actual: self.typealiases, expected: castObject.typealiases))
+        results.append(contentsOf: DiffableResult(identifier: "isExtension").trackDifference(actual: self.isExtension, expected: castObject.isExtension))
+        results.append(contentsOf: DiffableResult(identifier: "accessLevel").trackDifference(actual: self.accessLevel, expected: castObject.accessLevel))
+        results.append(contentsOf: DiffableResult(identifier: "isUnknownExtension").trackDifference(actual: self.isUnknownExtension, expected: castObject.isUnknownExtension))
+        results.append(contentsOf: DiffableResult(identifier: "isGeneric").trackDifference(actual: self.isGeneric, expected: castObject.isGeneric))
+        results.append(contentsOf: DiffableResult(identifier: "localName").trackDifference(actual: self.localName, expected: castObject.localName))
+        results.append(contentsOf: DiffableResult(identifier: "rawVariables").trackDifference(actual: self.rawVariables, expected: castObject.rawVariables))
+        results.append(contentsOf: DiffableResult(identifier: "rawMethods").trackDifference(actual: self.rawMethods, expected: castObject.rawMethods))
+        results.append(contentsOf: DiffableResult(identifier: "rawSubscripts").trackDifference(actual: self.rawSubscripts, expected: castObject.rawSubscripts))
+        results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
+        results.append(contentsOf: DiffableResult(identifier: "inheritedTypes").trackDifference(actual: self.inheritedTypes, expected: castObject.inheritedTypes))
+        results.append(contentsOf: DiffableResult(identifier: "inherits").trackDifference(actual: self.inherits, expected: castObject.inherits))
+        results.append(contentsOf: DiffableResult(identifier: "containedTypes").trackDifference(actual: self.containedTypes, expected: castObject.containedTypes))
+        results.append(contentsOf: DiffableResult(identifier: "parentName").trackDifference(actual: self.parentName, expected: castObject.parentName))
+        results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
+        results.append(contentsOf: DiffableResult(identifier: "modifiers").trackDifference(actual: self.modifiers, expected: castObject.modifiers))
+        return results
+    }
+// sourcery:end
+
 }
 
 extension Type {

@@ -10,7 +10,7 @@ import Foundation
 
 // sourcery: skipDescription
 /// Describes Swift struct
-@objcMembers public final class Struct: Type {
+public final class Struct: Type {
 
     /// Returns "struct"
     public override var kind: String { return "struct" }
@@ -60,4 +60,42 @@ import Foundation
             super.encode(with: aCoder)
         }
 // sourcery:end
+
+// sourcery:inline:Struct.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Struct else { return false }
+        return super.isEqual(rhs)
+    }
+
+    // MARK: - Struct AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(super.hash)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:Struct.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = super.description
+        string += ", "
+        string += "kind = \(String(describing: self.kind))"
+        return string
+    }
+// sourcery:end
+
+// sourcery:inline:Struct.AutoDiffable
+    override public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Struct else {
+            results.append("Incorrect type <expected: Struct, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: super.diffAgainst(castObject))
+        return results
+    }
+// sourcery:end
+
 }

@@ -1,8 +1,10 @@
 import Foundation
 
+@objc(SwiftClass) extension Class { }
+
 // sourcery: skipDescription
 /// Descibes Swift class
-@objc(SwiftClass) @objcMembers public final class Class: Type {
+public final class Class: Type {
     /// Returns "class"
     public override var kind: String { return "class" }
 
@@ -56,4 +58,43 @@ import Foundation
             super.encode(with: aCoder)
         }
 // sourcery:end
+
+// sourcery:inline:Class.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Class else { return false }
+        return super.isEqual(rhs)
+    }
+
+    // MARK: - Class AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(super.hash)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:Class.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = super.description
+        string += ", "
+        string += "kind = \(String(describing: self.kind)), "
+        string += "isFinal = \(String(describing: self.isFinal))"
+        return string
+    }
+// sourcery:end
+
+// sourcery:inline:Class.AutoDiffable
+    override public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Class else {
+            results.append("Incorrect type <expected: Class, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: super.diffAgainst(castObject))
+        return results
+    }
+// sourcery:end
+
 }

@@ -3,198 +3,10 @@ import Foundation
 /// :nodoc:
 public typealias SourceryMethod = Method
 
-/// Describes method parameter
-@objcMembers public class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
-    /// Parameter external name
-    public var argumentLabel: String?
-
-    /// Parameter internal name
-    // Note: although method parameter can have no name, this property is not optional,
-    // this is so to maintain compatibility with existing templates.
-    public let name: String
-
-    /// Parameter type name
-    public let typeName: TypeName
-
-    /// Parameter flag whether it's inout or not
-    public let `inout`: Bool
-
-    // sourcery: skipEquality, skipDescription
-    /// Parameter type, if known
-    public var type: Type?
-
-    /// Parameter type attributes, i.e. `@escaping`
-    public var typeAttributes: AttributeList {
-        return typeName.attributes
-    }
-
-    /// Method parameter default value expression
-    public var defaultValue: String?
-
-    /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
-    public var annotations: Annotations = [:]
-
-    /// :nodoc:
-    public init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false) {
-        self.typeName = typeName
-        self.argumentLabel = argumentLabel
-        self.name = name
-        self.type = type
-        self.defaultValue = defaultValue
-        self.annotations = annotations
-        self.`inout` = isInout
-    }
-
-    /// :nodoc:
-    public init(name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false) {
-        self.typeName = typeName
-        self.argumentLabel = name
-        self.name = name
-        self.type = type
-        self.defaultValue = defaultValue
-        self.annotations = annotations
-        self.`inout` = isInout
-    }
-
-    public var asSource: String {
-        let typeSuffix = ": \(`inout` ? "inout " : "")\(typeName.asSource)\(defaultValue.map { " = \($0)" } ?? "")"
-        guard argumentLabel != name else {
-            return name + typeSuffix
-        }
-
-        let labels = [argumentLabel ?? "_", name.nilIfEmpty]
-          .compactMap { $0 }
-          .joined(separator: " ")
-
-        return (labels.nilIfEmpty ?? "_") + typeSuffix
-    }
-
-// sourcery:inline:MethodParameter.AutoCoding
-
-        /// :nodoc:
-        required public init?(coder aDecoder: NSCoder) {
-            self.argumentLabel = aDecoder.decode(forKey: "argumentLabel")
-            guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
-            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
-            self.`inout` = aDecoder.decode(forKey: "`inout`")
-            self.type = aDecoder.decode(forKey: "type")
-            self.defaultValue = aDecoder.decode(forKey: "defaultValue")
-            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
-        }
-
-        /// :nodoc:
-        public func encode(with aCoder: NSCoder) {
-            aCoder.encode(self.argumentLabel, forKey: "argumentLabel")
-            aCoder.encode(self.name, forKey: "name")
-            aCoder.encode(self.typeName, forKey: "typeName")
-            aCoder.encode(self.`inout`, forKey: "`inout`")
-            aCoder.encode(self.type, forKey: "type")
-            aCoder.encode(self.defaultValue, forKey: "defaultValue")
-            aCoder.encode(self.annotations, forKey: "annotations")
-        }
-// sourcery:end
-}
-
-extension Array where Element == MethodParameter {
-    public var asSource: String {
-        "(\(map { $0.asSource }.joined(separator: ", ")))"
-    }
-}
-
-// sourcery: skipDiffing
-@objcMembers public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated {
-    /// Parameter external name
-    public var argumentLabel: String?
-
-    /// Parameter internal name
-    public let name: String?
-
-    /// Parameter type name
-    public let typeName: TypeName
-
-    /// Parameter flag whether it's inout or not
-    public let `inout`: Bool
-
-    // sourcery: skipEquality, skipDescription
-    /// Parameter type, if known
-    public var type: Type?
-
-    /// Parameter type attributes, i.e. `@escaping`
-    public var typeAttributes: AttributeList {
-        return typeName.attributes
-    }
-
-    /// Method parameter default value expression
-    public var defaultValue: String?
-
-    /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
-    public var annotations: Annotations = [:]
-
-    /// :nodoc:
-    public init(argumentLabel: String? = nil, name: String? = nil, typeName: TypeName, type: Type? = nil,
-                defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false) {
-        self.typeName = typeName
-        self.argumentLabel = argumentLabel
-        self.name = name
-        self.type = type
-        self.defaultValue = defaultValue
-        self.annotations = annotations
-        self.`inout` = isInout
-    }
-
-    public var asSource: String {
-        let typeInfo = "\(`inout` ? "inout " : "")\(typeName.asSource)"
-        if argumentLabel?.nilIfNotValidParameterName == nil, name?.nilIfNotValidParameterName == nil {
-            return typeInfo
-        }
-
-        let typeSuffix = ": \(typeInfo)"
-        guard argumentLabel != name else {
-            return name ?? "" + typeSuffix
-        }
-
-        let labels = [argumentLabel ?? "_", name?.nilIfEmpty]
-          .compactMap { $0 }
-          .joined(separator: " ")
-
-        return (labels.nilIfEmpty ?? "_") + typeSuffix
-    }
-
-    // sourcery:inline:ClosureParameter.AutoCoding
-
-            /// :nodoc:
-            required public init?(coder aDecoder: NSCoder) {
-                self.argumentLabel = aDecoder.decode(forKey: "argumentLabel")
-                self.name = aDecoder.decode(forKey: "name")
-                guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
-                self.`inout` = aDecoder.decode(forKey: "`inout`")
-                self.type = aDecoder.decode(forKey: "type")
-                self.defaultValue = aDecoder.decode(forKey: "defaultValue")
-                guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
-            }
-
-            /// :nodoc:
-            public func encode(with aCoder: NSCoder) {
-                aCoder.encode(self.argumentLabel, forKey: "argumentLabel")
-                aCoder.encode(self.name, forKey: "name")
-                aCoder.encode(self.typeName, forKey: "typeName")
-                aCoder.encode(self.`inout`, forKey: "`inout`")
-                aCoder.encode(self.type, forKey: "type")
-                aCoder.encode(self.defaultValue, forKey: "defaultValue")
-                aCoder.encode(self.annotations, forKey: "annotations")
-            }
-
-    // sourcery:end
-}
-
-extension Array where Element == ClosureParameter {
-    public var asSource: String {
-        "(\(map { $0.asSource }.joined(separator: ", ")))"
-    }
-}
+@objc(SwiftMethod) extension Method { }
 
 /// Describes method
-@objc(SwiftMethod) @objcMembers public final class Method: NSObject, SourceryModel, Annotated, Definition {
+public final class Method: NSObject, SourceryModel, Annotated, Definition {
 
     /// Full method name, including generic constraints, i.e. `foo<T>(bar: T)`
     public let name: String
@@ -423,4 +235,94 @@ extension Array where Element == ClosureParameter {
             aCoder.encode(self.modifiers, forKey: "modifiers")
         }
 // sourcery:end
+
+// sourcery:inline:Method.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Method else { return false }
+        if self.name != rhs.name { return false }
+        if self.selectorName != rhs.selectorName { return false }
+        if self.parameters != rhs.parameters { return false }
+        if self.returnTypeName != rhs.returnTypeName { return false }
+        if self.`throws` != rhs.`throws` { return false }
+        if self.`rethrows` != rhs.`rethrows` { return false }
+        if self.accessLevel != rhs.accessLevel { return false }
+        if self.isStatic != rhs.isStatic { return false }
+        if self.isClass != rhs.isClass { return false }
+        if self.isFailableInitializer != rhs.isFailableInitializer { return false }
+        if self.annotations != rhs.annotations { return false }
+        if self.definedInTypeName != rhs.definedInTypeName { return false }
+        if self.attributes != rhs.attributes { return false }
+        if self.modifiers != rhs.modifiers { return false }
+        return true
+    }
+
+    // MARK: - Method AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.selectorName)
+        hasher.combine(self.parameters)
+        hasher.combine(self.returnTypeName)
+        hasher.combine(self.`throws`)
+        hasher.combine(self.`rethrows`)
+        hasher.combine(self.accessLevel)
+        hasher.combine(self.isStatic)
+        hasher.combine(self.isClass)
+        hasher.combine(self.isFailableInitializer)
+        hasher.combine(self.annotations)
+        hasher.combine(self.definedInTypeName)
+        hasher.combine(self.attributes)
+        hasher.combine(self.modifiers)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:Method.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "name = \(String(describing: self.name)), "
+        string += "selectorName = \(String(describing: self.selectorName)), "
+        string += "parameters = \(String(describing: self.parameters)), "
+        string += "returnTypeName = \(String(describing: self.returnTypeName)), "
+        string += "`throws` = \(String(describing: self.`throws`)), "
+        string += "`rethrows` = \(String(describing: self.`rethrows`)), "
+        string += "accessLevel = \(String(describing: self.accessLevel)), "
+        string += "isStatic = \(String(describing: self.isStatic)), "
+        string += "isClass = \(String(describing: self.isClass)), "
+        string += "isFailableInitializer = \(String(describing: self.isFailableInitializer)), "
+        string += "annotations = \(String(describing: self.annotations)), "
+        string += "definedInTypeName = \(String(describing: self.definedInTypeName)), "
+        string += "attributes = \(String(describing: self.attributes)), "
+        string += "modifiers = \(String(describing: self.modifiers))"
+        return string
+    }
+// sourcery:end
+
+// sourcery:inline:Method.AutoDiffable
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Method else {
+            results.append("Incorrect type <expected: Method, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "selectorName").trackDifference(actual: self.selectorName, expected: castObject.selectorName))
+        results.append(contentsOf: DiffableResult(identifier: "parameters").trackDifference(actual: self.parameters, expected: castObject.parameters))
+        results.append(contentsOf: DiffableResult(identifier: "returnTypeName").trackDifference(actual: self.returnTypeName, expected: castObject.returnTypeName))
+        results.append(contentsOf: DiffableResult(identifier: "`throws`").trackDifference(actual: self.`throws`, expected: castObject.`throws`))
+        results.append(contentsOf: DiffableResult(identifier: "`rethrows`").trackDifference(actual: self.`rethrows`, expected: castObject.`rethrows`))
+        results.append(contentsOf: DiffableResult(identifier: "accessLevel").trackDifference(actual: self.accessLevel, expected: castObject.accessLevel))
+        results.append(contentsOf: DiffableResult(identifier: "isStatic").trackDifference(actual: self.isStatic, expected: castObject.isStatic))
+        results.append(contentsOf: DiffableResult(identifier: "isClass").trackDifference(actual: self.isClass, expected: castObject.isClass))
+        results.append(contentsOf: DiffableResult(identifier: "isFailableInitializer").trackDifference(actual: self.isFailableInitializer, expected: castObject.isFailableInitializer))
+        results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
+        results.append(contentsOf: DiffableResult(identifier: "definedInTypeName").trackDifference(actual: self.definedInTypeName, expected: castObject.definedInTypeName))
+        results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
+        results.append(contentsOf: DiffableResult(identifier: "modifiers").trackDifference(actual: self.modifiers, expected: castObject.modifiers))
+        return results
+    }
+// sourcery:end
+
 }

@@ -5,7 +5,7 @@ import Foundation
 
 // sourcery: skipJSExport
 /// Describes a Swift [protocol composition](https://docs.swift.org/swift-book/ReferenceManual/Types.html#ID454).
-@objcMembers public final class ProtocolComposition: Type {
+public final class ProtocolComposition: Type {
 
     /// Returns "protocolComposition"
     public override var kind: String { return "protocolComposition" }
@@ -66,6 +66,47 @@ import Foundation
             aCoder.encode(self.composedTypeNames, forKey: "composedTypeNames")
             aCoder.encode(self.composedTypes, forKey: "composedTypes")
         }
+// sourcery:end
+
+// sourcery:inline:ProtocolComposition.Equality
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? ProtocolComposition else { return false }
+        if self.composedTypeNames != rhs.composedTypeNames { return false }
+        return super.isEqual(rhs)
+    }
+
+    // MARK: - ProtocolComposition AutoHashable
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.composedTypeNames)
+        hasher.combine(super.hash)
+        return hasher.finalize()
+    }
+// sourcery:end
+
+// sourcery:inline:ProtocolComposition.Description
+    /// :nodoc:
+    override public var description: String {
+        var string = super.description
+        string += ", "
+        string += "kind = \(String(describing: self.kind)), "
+        string += "composedTypeNames = \(String(describing: self.composedTypeNames))"
+        return string
+    }
+// sourcery:end
+
+// sourcery:inline:ProtocolComposition.AutoDiffable
+    override public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? ProtocolComposition else {
+            results.append("Incorrect type <expected: ProtocolComposition, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "composedTypeNames").trackDifference(actual: self.composedTypeNames, expected: castObject.composedTypeNames))
+        results.append(contentsOf: super.diffAgainst(castObject))
+        return results
+    }
 // sourcery:end
 
 }

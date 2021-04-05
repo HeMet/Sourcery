@@ -3,7 +3,7 @@ import Foundation
 public typealias SourceryModifier = Modifier
 /// modifier can be thing like `private`, `class`, `nonmutating`
 /// if a declaration has modifier like `private(set)` it's name will be `private` and detail will be `set`
-@objcMembers public class Modifier: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
+public class Modifier: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
 
     /// The declaration modifier name.
     public let name: String
@@ -38,4 +38,36 @@ public typealias SourceryModifier = Modifier
                 aCoder.encode(self.detail, forKey: "detail")
             }
     // sourcery:end
+
+    // sourcery:inline:Modifier.Equality
+        /// :nodoc:
+        public override func isEqual(_ object: Any?) -> Bool {
+            guard let rhs = object as? Modifier else { return false }
+            if self.name != rhs.name { return false }
+            if self.detail != rhs.detail { return false }
+            return true
+        }
+
+        // MARK: - Modifier AutoHashable
+        public override var hash: Int {
+            var hasher = Hasher()
+            hasher.combine(self.name)
+            hasher.combine(self.detail)
+            return hasher.finalize()
+        }
+    // sourcery:end
+
+    // sourcery:inline:Modifier.AutoDiffable
+        public func diffAgainst(_ object: Any?) -> DiffableResult {
+            let results = DiffableResult()
+            guard let castObject = object as? Modifier else {
+                results.append("Incorrect type <expected: Modifier, received: \(Swift.type(of: object))>")
+                return results
+            }
+            results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+            results.append(contentsOf: DiffableResult(identifier: "detail").trackDifference(actual: self.detail, expected: castObject.detail))
+            return results
+        }
+    // sourcery:end
+
 }
