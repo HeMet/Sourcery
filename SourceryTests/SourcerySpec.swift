@@ -858,6 +858,7 @@ class SourcerySpecTests: QuickSpec {
                     }
                 }
 
+                #if !os(Windows)
                 context("with watcher") {
                     var watcher: Any?
                     let tmpTemplate = outputDir + Path("FakeTemplate.stencil")
@@ -877,6 +878,7 @@ class SourcerySpecTests: QuickSpec {
                         _ = watcher
                     }
                 }
+                #endif
             }
 
             context("given a template folder") {
