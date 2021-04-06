@@ -213,3 +213,9 @@ public class TypesCollection: NSObject, AutoJSExport {
         return true
     }
 }
+
+extension TypesCollection: CustomReflectable {
+    public var customMirror: Mirror {
+        Mirror(self, children: types.map { (label: $0, value: $1) })
+    }
+}
