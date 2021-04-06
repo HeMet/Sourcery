@@ -255,6 +255,35 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
     }
 // sourcery:end
 
+// sourcery:inline:TypeName.Mirror
+    public var customMirror: Mirror {
+        Mirror(self, children: [
+            "name": name,
+            "generic": generic as Any,
+            "isGeneric": isGeneric,
+            "isProtocolComposition": isProtocolComposition,
+            "actualTypeName": actualTypeName as Any,
+            "attributes": attributes,
+            "modifiers": modifiers,
+            "isOptional": isOptional,
+            "isImplicitlyUnwrappedOptional": isImplicitlyUnwrappedOptional,
+            "unwrappedTypeName": unwrappedTypeName,
+            "isVoid": isVoid,
+            "isTuple": isTuple,
+            "tuple": tuple as Any,
+            "isArray": isArray,
+            "array": array as Any,
+            "isDictionary": isDictionary,
+            "dictionary": dictionary as Any,
+            "isClosure": isClosure,
+            "closure": closure as Any,
+            "asSource": asSource,
+            "description": description,
+            "debugDescription": debugDescription,
+        ])
+    }
+// sourcery:end
+
     // sourcery: skipEquality, skipDescription
     /// :nodoc:
     public override var debugDescription: String {

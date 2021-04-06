@@ -137,4 +137,21 @@ public final class ClosureType: NSObject, SourceryModel {
     }
 // sourcery:end
 
+// sourcery:inline:ClosureType.Mirror
+    public var customMirror: Mirror {
+        Mirror(self, children: [
+            "name": name,
+            "parameters": parameters,
+            "returnTypeName": returnTypeName,
+            "actualReturnTypeName": actualReturnTypeName,
+            "returnType": returnType as Any,
+            "isOptionalReturnType": isOptionalReturnType,
+            "isImplicitlyUnwrappedOptionalReturnType": isImplicitlyUnwrappedOptionalReturnType,
+            "unwrappedReturnTypeName": unwrappedReturnTypeName,
+            "`throws`": `throws`,
+            "throwsOrRethrowsKeyword": throwsOrRethrowsKeyword as Any,
+            "asSource": asSource,
+        ])
+    }
+// sourcery:end
 }

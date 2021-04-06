@@ -102,4 +102,14 @@ public class GenericRequirement: NSObject, SourceryModel {
         }
     // sourcery:end
 
+    // sourcery:inline:GenericRequirement.Mirror
+        public var customMirror: Mirror {
+            Mirror(self, children: [
+                "leftType": leftType,
+                "rightType": rightType,
+                "relationship": relationship,
+                "relationshipSyntax": relationshipSyntax,
+            ])
+        }
+    // sourcery:end
 }

@@ -150,6 +150,21 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
     }
 // sourcery:end
 
+// sourcery:inline:MethodParameter.Mirror
+    public var customMirror: Mirror {
+        Mirror(self, children: [
+            "argumentLabel": argumentLabel as Any,
+            "name": name,
+            "typeName": typeName,
+            "`inout`": `inout`,
+            "type": type as Any,
+            "typeAttributes": typeAttributes,
+            "defaultValue": defaultValue as Any,
+            "annotations": annotations,
+            "asSource": asSource,
+        ])
+    }
+// sourcery:end
 }
 
 extension Array where Element == MethodParameter {

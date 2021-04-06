@@ -77,4 +77,12 @@ public final class TupleType: NSObject, SourceryModel {
     }
 // sourcery:end
 
+// sourcery:inline:TupleType.Mirror
+    public var customMirror: Mirror {
+        Mirror(self, children: [
+            "name": name,
+            "elements": elements,
+        ])
+    }
+// sourcery:end
 }

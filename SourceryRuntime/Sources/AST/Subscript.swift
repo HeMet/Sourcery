@@ -77,7 +77,7 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Definition {
     public let modifiers: [SourceryModifier]
 
     // Underlying parser data, never to be used by anything else
-    // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
+    // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport, skipMirror
     /// :nodoc:
     public var __parserData: Any?
 
@@ -200,4 +200,27 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Definition {
     }
 // sourcery:end
 
+// sourcery:inline:Subscript.Mirror
+    public var customMirror: Mirror {
+        Mirror(self, children: [
+            "parameters": parameters,
+            "returnTypeName": returnTypeName,
+            "actualReturnTypeName": actualReturnTypeName,
+            "returnType": returnType as Any,
+            "isOptionalReturnType": isOptionalReturnType,
+            "isImplicitlyUnwrappedOptionalReturnType": isImplicitlyUnwrappedOptionalReturnType,
+            "unwrappedReturnTypeName": unwrappedReturnTypeName,
+            "isFinal": isFinal,
+            "readAccess": readAccess,
+            "writeAccess": writeAccess,
+            "isMutable": isMutable,
+            "annotations": annotations,
+            "definedInTypeName": definedInTypeName as Any,
+            "actualDefinedInTypeName": actualDefinedInTypeName as Any,
+            "definedInType": definedInType as Any,
+            "attributes": attributes,
+            "modifiers": modifiers,
+        ])
+    }
+// sourcery:end
 }

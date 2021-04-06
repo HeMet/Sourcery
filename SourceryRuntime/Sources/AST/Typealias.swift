@@ -123,4 +123,18 @@ public final class Typealias: NSObject, Typed, SourceryModel {
     }
 // sourcery:end
 
+// sourcery:inline:Typealias.Mirror
+    public var customMirror: Mirror {
+        Mirror(self, children: [
+            "aliasName": aliasName,
+            "typeName": typeName,
+            "type": type as Any,
+            "module": module as Any,
+            "parent": parent as Any,
+            "accessLevel": accessLevel,
+            "parentName": parentName as Any,
+            "name": name,
+        ])
+    }
+// sourcery:end
 }

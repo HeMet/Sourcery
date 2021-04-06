@@ -108,4 +108,17 @@ public final class DictionaryType: NSObject, SourceryModel {
     }
 // sourcery:end
 
+// sourcery:inline:DictionaryType.Mirror
+    public var customMirror: Mirror {
+        Mirror(self, children: [
+            "name": name,
+            "valueTypeName": valueTypeName,
+            "valueType": valueType as Any,
+            "keyTypeName": keyTypeName,
+            "keyType": keyType as Any,
+            "asGeneric": asGeneric,
+            "asSource": asSource,
+        ])
+    }
+// sourcery:end
 }

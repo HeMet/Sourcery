@@ -6,7 +6,7 @@
 import Foundation
 
 /// :nodoc:
-// sourcery: skipCoding
+// sourcery: skipCoding, skipMirror
 public final class TemplateContext: NSObject, SourceryModel, NSCoding {
     // sourcery: skipJSExport
     public let parserResult: FileParserResult?

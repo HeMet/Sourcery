@@ -6,6 +6,7 @@
 import Foundation
 
 /// :nodoc:
+//sourcery:skipMirror
 public final class BytesRange: NSObject, SourceryModel {
 
     public let offset: Int64

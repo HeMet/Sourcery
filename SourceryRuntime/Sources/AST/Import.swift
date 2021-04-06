@@ -83,4 +83,14 @@ public class Import: NSObject, SourceryModelWithoutDescription {
     }
 // sourcery:end
 
+// sourcery:inline:Import.Mirror
+    public var customMirror: Mirror {
+        Mirror(self, children: [
+            "kind": kind as Any,
+            "path": path,
+            "description": description,
+            "moduleName": moduleName,
+        ])
+    }
+// sourcery:end
 }
