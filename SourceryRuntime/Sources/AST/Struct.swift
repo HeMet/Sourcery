@@ -98,4 +98,11 @@ public final class Struct: Type {
     }
 // sourcery:end
 
+// sourcery:inline:Struct.Mirror
+    public override var customMirror: Mirror {
+        var children = Array(super.customMirror.children)
+        children.append((label: "kind", value: kind))
+        return Mirror(self, children: children)
+    }
+// sourcery:end
 }

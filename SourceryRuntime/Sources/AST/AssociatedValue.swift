@@ -114,4 +114,16 @@ public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Ty
     }
 // sourcery:end
 
+// sourcery:inline:AssociatedValue.Mirror
+    public var customMirror: Mirror {
+        Mirror(self, children: [
+            "localName": localName as Any,
+            "externalName": externalName as Any,
+            "typeName": typeName,
+            "type": type as Any,
+            "defaultValue": defaultValue as Any,
+            "annotations": annotations,
+        ])
+    }
+// sourcery:end
 }

@@ -72,6 +72,27 @@ public final class Types: NSObject, SourceryModel {
     }
 // sourcery:end
 
+// sourcery:inline:Types.Mirror
+    public var customMirror: Mirror {
+        Mirror(self, children: [
+            "types": types,
+            "typealiases": typealiases,
+            "typesByName": typesByName,
+            "typesaliasesByName": typesaliasesByName,
+            "all": all,
+            "protocols": protocols,
+            "protocolCompositions": protocolCompositions,
+            "classes": classes,
+            "structs": structs,
+            "enums": enums,
+            "extensions": extensions,
+            "based": based,
+            "inheriting": inheriting,
+            "implementing": implementing,
+        ])
+    }
+// sourcery:end
+
     // sourcery: skipDescription, skipEquality, skipCoding
     /// :nodoc:
     public lazy internal(set) var typesByName: [String: Type] = {

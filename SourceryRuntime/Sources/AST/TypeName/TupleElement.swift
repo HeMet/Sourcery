@@ -84,6 +84,16 @@ public final class TupleElement: NSObject, SourceryModel, Typed {
     }
 // sourcery:end
 
+// sourcery:inline:TupleElement.Mirror
+    public var customMirror: Mirror {
+        Mirror(self, children: [
+            "name": name as Any,
+            "typeName": typeName,
+            "type": type as Any,
+            "asSource": asSource,
+        ])
+    }
+// sourcery:end
 }
 
 extension Array where Element == TupleElement {

@@ -154,4 +154,17 @@ public final class Enum: Type {
     }
 // sourcery:end
 
+// sourcery:inline:Enum.Mirror
+    public override var customMirror: Mirror {
+        var children = Array(super.customMirror.children)
+        children.append((label: "kind", value: kind))
+        children.append((label: "cases", value: cases))
+        children.append((label: "rawTypeName", value: rawTypeName as Any))
+        children.append((label: "hasRawType", value: hasRawType))
+        children.append((label: "rawType", value: rawType as Any))
+        children.append((label: "based", value: based))
+        children.append((label: "hasAssociatedValues", value: hasAssociatedValues))
+        return Mirror(self, children: children)
+    }
+// sourcery:end
 }

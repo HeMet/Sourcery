@@ -1,0 +1,23 @@
+{% for type in types.implementing.AutoMirror|!protocol|!annotated:"skipMirror" %}
+{% if not type.supertype.implements.AutoMirror %}extension {{ type.name }}: CustomReflectable {}{% endif %}
+{% endfor %}
+
+{% for type in types.implementing.AutoMirror|!protocol|!annotated:"skipMirror" %}
+// sourcery:inline:{{ type.name }}.Mirror
+    public {% if type.supertype.implements.AutoMirror %}override {% endif %}var customMirror: Mirror {
+{% if type.supertype.implements.AutoMirror %}
+        var children = Array(super.customMirror.children)
+{% for variable in type.variables|!annotated:"skipMirror" %}
+        children.append((label: "{{ variable.name }}", value: {{ variable.name }}{% if variable.isOptional %} as Any{% endif %}))
+{% endfor %}
+        return Mirror(self, children: children)
+{% else %}
+        Mirror(self, children: [
+{% for variable in type.variables|!annotated:"skipMirror" %}
+            "{{ variable.name }}": {{ variable.name }}{% if variable.isOptional %} as Any{% endif %},
+{% endfor %}
+        ])
+{% endif %}
+    }
+// sourcery:end
+{% endfor %}

@@ -125,6 +125,22 @@ public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated {
         return string
     }
 // sourcery:end
+
+// sourcery:inline:ClosureParameter.Mirror
+    public var customMirror: Mirror {
+        Mirror(self, children: [
+            "argumentLabel": argumentLabel as Any,
+            "name": name as Any,
+            "typeName": typeName,
+            "`inout`": `inout`,
+            "type": type as Any,
+            "typeAttributes": typeAttributes,
+            "defaultValue": defaultValue as Any,
+            "annotations": annotations,
+            "asSource": asSource,
+        ])
+    }
+// sourcery:end
 }
 
 extension Array where Element == ClosureParameter {

@@ -77,4 +77,13 @@ public final class AssociatedType: NSObject, SourceryModel {
     }
 // sourcery:end
 
+// sourcery:inline:AssociatedType.Mirror
+    public var customMirror: Mirror {
+        Mirror(self, children: [
+            "name": name,
+            "typeName": typeName as Any,
+            "type": type as Any,
+        ])
+    }
+// sourcery:end
 }

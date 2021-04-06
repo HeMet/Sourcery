@@ -90,4 +90,16 @@ public final class ArrayType: NSObject, SourceryModel {
         return results
     }
 // sourcery:end
+
+// sourcery:inline:ArrayType.Mirror
+    public var customMirror: Mirror {
+        Mirror(self, children: [
+            "name": name,
+            "elementTypeName": elementTypeName,
+            "elementType": elementType as Any,
+            "asGeneric": asGeneric,
+            "asSource": asSource,
+        ])
+    }
+// sourcery:end
 }

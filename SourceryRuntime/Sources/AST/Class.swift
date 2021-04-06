@@ -97,4 +97,12 @@ public final class Class: Type {
     }
 // sourcery:end
 
+// sourcery:inline:Class.Mirror
+    public override var customMirror: Mirror {
+        var children = Array(super.customMirror.children)
+        children.append((label: "kind", value: kind))
+        children.append((label: "isFinal", value: isFinal))
+        return Mirror(self, children: children)
+    }
+// sourcery:end
 }

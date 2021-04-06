@@ -112,4 +112,17 @@ public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated
     }
 // sourcery:end
 
+// sourcery:inline:EnumCase.Mirror
+    public var customMirror: Mirror {
+        Mirror(self, children: [
+            "name": name,
+            "rawValue": rawValue as Any,
+            "associatedValues": associatedValues,
+            "annotations": annotations,
+            "indirect": indirect,
+            "hasAssociatedValue": hasAssociatedValue,
+            "__parserData": __parserData as Any,
+        ])
+    }
+// sourcery:end
 }

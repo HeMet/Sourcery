@@ -129,4 +129,13 @@ public final class Protocol: Type {
     }
 // sourcery:end
 
+// sourcery:inline:Protocol.Mirror
+    public override var customMirror: Mirror {
+        var children = Array(super.customMirror.children)
+        children.append((label: "kind", value: kind))
+        children.append((label: "associatedTypes", value: associatedTypes))
+        children.append((label: "genericRequirements", value: genericRequirements))
+        return Mirror(self, children: children)
+    }
+// sourcery:end
 }

@@ -576,6 +576,60 @@ public class Type: NSObject, SourceryModel, Annotated {
     }
 // sourcery:end
 
+// sourcery:inline:Type.Mirror
+    public var customMirror: Mirror {
+        Mirror(self, children: [
+            "module": module as Any,
+            "imports": imports,
+            "allImports": allImports,
+            "typealiases": typealiases,
+            "isExtension": isExtension,
+            "kind": kind,
+            "accessLevel": accessLevel,
+            "name": name,
+            "isUnknownExtension": isUnknownExtension,
+            "globalName": globalName,
+            "isGeneric": isGeneric,
+            "localName": localName,
+            "variables": variables,
+            "rawVariables": rawVariables,
+            "allVariables": allVariables,
+            "methods": methods,
+            "rawMethods": rawMethods,
+            "allMethods": allMethods,
+            "subscripts": subscripts,
+            "rawSubscripts": rawSubscripts,
+            "allSubscripts": allSubscripts,
+            "bodyBytesRange": bodyBytesRange as Any,
+            "completeDeclarationRange": completeDeclarationRange as Any,
+            "initializers": initializers,
+            "annotations": annotations,
+            "staticVariables": staticVariables,
+            "staticMethods": staticMethods,
+            "classMethods": classMethods,
+            "instanceVariables": instanceVariables,
+            "instanceMethods": instanceMethods,
+            "computedVariables": computedVariables,
+            "storedVariables": storedVariables,
+            "inheritedTypes": inheritedTypes,
+            "based": based,
+            "basedTypes": basedTypes,
+            "inherits": inherits,
+            "implements": implements,
+            "containedTypes": containedTypes,
+            "containedType": containedType,
+            "parentName": parentName as Any,
+            "parent": parent as Any,
+            "parentTypes": parentTypes,
+            "supertype": supertype as Any,
+            "attributes": attributes,
+            "modifiers": modifiers,
+            "path": path as Any,
+            "isClass": isClass,
+        ])
+    }
+// sourcery:end
+
 }
 
 extension Type {

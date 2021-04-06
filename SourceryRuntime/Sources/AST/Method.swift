@@ -325,4 +325,43 @@ public final class Method: NSObject, SourceryModel, Annotated, Definition {
     }
 // sourcery:end
 
+// sourcery:inline:Method.Mirror
+    public var customMirror: Mirror {
+        Mirror(self, children: [
+            "name": name,
+            "selectorName": selectorName,
+            "shortName": shortName,
+            "callName": callName,
+            "parameters": parameters,
+            "returnTypeName": returnTypeName,
+            "actualReturnTypeName": actualReturnTypeName,
+            "returnType": returnType as Any,
+            "isOptionalReturnType": isOptionalReturnType,
+            "isImplicitlyUnwrappedOptionalReturnType": isImplicitlyUnwrappedOptionalReturnType,
+            "unwrappedReturnTypeName": unwrappedReturnTypeName,
+            "`throws`": `throws`,
+            "`rethrows`": `rethrows`,
+            "accessLevel": accessLevel,
+            "isStatic": isStatic,
+            "isClass": isClass,
+            "isInitializer": isInitializer,
+            "isDeinitializer": isDeinitializer,
+            "isFailableInitializer": isFailableInitializer,
+            "isConvenienceInitialiser": isConvenienceInitialiser,
+            "isConvenienceInitializer": isConvenienceInitializer,
+            "isRequired": isRequired,
+            "isFinal": isFinal,
+            "isMutating": isMutating,
+            "isGeneric": isGeneric,
+            "isOptional": isOptional,
+            "annotations": annotations,
+            "definedInTypeName": definedInTypeName as Any,
+            "actualDefinedInTypeName": actualDefinedInTypeName as Any,
+            "definedInType": definedInType as Any,
+            "attributes": attributes,
+            "modifiers": modifiers,
+            "__parserData": __parserData as Any,
+        ])
+    }
+// sourcery:end
 }

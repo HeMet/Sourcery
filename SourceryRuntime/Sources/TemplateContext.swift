@@ -6,7 +6,7 @@
 import Foundation
 
 /// :nodoc:
-// sourcery: skipCoding
+// sourcery: skipCoding, skipMirror
 public final class TemplateContext: NSObject, SourceryModel, NSCoding {
     // sourcery: skipJSExport
     public let parserResult: FileParserResult?
@@ -211,5 +211,11 @@ public class TypesCollection: NSObject, AutoJSExport {
 
     public override func responds(to aSelector: Selector!) -> Bool {
         return true
+    }
+}
+
+extension TypesCollection: CustomReflectable {
+    public var customMirror: Mirror {
+        Mirror(self, children: types.map { (label: $0, value: $1) })
     }
 }

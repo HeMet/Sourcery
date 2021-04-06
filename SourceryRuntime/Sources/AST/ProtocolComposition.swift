@@ -109,4 +109,13 @@ public final class ProtocolComposition: Type {
     }
 // sourcery:end
 
+// sourcery:inline:ProtocolComposition.Mirror
+    public override var customMirror: Mirror {
+        var children = Array(super.customMirror.children)
+        children.append((label: "kind", value: kind))
+        children.append((label: "composedTypeNames", value: composedTypeNames))
+        children.append((label: "composedTypes", value: composedTypes as Any))
+        return Mirror(self, children: children)
+    }
+// sourcery:end
 }
