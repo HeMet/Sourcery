@@ -2,6 +2,9 @@ import XCTest
 import Quick
 
 @testable import SourceryLibTests
+import SourceryUtils
+
+SourceryUtils.inUnitTests = true
 
 QCKMain([
     ConfigurationSpec.self,
