@@ -326,6 +326,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Definition {
 // sourcery:end
 
 // sourcery:inline:Method.Mirror
+    //sourcery:skipJSExport
     public var customMirror: Mirror {
         Mirror(self, children: [
             "name": name,

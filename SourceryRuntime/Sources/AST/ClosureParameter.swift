@@ -127,6 +127,7 @@ public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated {
 // sourcery:end
 
 // sourcery:inline:ClosureParameter.Mirror
+    //sourcery:skipJSExport
     public var customMirror: Mirror {
         Mirror(self, children: [
             "argumentLabel": argumentLabel as Any,
@@ -138,6 +139,14 @@ public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated {
             "defaultValue": defaultValue as Any,
             "annotations": annotations,
             "asSource": asSource,
+            "isOptional": isOptional,
+            "isImplicitlyUnwrappedOptional": isImplicitlyUnwrappedOptional,
+            "unwrappedTypeName": unwrappedTypeName,
+            "actualTypeName": actualTypeName as Any,
+            "isTuple": isTuple,
+            "isClosure": isClosure,
+            "isArray": isArray,
+            "isDictionary": isDictionary
         ])
     }
 // sourcery:end

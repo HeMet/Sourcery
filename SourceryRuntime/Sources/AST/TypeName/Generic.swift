@@ -73,6 +73,7 @@ public final class GenericType: NSObject, SourceryModelWithoutDescription {
 // sourcery:end
 
 // sourcery:inline:GenericType.Mirror
+    //sourcery:skipJSExport
     public var customMirror: Mirror {
         Mirror(self, children: [
             "name": name,

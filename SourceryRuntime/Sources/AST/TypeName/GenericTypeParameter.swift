@@ -70,6 +70,7 @@ public final class GenericTypeParameter: NSObject, SourceryModel {
 // sourcery:end
 
 // sourcery:inline:GenericTypeParameter.Mirror
+    //sourcery:skipJSExport
     public var customMirror: Mirror {
         Mirror(self, children: [
             "typeName": typeName,

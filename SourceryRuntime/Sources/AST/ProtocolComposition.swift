@@ -110,6 +110,7 @@ public final class ProtocolComposition: Type {
 // sourcery:end
 
 // sourcery:inline:ProtocolComposition.Mirror
+    //sourcery:skipJSExport
     public override var customMirror: Mirror {
         var children = Array(super.customMirror.children)
         children.append((label: "kind", value: kind))

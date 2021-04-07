@@ -103,6 +103,7 @@ public class GenericRequirement: NSObject, SourceryModel {
     // sourcery:end
 
     // sourcery:inline:GenericRequirement.Mirror
+        //sourcery:skipJSExport
         public var customMirror: Mirror {
             Mirror(self, children: [
                 "leftType": leftType,

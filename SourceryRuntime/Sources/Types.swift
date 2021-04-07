@@ -73,6 +73,7 @@ public final class Types: NSObject, SourceryModel {
 // sourcery:end
 
 // sourcery:inline:Types.Mirror
+    //sourcery:skipJSExport
     public var customMirror: Mirror {
         Mirror(self, children: [
             "types": types,

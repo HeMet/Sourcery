@@ -201,6 +201,7 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Definition {
 // sourcery:end
 
 // sourcery:inline:Subscript.Mirror
+    //sourcery:skipJSExport
     public var customMirror: Mirror {
         Mirror(self, children: [
             "parameters": parameters,

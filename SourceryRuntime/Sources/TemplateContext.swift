@@ -215,6 +215,7 @@ public class TypesCollection: NSObject, AutoJSExport {
 }
 
 extension TypesCollection: CustomReflectable {
+    // sourcery:skipJSExport
     public var customMirror: Mirror {
         Mirror(self, children: types.map { (label: $0, value: $1) })
     }

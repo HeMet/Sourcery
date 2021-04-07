@@ -124,6 +124,7 @@ public final class Typealias: NSObject, Typed, SourceryModel {
 // sourcery:end
 
 // sourcery:inline:Typealias.Mirror
+    //sourcery:skipJSExport
     public var customMirror: Mirror {
         Mirror(self, children: [
             "aliasName": aliasName,
@@ -134,6 +135,14 @@ public final class Typealias: NSObject, Typed, SourceryModel {
             "accessLevel": accessLevel,
             "parentName": parentName as Any,
             "name": name,
+            "isOptional": isOptional,
+            "isImplicitlyUnwrappedOptional": isImplicitlyUnwrappedOptional,
+            "unwrappedTypeName": unwrappedTypeName,
+            "actualTypeName": actualTypeName as Any,
+            "isTuple": isTuple,
+            "isClosure": isClosure,
+            "isArray": isArray,
+            "isDictionary": isDictionary
         ])
     }
 // sourcery:end

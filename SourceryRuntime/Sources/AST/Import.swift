@@ -84,6 +84,7 @@ public class Import: NSObject, SourceryModelWithoutDescription {
 // sourcery:end
 
 // sourcery:inline:Import.Mirror
+    //sourcery:skipJSExport
     public var customMirror: Mirror {
         Mirror(self, children: [
             "kind": kind as Any,

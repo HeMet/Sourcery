@@ -4,18 +4,39 @@
 
 {% for type in types.implementing.AutoMirror|!protocol|!annotated:"skipMirror" %}
 // sourcery:inline:{{ type.name }}.Mirror
+    //sourcery:skipJSExport
     public {% if type.supertype.implements.AutoMirror %}override {% endif %}var customMirror: Mirror {
 {% if type.supertype.implements.AutoMirror %}
         var children = Array(super.customMirror.children)
 {% for variable in type.variables|!annotated:"skipMirror" %}
         children.append((label: "{{ variable.name }}", value: {{ variable.name }}{% if variable.isOptional %} as Any{% endif %}))
 {% endfor %}
+{% if type.implements.Typed and not type.supertype.implements.Typed %}
+        children.append((label: "isOptional", value: isOptional))
+        children.append((label: "isImplicitlyUnwrappedOptional", value: isImplicitlyUnwrappedOptional))
+        children.append((label: "unwrappedTypeName", value: unwrappedTypeName))
+        children.append((label: "actualTypeName", value: actualTypeName as Any))
+        children.append((label: "isTuple", value: isTuple))
+        children.append((label: "isClosure", value: isClosure))
+        children.append((label: "isArray", value: isArray))
+        children.append((label: "isDictionary", value: isDictionary))
+{% endif %}
         return Mirror(self, children: children)
 {% else %}
         Mirror(self, children: [
 {% for variable in type.variables|!annotated:"skipMirror" %}
             "{{ variable.name }}": {{ variable.name }}{% if variable.isOptional %} as Any{% endif %},
 {% endfor %}
+{% if type.implements.Typed and not type.supertype.implements.Typed %}
+            "isOptional": isOptional,
+            "isImplicitlyUnwrappedOptional": isImplicitlyUnwrappedOptional,
+            "unwrappedTypeName": unwrappedTypeName,
+            "actualTypeName": actualTypeName as Any,
+            "isTuple": isTuple,
+            "isClosure": isClosure,
+            "isArray": isArray,
+            "isDictionary": isDictionary
+{% endif %}
         ])
 {% endif %}
     }

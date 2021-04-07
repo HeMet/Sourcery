@@ -151,6 +151,7 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
 // sourcery:end
 
 // sourcery:inline:MethodParameter.Mirror
+    //sourcery:skipJSExport
     public var customMirror: Mirror {
         Mirror(self, children: [
             "argumentLabel": argumentLabel as Any,
@@ -162,6 +163,14 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
             "defaultValue": defaultValue as Any,
             "annotations": annotations,
             "asSource": asSource,
+            "isOptional": isOptional,
+            "isImplicitlyUnwrappedOptional": isImplicitlyUnwrappedOptional,
+            "unwrappedTypeName": unwrappedTypeName,
+            "actualTypeName": actualTypeName as Any,
+            "isTuple": isTuple,
+            "isClosure": isClosure,
+            "isArray": isArray,
+            "isDictionary": isDictionary
         ])
     }
 // sourcery:end

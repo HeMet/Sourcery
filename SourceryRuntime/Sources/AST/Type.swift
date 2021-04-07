@@ -577,6 +577,7 @@ public class Type: NSObject, SourceryModel, Annotated {
 // sourcery:end
 
 // sourcery:inline:Type.Mirror
+    //sourcery:skipJSExport
     public var customMirror: Mirror {
         Mirror(self, children: [
             "module": module as Any,

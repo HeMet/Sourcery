@@ -113,6 +113,7 @@ public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated
 // sourcery:end
 
 // sourcery:inline:EnumCase.Mirror
+    //sourcery:skipJSExport
     public var customMirror: Mirror {
         Mirror(self, children: [
             "name": name,

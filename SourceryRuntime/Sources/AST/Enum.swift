@@ -155,6 +155,7 @@ public final class Enum: Type {
 // sourcery:end
 
 // sourcery:inline:Enum.Mirror
+    //sourcery:skipJSExport
     public override var customMirror: Mirror {
         var children = Array(super.customMirror.children)
         children.append((label: "kind", value: kind))

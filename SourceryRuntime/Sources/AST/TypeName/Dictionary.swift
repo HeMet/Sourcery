@@ -109,6 +109,7 @@ public final class DictionaryType: NSObject, SourceryModel {
 // sourcery:end
 
 // sourcery:inline:DictionaryType.Mirror
+    //sourcery:skipJSExport
     public var customMirror: Mirror {
         Mirror(self, children: [
             "name": name,

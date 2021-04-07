@@ -78,6 +78,7 @@ public final class AssociatedType: NSObject, SourceryModel {
 // sourcery:end
 
 // sourcery:inline:AssociatedType.Mirror
+    //sourcery:skipJSExport
     public var customMirror: Mirror {
         Mirror(self, children: [
             "name": name,

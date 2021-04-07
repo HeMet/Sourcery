@@ -78,6 +78,7 @@ public final class TupleType: NSObject, SourceryModel {
 // sourcery:end
 
 // sourcery:inline:TupleType.Mirror
+    //sourcery:skipJSExport
     public var customMirror: Mirror {
         Mirror(self, children: [
             "name": name,

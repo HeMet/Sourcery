@@ -115,6 +115,7 @@ public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Ty
 // sourcery:end
 
 // sourcery:inline:AssociatedValue.Mirror
+    //sourcery:skipJSExport
     public var customMirror: Mirror {
         Mirror(self, children: [
             "localName": localName as Any,
@@ -123,6 +124,14 @@ public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Ty
             "type": type as Any,
             "defaultValue": defaultValue as Any,
             "annotations": annotations,
+            "isOptional": isOptional,
+            "isImplicitlyUnwrappedOptional": isImplicitlyUnwrappedOptional,
+            "unwrappedTypeName": unwrappedTypeName,
+            "actualTypeName": actualTypeName as Any,
+            "isTuple": isTuple,
+            "isClosure": isClosure,
+            "isArray": isArray,
+            "isDictionary": isDictionary
         ])
     }
 // sourcery:end

@@ -228,6 +228,7 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Definiti
 // sourcery:end
 
 // sourcery:inline:Variable.Mirror
+    //sourcery:skipJSExport
     public var customMirror: Mirror {
         Mirror(self, children: [
             "name": name,
@@ -248,6 +249,14 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Definiti
             "definedInTypeName": definedInTypeName as Any,
             "actualDefinedInTypeName": actualDefinedInTypeName as Any,
             "definedInType": definedInType as Any,
+            "isOptional": isOptional,
+            "isImplicitlyUnwrappedOptional": isImplicitlyUnwrappedOptional,
+            "unwrappedTypeName": unwrappedTypeName,
+            "actualTypeName": actualTypeName as Any,
+            "isTuple": isTuple,
+            "isClosure": isClosure,
+            "isArray": isArray,
+            "isDictionary": isDictionary
         ])
     }
 // sourcery:end

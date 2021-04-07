@@ -256,6 +256,7 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
 // sourcery:end
 
 // sourcery:inline:TypeName.Mirror
+    //sourcery:skipJSExport
     public var customMirror: Mirror {
         Mirror(self, children: [
             "name": name,

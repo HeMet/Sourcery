@@ -138,6 +138,7 @@ public final class ClosureType: NSObject, SourceryModel {
 // sourcery:end
 
 // sourcery:inline:ClosureType.Mirror
+    //sourcery:skipJSExport
     public var customMirror: Mirror {
         Mirror(self, children: [
             "name": name,
