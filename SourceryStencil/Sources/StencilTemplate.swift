@@ -77,7 +77,19 @@ public final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate {
                 let sortDescriptor = NSSortDescriptor(key: propertyName, ascending: true, selector: #selector(NSString.caseInsensitiveCompare))
                 return array.sortedArray(using: [sortDescriptor])
                 #else
-                fatalError("Not implemented yet")
+                return array.sorted { (lhs, rhs) in
+                    if propertyName == "description" {
+                        return String(describing: lhs).caseInsensitiveCompare(String(describing: rhs)) == .orderedAscending
+                    }
+
+                    guard
+                        let lhs = Mirror(reflecting: lhs).children.first(where: { $0.label == propertyName })?.value as? String,
+                        let rhs = Mirror(reflecting: rhs).children.first(where: { $0.label == propertyName })?.value as? String
+                    else {
+                        fatalError("Can't find \(propertyName) on \(type(of: lhs)) using reflection. Or value is not String.")
+                    }
+                    return lhs.caseInsensitiveCompare(rhs) == .orderedAscending
+                }
                 #endif
             default:
                 return nil
@@ -91,7 +103,19 @@ public final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate {
                 let sortDescriptor = NSSortDescriptor(key: propertyName, ascending: false, selector: #selector(NSString.caseInsensitiveCompare))
                 return array.sortedArray(using: [sortDescriptor])
                 #else
-                fatalError("Not implemented yet")
+                return array.sorted { (lhs, rhs) in
+                    if propertyName == "description" {
+                        return String(describing: lhs).caseInsensitiveCompare(String(describing: rhs)) == .orderedDescending
+                    }
+
+                    guard
+                        let lhs = Mirror(reflecting: lhs).children.first(where: { $0.label == propertyName })?.value as? String,
+                        let rhs = Mirror(reflecting: rhs).children.first(where: { $0.label == propertyName })?.value as? String
+                        else {
+                        fatalError("Can't find \(propertyName) on \(type(of: lhs)) using reflection. Or value is not String.")
+                    }
+                    return lhs.caseInsensitiveCompare(rhs) == .orderedDescending
+                }
                 #endif
             default:
                 return nil
