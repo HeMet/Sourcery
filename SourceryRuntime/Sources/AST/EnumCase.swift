@@ -24,7 +24,7 @@ public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated
     }
 
     // Underlying parser data, never to be used by anything else
-    // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
+    // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport, skipMirror
     /// :nodoc:
     public var __parserData: Any?
 
@@ -122,7 +122,6 @@ public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated
             "annotations": annotations,
             "indirect": indirect ? 1 : 0,
             "hasAssociatedValue": hasAssociatedValue ? 1 : 0,
-            "__parserData": __parserData as Any,
         ])
     }
 // sourcery:end

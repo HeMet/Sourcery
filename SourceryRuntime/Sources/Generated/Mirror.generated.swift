@@ -5,6 +5,7 @@
 extension ArrayType: CustomReflectable {}
 extension AssociatedType: CustomReflectable {}
 extension AssociatedValue: CustomReflectable {}
+extension Attribute: CustomReflectable {}
 extension ClosureParameter: CustomReflectable {}
 extension ClosureType: CustomReflectable {}
 extension DictionaryType: CustomReflectable {}
@@ -23,6 +24,7 @@ extension TypeName: CustomReflectable {}
 extension Typealias: CustomReflectable {}
 extension Types: CustomReflectable {}
 extension Variable: CustomReflectable {}
+
 
 
 

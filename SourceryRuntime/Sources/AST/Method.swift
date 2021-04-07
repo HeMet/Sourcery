@@ -90,7 +90,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Definition {
     /// Whether method is a failable initializer
     public let isFailableInitializer: Bool
 
-    // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
+    // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport, skipMirror
     /// :nodoc:
     @available(*, deprecated, message: "Use isConvenienceInitializer instead") public var isConvenienceInitialiser: Bool {
         return attributes[Attribute.Identifier.convenience.name] != nil
@@ -348,7 +348,6 @@ public final class Method: NSObject, SourceryModel, Annotated, Definition {
             "isInitializer": isInitializer ? 1 : 0,
             "isDeinitializer": isDeinitializer ? 1 : 0,
             "isFailableInitializer": isFailableInitializer ? 1 : 0,
-            "isConvenienceInitialiser": isConvenienceInitialiser ? 1 : 0,
             "isConvenienceInitializer": isConvenienceInitializer ? 1 : 0,
             "isRequired": isRequired ? 1 : 0,
             "isFinal": isFinal ? 1 : 0,
