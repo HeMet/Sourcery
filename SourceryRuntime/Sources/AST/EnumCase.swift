@@ -24,7 +24,7 @@ public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated
     }
 
     // Underlying parser data, never to be used by anything else
-    // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
+    // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport, skipMirror
     /// :nodoc:
     public var __parserData: Any?
 
@@ -113,15 +113,15 @@ public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated
 // sourcery:end
 
 // sourcery:inline:EnumCase.Mirror
+    //sourcery:skipJSExport
     public var customMirror: Mirror {
         Mirror(self, children: [
             "name": name,
             "rawValue": rawValue as Any,
             "associatedValues": associatedValues,
             "annotations": annotations,
-            "indirect": indirect,
-            "hasAssociatedValue": hasAssociatedValue,
-            "__parserData": __parserData as Any,
+            "indirect": indirect ? 1 : 0,
+            "hasAssociatedValue": hasAssociatedValue ? 1 : 0,
         ])
     }
 // sourcery:end

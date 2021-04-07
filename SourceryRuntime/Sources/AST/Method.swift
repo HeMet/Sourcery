@@ -90,7 +90,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Definition {
     /// Whether method is a failable initializer
     public let isFailableInitializer: Bool
 
-    // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
+    // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport, skipMirror
     /// :nodoc:
     @available(*, deprecated, message: "Use isConvenienceInitializer instead") public var isConvenienceInitialiser: Bool {
         return attributes[Attribute.Identifier.convenience.name] != nil
@@ -326,6 +326,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Definition {
 // sourcery:end
 
 // sourcery:inline:Method.Mirror
+    //sourcery:skipJSExport
     public var customMirror: Mirror {
         Mirror(self, children: [
             "name": name,
@@ -336,24 +337,23 @@ public final class Method: NSObject, SourceryModel, Annotated, Definition {
             "returnTypeName": returnTypeName,
             "actualReturnTypeName": actualReturnTypeName,
             "returnType": returnType as Any,
-            "isOptionalReturnType": isOptionalReturnType,
-            "isImplicitlyUnwrappedOptionalReturnType": isImplicitlyUnwrappedOptionalReturnType,
+            "isOptionalReturnType": isOptionalReturnType ? 1 : 0,
+            "isImplicitlyUnwrappedOptionalReturnType": isImplicitlyUnwrappedOptionalReturnType ? 1 : 0,
             "unwrappedReturnTypeName": unwrappedReturnTypeName,
-            "`throws`": `throws`,
-            "`rethrows`": `rethrows`,
+            "`throws`": `throws` ? 1 : 0,
+            "`rethrows`": `rethrows` ? 1 : 0,
             "accessLevel": accessLevel,
-            "isStatic": isStatic,
-            "isClass": isClass,
-            "isInitializer": isInitializer,
-            "isDeinitializer": isDeinitializer,
-            "isFailableInitializer": isFailableInitializer,
-            "isConvenienceInitialiser": isConvenienceInitialiser,
-            "isConvenienceInitializer": isConvenienceInitializer,
-            "isRequired": isRequired,
-            "isFinal": isFinal,
-            "isMutating": isMutating,
-            "isGeneric": isGeneric,
-            "isOptional": isOptional,
+            "isStatic": isStatic ? 1 : 0,
+            "isClass": isClass ? 1 : 0,
+            "isInitializer": isInitializer ? 1 : 0,
+            "isDeinitializer": isDeinitializer ? 1 : 0,
+            "isFailableInitializer": isFailableInitializer ? 1 : 0,
+            "isConvenienceInitializer": isConvenienceInitializer ? 1 : 0,
+            "isRequired": isRequired ? 1 : 0,
+            "isFinal": isFinal ? 1 : 0,
+            "isMutating": isMutating ? 1 : 0,
+            "isGeneric": isGeneric ? 1 : 0,
+            "isOptional": isOptional ? 1 : 0,
             "annotations": annotations,
             "definedInTypeName": definedInTypeName as Any,
             "actualDefinedInTypeName": actualDefinedInTypeName as Any,

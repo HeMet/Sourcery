@@ -157,11 +157,11 @@ public class Type: NSObject, SourceryModel, Annotated {
         return lhs.parameters == rhs.parameters && lhs.returnTypeName == rhs.returnTypeName && lhs.readAccess == rhs.readAccess && lhs.writeAccess == rhs.writeAccess
     }
 
-    // sourcery: skipEquality, skipDescription, skipJSExport
+    // sourcery: skipEquality, skipDescription, skipJSExport, skipMirror
     /// Bytes position of the body of this type in its declaration file if available.
     public var bodyBytesRange: BytesRange?
 
-    // sourcery: skipEquality, skipDescription, skipJSExport
+    // sourcery: skipEquality, skipDescription, skipJSExport, skipMirror
     /// Bytes position of the whole declaration of this type in its declaration file if available.
     public var completeDeclarationRange: BytesRange?
 
@@ -310,7 +310,7 @@ public class Type: NSObject, SourceryModel, Annotated {
         }
     }
 
-    // sourcery: skipJSExport
+    // sourcery: skipJSExport, skipMirror
     /// :nodoc:
     public var parentTypes: AnyIterator<Type> {
         var next: Type? = self
@@ -331,7 +331,7 @@ public class Type: NSObject, SourceryModel, Annotated {
     public var modifiers: [SourceryModifier]
 
     // Path to file where the type is defined
-    // sourcery: skipDescription, skipEquality, skipJSExport
+    // sourcery: skipDescription, skipEquality, skipJSExport, skipMirror
     /// :nodoc:
     public var path: String?
 
@@ -577,19 +577,20 @@ public class Type: NSObject, SourceryModel, Annotated {
 // sourcery:end
 
 // sourcery:inline:Type.Mirror
+    //sourcery:skipJSExport
     public var customMirror: Mirror {
         Mirror(self, children: [
             "module": module as Any,
             "imports": imports,
             "allImports": allImports,
             "typealiases": typealiases,
-            "isExtension": isExtension,
+            "isExtension": isExtension ? 1 : 0,
             "kind": kind,
             "accessLevel": accessLevel,
             "name": name,
-            "isUnknownExtension": isUnknownExtension,
+            "isUnknownExtension": isUnknownExtension ? 1 : 0,
             "globalName": globalName,
-            "isGeneric": isGeneric,
+            "isGeneric": isGeneric ? 1 : 0,
             "localName": localName,
             "variables": variables,
             "rawVariables": rawVariables,
@@ -600,8 +601,6 @@ public class Type: NSObject, SourceryModel, Annotated {
             "subscripts": subscripts,
             "rawSubscripts": rawSubscripts,
             "allSubscripts": allSubscripts,
-            "bodyBytesRange": bodyBytesRange as Any,
-            "completeDeclarationRange": completeDeclarationRange as Any,
             "initializers": initializers,
             "annotations": annotations,
             "staticVariables": staticVariables,
@@ -620,12 +619,9 @@ public class Type: NSObject, SourceryModel, Annotated {
             "containedType": containedType,
             "parentName": parentName as Any,
             "parent": parent as Any,
-            "parentTypes": parentTypes,
             "supertype": supertype as Any,
             "attributes": attributes,
             "modifiers": modifiers,
-            "path": path as Any,
-            "isClass": isClass,
         ])
     }
 // sourcery:end
@@ -634,7 +630,7 @@ public class Type: NSObject, SourceryModel, Annotated {
 
 extension Type {
 
-    // sourcery: skipDescription, skipJSExport
+    // sourcery: skipDescription, skipJSExport, skipMirror
     /// :nodoc:
     var isClass: Bool {
         let isNotClass = self is Struct || self is Enum || self is Protocol

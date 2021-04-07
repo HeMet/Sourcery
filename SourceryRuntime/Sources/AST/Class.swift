@@ -98,6 +98,7 @@ public final class Class: Type {
 // sourcery:end
 
 // sourcery:inline:Class.Mirror
+    //sourcery:skipJSExport
     public override var customMirror: Mirror {
         var children = Array(super.customMirror.children)
         children.append((label: "kind", value: kind))

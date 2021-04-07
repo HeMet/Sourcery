@@ -201,19 +201,20 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Definition {
 // sourcery:end
 
 // sourcery:inline:Subscript.Mirror
+    //sourcery:skipJSExport
     public var customMirror: Mirror {
         Mirror(self, children: [
             "parameters": parameters,
             "returnTypeName": returnTypeName,
             "actualReturnTypeName": actualReturnTypeName,
             "returnType": returnType as Any,
-            "isOptionalReturnType": isOptionalReturnType,
-            "isImplicitlyUnwrappedOptionalReturnType": isImplicitlyUnwrappedOptionalReturnType,
+            "isOptionalReturnType": isOptionalReturnType ? 1 : 0,
+            "isImplicitlyUnwrappedOptionalReturnType": isImplicitlyUnwrappedOptionalReturnType ? 1 : 0,
             "unwrappedReturnTypeName": unwrappedReturnTypeName,
-            "isFinal": isFinal,
+            "isFinal": isFinal ? 1 : 0,
             "readAccess": readAccess,
             "writeAccess": writeAccess,
-            "isMutable": isMutable,
+            "isMutable": isMutable ? 1 : 0,
             "annotations": annotations,
             "definedInTypeName": definedInTypeName as Any,
             "actualDefinedInTypeName": actualDefinedInTypeName as Any,

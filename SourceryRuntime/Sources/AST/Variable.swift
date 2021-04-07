@@ -228,26 +228,35 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Definiti
 // sourcery:end
 
 // sourcery:inline:Variable.Mirror
+    //sourcery:skipJSExport
     public var customMirror: Mirror {
         Mirror(self, children: [
             "name": name,
             "typeName": typeName,
             "type": type as Any,
-            "isComputed": isComputed,
-            "isStatic": isStatic,
+            "isComputed": isComputed ? 1 : 0,
+            "isStatic": isStatic ? 1 : 0,
             "readAccess": readAccess,
             "writeAccess": writeAccess,
             "accessLevel": accessLevel,
-            "isMutable": isMutable,
+            "isMutable": isMutable ? 1 : 0,
             "defaultValue": defaultValue as Any,
             "annotations": annotations,
             "attributes": attributes,
             "modifiers": modifiers,
-            "isFinal": isFinal,
-            "isLazy": isLazy,
+            "isFinal": isFinal ? 1 : 0,
+            "isLazy": isLazy ? 1 : 0,
             "definedInTypeName": definedInTypeName as Any,
             "actualDefinedInTypeName": actualDefinedInTypeName as Any,
             "definedInType": definedInType as Any,
+            "isOptional": isOptional ? 1 : 0,
+            "isImplicitlyUnwrappedOptional": isImplicitlyUnwrappedOptional ? 1 : 0,
+            "unwrappedTypeName": unwrappedTypeName,
+            "actualTypeName": actualTypeName as Any,
+            "isTuple": isTuple ? 1 : 0,
+            "isClosure": isClosure ? 1 : 0,
+            "isArray": isArray ? 1 : 0,
+            "isDictionary": isDictionary ? 1 : 0
         ])
     }
 // sourcery:end

@@ -1,7 +1,7 @@
 import Foundation
 
 /// Describes Swift attribute
-public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
+public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport, AutoMirror {
 
     /// Attribute name
     public let name: String
@@ -9,10 +9,10 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
     /// Attribute arguments
     public let arguments: [String: NSObject]
 
-    // sourcery: skipJSExport
+    // sourcery: skipJSExport, skipMirror
     let _description: String
 
-    // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
+    // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport, skipMirror
     /// :nodoc:
     public var __parserData: Any?
 
@@ -198,4 +198,15 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
     }
 // sourcery:end
 
+// sourcery:inline:Attribute.Mirror
+    //sourcery:skipJSExport
+    public var customMirror: Mirror {
+        Mirror(self, children: [
+            "name": name,
+            "arguments": arguments,
+            "asSource": asSource,
+            "description": description,
+        ])
+    }
+// sourcery:end
 }

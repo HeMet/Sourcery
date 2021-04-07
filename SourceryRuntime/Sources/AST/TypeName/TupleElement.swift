@@ -85,12 +85,21 @@ public final class TupleElement: NSObject, SourceryModel, Typed {
 // sourcery:end
 
 // sourcery:inline:TupleElement.Mirror
+    //sourcery:skipJSExport
     public var customMirror: Mirror {
         Mirror(self, children: [
             "name": name as Any,
             "typeName": typeName,
             "type": type as Any,
             "asSource": asSource,
+            "isOptional": isOptional ? 1 : 0,
+            "isImplicitlyUnwrappedOptional": isImplicitlyUnwrappedOptional ? 1 : 0,
+            "unwrappedTypeName": unwrappedTypeName,
+            "actualTypeName": actualTypeName as Any,
+            "isTuple": isTuple ? 1 : 0,
+            "isClosure": isClosure ? 1 : 0,
+            "isArray": isArray ? 1 : 0,
+            "isDictionary": isDictionary ? 1 : 0
         ])
     }
 // sourcery:end

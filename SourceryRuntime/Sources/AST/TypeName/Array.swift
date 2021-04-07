@@ -92,6 +92,7 @@ public final class ArrayType: NSObject, SourceryModel {
 // sourcery:end
 
 // sourcery:inline:ArrayType.Mirror
+    //sourcery:skipJSExport
     public var customMirror: Mirror {
         Mirror(self, children: [
             "name": name,
