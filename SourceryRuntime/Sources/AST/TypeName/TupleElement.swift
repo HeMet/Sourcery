@@ -92,14 +92,14 @@ public final class TupleElement: NSObject, SourceryModel, Typed {
             "typeName": typeName,
             "type": type as Any,
             "asSource": asSource,
-            "isOptional": isOptional,
-            "isImplicitlyUnwrappedOptional": isImplicitlyUnwrappedOptional,
+            "isOptional": isOptional ? 1 : 0,
+            "isImplicitlyUnwrappedOptional": isImplicitlyUnwrappedOptional ? 1 : 0,
             "unwrappedTypeName": unwrappedTypeName,
             "actualTypeName": actualTypeName as Any,
-            "isTuple": isTuple,
-            "isClosure": isClosure,
-            "isArray": isArray,
-            "isDictionary": isDictionary
+            "isTuple": isTuple ? 1 : 0,
+            "isClosure": isClosure ? 1 : 0,
+            "isArray": isArray ? 1 : 0,
+            "isDictionary": isDictionary ? 1 : 0
         ])
     }
 // sourcery:end

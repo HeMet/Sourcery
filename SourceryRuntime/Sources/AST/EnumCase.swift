@@ -120,8 +120,8 @@ public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated
             "rawValue": rawValue as Any,
             "associatedValues": associatedValues,
             "annotations": annotations,
-            "indirect": indirect,
-            "hasAssociatedValue": hasAssociatedValue,
+            "indirect": indirect ? 1 : 0,
+            "hasAssociatedValue": hasAssociatedValue ? 1 : 0,
             "__parserData": __parserData as Any,
         ])
     }

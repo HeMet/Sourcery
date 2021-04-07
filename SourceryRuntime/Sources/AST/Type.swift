@@ -584,13 +584,13 @@ public class Type: NSObject, SourceryModel, Annotated {
             "imports": imports,
             "allImports": allImports,
             "typealiases": typealiases,
-            "isExtension": isExtension,
+            "isExtension": isExtension ? 1 : 0,
             "kind": kind,
             "accessLevel": accessLevel,
             "name": name,
-            "isUnknownExtension": isUnknownExtension,
+            "isUnknownExtension": isUnknownExtension ? 1 : 0,
             "globalName": globalName,
-            "isGeneric": isGeneric,
+            "isGeneric": isGeneric ? 1 : 0,
             "localName": localName,
             "variables": variables,
             "rawVariables": rawVariables,
@@ -626,7 +626,7 @@ public class Type: NSObject, SourceryModel, Annotated {
             "attributes": attributes,
             "modifiers": modifiers,
             "path": path as Any,
-            "isClass": isClass,
+            "isClass": isClass ? 1 : 0,
         ])
     }
 // sourcery:end

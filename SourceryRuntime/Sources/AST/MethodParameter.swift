@@ -157,20 +157,20 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
             "argumentLabel": argumentLabel as Any,
             "name": name,
             "typeName": typeName,
-            "`inout`": `inout`,
+            "`inout`": `inout` ? 1 : 0,
             "type": type as Any,
             "typeAttributes": typeAttributes,
             "defaultValue": defaultValue as Any,
             "annotations": annotations,
             "asSource": asSource,
-            "isOptional": isOptional,
-            "isImplicitlyUnwrappedOptional": isImplicitlyUnwrappedOptional,
+            "isOptional": isOptional ? 1 : 0,
+            "isImplicitlyUnwrappedOptional": isImplicitlyUnwrappedOptional ? 1 : 0,
             "unwrappedTypeName": unwrappedTypeName,
             "actualTypeName": actualTypeName as Any,
-            "isTuple": isTuple,
-            "isClosure": isClosure,
-            "isArray": isArray,
-            "isDictionary": isDictionary
+            "isTuple": isTuple ? 1 : 0,
+            "isClosure": isClosure ? 1 : 0,
+            "isArray": isArray ? 1 : 0,
+            "isDictionary": isDictionary ? 1 : 0
         ])
     }
 // sourcery:end
