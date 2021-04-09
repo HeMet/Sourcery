@@ -70,56 +70,43 @@ public final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate {
         ext.registerFilter("reversed", filter: reversed)
         ext.registerFilter("toArray", filter: toArray)
 
-        ext.registerFilterWithArguments("sorted") { (array, propertyName: String) -> Any? in
-            switch array {
-            case let array as NSArray:
+        func sorted(_ array: Any?, propertyName: String, ascending: Bool) -> Any? {
+            let expectedResult: ComparisonResult = ascending ? .orderedAscending : .orderedDescending
+
+            func comparator(_ lhs: Any, _ rhs: Any) -> Bool {
+                if propertyName == "description" {
+                    return String(describing: lhs).caseInsensitiveCompare(String(describing: rhs)) == expectedResult
+                }
+
+                guard
+                    let lhs = Mirror(reflecting: lhs).children.first(where: { $0.label == propertyName })?.value as? String,
+                    let rhs = Mirror(reflecting: rhs).children.first(where: { $0.label == propertyName })?.value as? String
+                    else {
+                    fatalError("Can't find \(propertyName) on \(type(of: lhs)) using reflection. Or value is not String.")
+                }
+                return lhs.caseInsensitiveCompare(rhs) == expectedResult
+            }
+
+            if let array = (array as? AnyArray)?.asArrayOfAny() {
+                return array.sorted(by: comparator)
+            } else if let array = array as? NSArray {
                 #if canImport(Darwin)
-                let sortDescriptor = NSSortDescriptor(key: propertyName, ascending: true, selector: #selector(NSString.caseInsensitiveCompare))
+                let sortDescriptor = NSSortDescriptor(key: propertyName, ascending: ascending, selector: #selector(NSString.caseInsensitiveCompare))
                 return array.sortedArray(using: [sortDescriptor])
                 #else
-                return array.sorted { (lhs, rhs) in
-                    if propertyName == "description" {
-                        return String(describing: lhs).caseInsensitiveCompare(String(describing: rhs)) == .orderedAscending
-                    }
-
-                    guard
-                        let lhs = Mirror(reflecting: lhs).children.first(where: { $0.label == propertyName })?.value as? String,
-                        let rhs = Mirror(reflecting: rhs).children.first(where: { $0.label == propertyName })?.value as? String
-                    else {
-                        fatalError("Can't find \(propertyName) on \(type(of: lhs)) using reflection. Or value is not String.")
-                    }
-                    return lhs.caseInsensitiveCompare(rhs) == .orderedAscending
-                }
+                return array.sorted(by: comparator)
                 #endif
-            default:
+            } else {
                 return nil
             }
         }
 
-        ext.registerFilterWithArguments("sortedDescending") { (array, propertyName: String) -> Any? in
-            switch array {
-            case let array as NSArray:
-                #if canImport(Darwin)
-                let sortDescriptor = NSSortDescriptor(key: propertyName, ascending: false, selector: #selector(NSString.caseInsensitiveCompare))
-                return array.sortedArray(using: [sortDescriptor])
-                #else
-                return array.sorted { (lhs, rhs) in
-                    if propertyName == "description" {
-                        return String(describing: lhs).caseInsensitiveCompare(String(describing: rhs)) == .orderedDescending
-                    }
+        ext.registerFilterWithArguments("sorted") { (array, propertyName: String) -> Any? in
+            sorted(array, propertyName: propertyName, ascending: true)
+        }
 
-                    guard
-                        let lhs = Mirror(reflecting: lhs).children.first(where: { $0.label == propertyName })?.value as? String,
-                        let rhs = Mirror(reflecting: rhs).children.first(where: { $0.label == propertyName })?.value as? String
-                        else {
-                        fatalError("Can't find \(propertyName) on \(type(of: lhs)) using reflection. Or value is not String.")
-                    }
-                    return lhs.caseInsensitiveCompare(rhs) == .orderedDescending
-                }
-                #endif
-            default:
-                return nil
-            }
+        ext.registerFilterWithArguments("sortedDescending") { (array, propertyName: String) -> Any? in
+            sorted(array, propertyName: propertyName, ascending: false)
         }
 
         ext.registerBoolFilter("initializer", filter: { (m: SourceryMethod) in m.isInitializer })
@@ -253,8 +240,10 @@ public extension Stencil.Extension {
 
 private func toArray(_ value: Any?) -> Any? {
     switch value {
-    case let array as NSArray:
-        return array
+    case is NSArray:
+        // avoid potential conversion from [NSString] to [String]
+        // since these types have different description
+        return value
     case .some(let something):
         return [something]
     default:
@@ -263,10 +252,13 @@ private func toArray(_ value: Any?) -> Any? {
 }
 
 private func reversed(_ value: Any?) -> Any? {
-    guard let array = value as? NSArray else {
-        return value
+    if let array = (value as? AnyArray)?.asArrayOfAny() {
+        return Array(array.reversed())
     }
-    return array.reversed()
+    if let array = value as? NSArray {
+        return array.reversed()
+    }
+    return value
 }
 
 private func count(_ value: Any?) -> Any? {
@@ -397,4 +389,54 @@ private struct FilterOr<T, Y> {
             }
         }
     }
+}
+
+protocol NSStringTag {
+    var nsString: NSString { get }
+}
+
+protocol StringTag {
+    var string: String { get }
+}
+
+protocol AnyArray {
+    var arrayOfNSStrings: Bool { get }
+    var arrayOfStrings: Bool { get }
+    func printAllTypes()
+
+    func asArrayOfNSStrings() -> [NSString]?
+    func asArrayOfStrings() -> [String]?
+    func asArrayOfAny() -> [Any]
+}
+
+extension Array: AnyArray {
+    var arrayOfNSStrings: Bool { allSatisfy { $0 is NSStringTag } }
+    var arrayOfStrings: Bool { allSatisfy { $0 is StringTag } }
+
+    func asArrayOfNSStrings() -> [NSString]? {
+        let result = compactMap { ($0 as? NSStringTag)?.nsString }
+        return result.count == count ? result : nil
+    }
+
+    func asArrayOfStrings() -> [String]? {
+        let result = compactMap { ($0 as? StringTag)?.string }
+        return result.count == count ? result : nil
+    }
+
+    func asArrayOfAny() -> [Any] {
+        self as [Any]
+    }
+
+    func printAllTypes() {
+        let types = map { type(of:$0) }
+        print(types)
+    }
+}
+
+extension NSString: NSStringTag {
+    var nsString: NSString { self }
+}
+
+extension String: StringTag {
+    var string: String { self }
 }
