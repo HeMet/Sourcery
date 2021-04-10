@@ -256,9 +256,11 @@ class StencilTemplateSpec: QuickSpec {
                 outputDir = Stubs.cleanTemporarySourceryDir()
 
                 let templatePath = Stubs.templateDirectory + Path("Include.stencil")
-                let expectedResult = "// Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery\n" +
-                    "// DO NOT EDIT\n" +
-                "partial template content\n"
+                let expectedResult = """
+                    // Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery
+                    // DO NOT EDIT
+                    partial template content\n
+                    """.withPlatformLineTerminator
 
                 expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: Output(outputDir)) }.toNot(throwError())
 
