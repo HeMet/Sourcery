@@ -81,13 +81,13 @@ public final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate {
                 guard
                     let lhs = Mirror(reflecting: lhs).children.first(where: { $0.label == propertyName })?.value as? String,
                     let rhs = Mirror(reflecting: rhs).children.first(where: { $0.label == propertyName })?.value as? String
-                    else {
+                else {
                     fatalError("Can't find \(propertyName) on \(type(of: lhs)) using reflection. Or value is not String.")
                 }
                 return lhs.caseInsensitiveCompare(rhs) == expectedResult
             }
 
-            if let array = (array as? AnyArray)?.asArrayOfAny() {
+            if let array = (array as? ArrayOfAny)?.unwrap() {
                 return array.sorted(by: comparator)
             } else if let array = array as? NSArray {
                 #if canImport(Darwin)
@@ -241,7 +241,9 @@ public extension Stencil.Extension {
 private func toArray(_ value: Any?) -> Any? {
     switch value {
     case is NSArray:
-        // avoid potential conversion from [NSString] to [String]
+        // [NSString] casted to NSArray then casted to [Any]
+        // becomes [String] with Strings boxed in Any
+        // we need to avoid such conversion
         // since these types have different description
         return value
     case .some(let something):
@@ -252,7 +254,7 @@ private func toArray(_ value: Any?) -> Any? {
 }
 
 private func reversed(_ value: Any?) -> Any? {
-    if let array = (value as? AnyArray)?.asArrayOfAny() {
+    if let array = (value as? ArrayOfAny)?.unwrap() {
         return Array(array.reversed())
     }
     if let array = value as? NSArray {
@@ -391,52 +393,10 @@ private struct FilterOr<T, Y> {
     }
 }
 
-protocol NSStringTag {
-    var nsString: NSString { get }
+protocol ArrayOfAny {
+    func unwrap() -> [Any]
 }
 
-protocol StringTag {
-    var string: String { get }
-}
-
-protocol AnyArray {
-    var arrayOfNSStrings: Bool { get }
-    var arrayOfStrings: Bool { get }
-    func printAllTypes()
-
-    func asArrayOfNSStrings() -> [NSString]?
-    func asArrayOfStrings() -> [String]?
-    func asArrayOfAny() -> [Any]
-}
-
-extension Array: AnyArray {
-    var arrayOfNSStrings: Bool { allSatisfy { $0 is NSStringTag } }
-    var arrayOfStrings: Bool { allSatisfy { $0 is StringTag } }
-
-    func asArrayOfNSStrings() -> [NSString]? {
-        let result = compactMap { ($0 as? NSStringTag)?.nsString }
-        return result.count == count ? result : nil
-    }
-
-    func asArrayOfStrings() -> [String]? {
-        let result = compactMap { ($0 as? StringTag)?.string }
-        return result.count == count ? result : nil
-    }
-
-    func asArrayOfAny() -> [Any] {
-        self as [Any]
-    }
-
-    func printAllTypes() {
-        let types = map { type(of:$0) }
-        print(types)
-    }
-}
-
-extension NSString: NSStringTag {
-    var nsString: NSString { self }
-}
-
-extension String: StringTag {
-    var string: String { self }
+extension Array: ArrayOfAny {
+    func unwrap() -> [Any] { self as [Any] }
 }
