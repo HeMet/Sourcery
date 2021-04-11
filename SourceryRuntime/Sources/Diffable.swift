@@ -60,7 +60,12 @@ public class DiffableResult: NSObject, AutoEquatable {
 
     public override var description: String {
         guard !results.isEmpty else { return "" }
-        return "\(identifier.flatMap { "\($0) " } ?? "")" + results.joined(separator: "\n")
+        #if os(Windows)
+        let lt = "\r\n"
+        #else
+        let lt = "\n"
+        #endif
+        return "\(identifier.flatMap { "\($0) " } ?? "")" + results.joined(separator: lt)
     }
 
 // sourcery:inline:DiffableResult.Equality

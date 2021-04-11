@@ -351,7 +351,7 @@ extension Sourcery {
         //! All files have been scanned, time to join extensions with base class
         let (types, functions, typealiases) = Composer.uniqueTypesAndFunctions(parserResult)
 
-        Log.benchmark("\tcombiningTypes: \(currentTimestamp() - uniqueTypeStart)\n\ttotal: \(currentTimestamp() - startScan)")
+        Log.benchmark("\tcombiningTypes: \(currentTimestamp() - uniqueTypeStart)\(Platform.lineTerminator)\ttotal: \(currentTimestamp() - startScan)")
         Log.info("Found \(types.count) types in \(allResults.count) files, \(numberOfFilesThatHadToBeParsed) changed from last run.")
         return (parserResultCopy, Types(types: types, typealiases: typealiases), functions, inlineRanges)
     }
@@ -445,7 +445,7 @@ extension Sourcery {
             }
         } else {
             let result = try allTemplates.reduce("") { result, template in
-                return result + "\n" + (try generate(template, forParsingResult: parsingResult, outputPath: output.path))
+                return result + "\(Platform.lineTerminator)" + (try generate(template, forParsingResult: parsingResult, outputPath: output.path))
             }
             try self.output(result: result, to: output.path)
 
@@ -455,7 +455,7 @@ extension Sourcery {
         }
 
         try fileAnnotatedContent.forEach { (path, contents) in
-            try self.output(result: contents.joined(separator: "\n"), to: path)
+            try self.output(result: contents.joined(separator: "\(Platform.lineTerminator)"), to: path)
 
             if let linkTo = output.linkTo {
                 link(path, to: linkTo)
@@ -593,7 +593,8 @@ extension Sourcery {
                     return nil
                 }
                 let autoTypeName = key.trimmingPrefix("auto:").components(separatedBy: ".").dropLast().joined(separator: ".")
-                let toInsert = "\n// sourcery:inline:\(key)\n\(generatedBody)// sourcery:end\n"
+                let lt = Platform.lineTerminator
+                let toInsert = "\(lt)// sourcery:inline:\(key)\(lt)\(generatedBody)// sourcery:end\(lt)"
 
                 guard let definition = parsingResult.types.types.first(where: { $0.name == autoTypeName }),
                     let path = definition.path.map({ Path($0) }),
@@ -637,7 +638,7 @@ extension Sourcery {
             .annotatedRanges
             .map { ($0, $1) }
             .forEach({ (filePath, ranges) in
-                let generatedBody = ranges.map { contents.bridge().substring(with: $0.range) }.joined(separator: "\n")
+                let generatedBody = ranges.map { contents.bridge().substring(with: $0.range) }.joined(separator: "\(Platform.lineTerminator)")
                 let path = outputPath + (Path(filePath).extension == nil ? "\(filePath).generated.swift" : filePath)
                 var fileContents = fileAnnotatedContent[path] ?? []
                 fileContents.append(generatedBody)
@@ -661,7 +662,7 @@ extension Sourcery {
         guard indentation.isEmpty == false else {
             return toInsert
         }
-        let lines = toInsert.components(separatedBy: "\n")
+        let lines = toInsert.components(separatedBy: "\(Platform.lineTerminator)")
         return lines.enumerated()
             .map { index, line in
                 guard !line.isEmpty else {
@@ -670,7 +671,7 @@ extension Sourcery {
 
                 return index == lines.count - 1 ? line : indentation + line
             }
-            .joined(separator: "\n")
+            .joined(separator: "\(Platform.lineTerminator)")
     }
 
     internal func generatedPath(`for` templatePath: Path) -> Path {
