@@ -194,7 +194,16 @@ public struct StringView {
         var utf16CountSoFar = 0
         var bytesSoFar: ByteCount = 0
         var lines = [Line]()
-        let lineContents = string.components(separatedBy: newlinesCharacterSet)
+        // do not support mixed new lines
+        let lineContents: [String]
+        let newlineLength: Int
+        if string.contains("\r\n") {
+            lineContents = string.components(separatedBy: "\r\n")
+            newlineLength = 2
+        } else {
+            lineContents = string.components(separatedBy: newlinesCharacterSet)
+            newlineLength = 1
+        }
         // Be compatible with `NSString.getLineStart(_:end:contentsEnd:forRange:)`
         let endsWithNewLineCharacter: Bool
         if let lastChar = utf16View.last,
@@ -217,18 +226,18 @@ public struct StringView {
             let byteCount = ByteCount(content.lengthOfBytes(using: .utf8))
             bytesSoFar += byteCount
 
-            let newlineLength = index != lineContents.count ? 1 : 0 // FIXME: assumes \n
+            let actualNewlineLength = index != lineContents.count ? newlineLength : 0 // FIXME: assumes \n
 
             let line = Line(
                 index: index,
                 content: content,
-                range: NSRange(location: rangeStart, length: utf16Count + newlineLength),
-                byteRange: ByteRange(location: byteRangeStart, length: byteCount + ByteCount(newlineLength))
+                range: NSRange(location: rangeStart, length: utf16Count + actualNewlineLength),
+                byteRange: ByteRange(location: byteRangeStart, length: byteCount + ByteCount(actualNewlineLength))
             )
             lines.append(line)
 
-            utf16CountSoFar += newlineLength
-            bytesSoFar += ByteCount(newlineLength)
+            utf16CountSoFar += actualNewlineLength
+            bytesSoFar += ByteCount(actualNewlineLength)
         }
         self.lines = lines
     }
