@@ -49,10 +49,24 @@ public enum TemplateAnnotationsParser {
 
             let indentation = bridged.substring(with: indentationRange)
             let name = bridged.substring(with: nameRange)
-            let range = NSRange(
+            var range = NSRange(
                 location: startLineRange.location,
                 length: endLineRange.location - startLineRange.location
             )
+            #if os(Windows)
+            var rangeToCheck = range
+            if bridged.length > range.location {
+                rangeToCheck.length = 1
+            }
+            let rangeContent = bridged.substring(with: rangeToCheck)
+            if rangeContent == "\n" {
+                // this \n сut from previous \r\n
+                range.location += 1
+                range.length = max(0, range.length - 1)
+            }
+            #else
+            { _ in }(range)
+            #endif
             if aggregate {
                 var ranges = annotatedRanges[name] ?? []
                 ranges.append((range: range, indentation: indentation))
