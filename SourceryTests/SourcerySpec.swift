@@ -51,7 +51,7 @@ class SourcerySpecTests: QuickSpec {
                     update(code: """
                         class Foo {
                         }
-                        """, in: sourcePath)
+                        """.withPlatformLineTerminator, in: sourcePath)
 
                     _ = try? Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output)
                 }
@@ -75,7 +75,7 @@ class SourcerySpecTests: QuickSpec {
                         update(code: """
                             class Bar {
                             }
-                            """, in: anotherSourcePath)
+                            """.withPlatformLineTerminator, in: anotherSourcePath)
                     }
 
                     it("updates existing files") {
@@ -107,7 +107,7 @@ class SourcerySpecTests: QuickSpec {
                             Last line
                             // sourcery:end
                             }
-                            """, in: sourcePath)
+                            """.withPlatformLineTerminator, in: sourcePath)
 
                         update(code: """
                             // Line One
@@ -115,7 +115,7 @@ class SourcerySpecTests: QuickSpec {
                             var property = 2
                             // Line Three
                             // sourcery:end
-                            """, in: templatePath)
+                            """.withPlatformLineTerminator, in: templatePath)
 
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
                     }
@@ -128,7 +128,7 @@ class SourcerySpecTests: QuickSpec {
                             // Line Three
                             // sourcery:end
                             }
-                            """
+                            """.withPlatformLineTerminator
 
                         let result = try? sourcePath.read(.utf8)
                         expect(result).to(equal(expectedResult))
@@ -140,7 +140,7 @@ class SourcerySpecTests: QuickSpec {
                             // DO NOT EDIT
 
                             // Line One
-                            """
+                            """.withPlatformLineTerminator
 
                         let generatedPath = outputDir + Sourcery().generatedPath(for: templatePath)
 
@@ -157,7 +157,7 @@ class SourcerySpecTests: QuickSpec {
                             Last line
                             // sourcery:end
                             }
-                            """, in: sourcePath)
+                            """.withPlatformLineTerminator, in: sourcePath)
 
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
 
@@ -170,7 +170,7 @@ class SourcerySpecTests: QuickSpec {
                             var property = 2
                             // Line Three
                             // sourcery:end
-                            """
+                            """.withPlatformLineTerminator
 
                         let generatedPath = outputDir + Sourcery().generatedPath(for: templatePath)
 
@@ -184,7 +184,7 @@ class SourcerySpecTests: QuickSpec {
                             var property = 2
                             // Line Three
                             // sourcery:end
-                            """, in: templatePath)
+                            """.withPlatformLineTerminator, in: templatePath)
 
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true, prune: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
 
@@ -211,7 +211,7 @@ class SourcerySpecTests: QuickSpec {
                             Last line
                             // sourcery:end
                             }
-                            """, in: sourcePath)
+                            """.withPlatformLineTerminator, in: sourcePath)
 
                         update(code: """
                             // Line One
@@ -224,7 +224,7 @@ class SourcerySpecTests: QuickSpec {
                             var property = foo
                             // Line Three
                             // sourcery:end
-                            """, in: templatePath)
+                            """.withPlatformLineTerminator, in: templatePath)
 
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
 
@@ -242,7 +242,7 @@ class SourcerySpecTests: QuickSpec {
                             // Line Three
                             // sourcery:end
                             }
-                            """
+                            """.withPlatformLineTerminator
 
                         let result = try? sourcePath.read(.utf8)
                         expect(result).to(equal(expectedResult))
@@ -265,7 +265,7 @@ class SourcerySpecTests: QuickSpec {
                                     // sourcery:end
                                 }
                             }
-                            """, in: sourcePath)
+                            """.withPlatformLineTerminator, in: sourcePath)
 
                         update(code: """
                             // Line One
@@ -279,7 +279,7 @@ class SourcerySpecTests: QuickSpec {
                             var property = foo
                             // Line Three
                             // sourcery:end
-                            """, in: templatePath)
+                            """.withPlatformLineTerminator, in: templatePath)
 
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
 
@@ -298,7 +298,7 @@ class SourcerySpecTests: QuickSpec {
                                     // sourcery:end
                                 }
                             }
-                            """
+                            """.withPlatformLineTerminator
 
                         let result = try? sourcePath.read(.utf8)
                         expect(result).to(equal(expectedResult))
@@ -318,7 +318,7 @@ class SourcerySpecTests: QuickSpec {
                             var property = 2
                             // Line Three
                             // sourcery:end
-                            """, in: templatePath)
+                            """.withPlatformLineTerminator, in: templatePath)
 
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
 
@@ -329,7 +329,7 @@ class SourcerySpecTests: QuickSpec {
                             // Line Three
                             // sourcery:end
                             }
-                            """
+                            """.withPlatformLineTerminator
 
                         let result = try? sourcePath.read(.utf8)
                         expect(result).to(equal(expectedResult))
@@ -343,7 +343,7 @@ class SourcerySpecTests: QuickSpec {
                         class Bar {
                             var property = 1
                         }
-                        """, in: sourcePath)
+                        """.withPlatformLineTerminator, in: sourcePath)
 
                         update(code: """
                             // Line One
@@ -356,7 +356,7 @@ class SourcerySpecTests: QuickSpec {
                                 var property = 2
                             // Line Three
                             // sourcery:end
-                            """, in: templatePath)
+                            """.withPlatformLineTerminator, in: templatePath)
 
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
 
@@ -377,7 +377,7 @@ class SourcerySpecTests: QuickSpec {
                             // Line Three
                             // sourcery:end
                             }
-                            """
+                            """.withPlatformLineTerminator
 
                         let result = try? sourcePath.read(.utf8)
                         expect(result).to(equal(expectedResult))
@@ -388,7 +388,7 @@ class SourcerySpecTests: QuickSpec {
                             class Foo {}
 
                             class Bar {}
-                            """, in: sourcePath)
+                            """.withPlatformLineTerminator, in: sourcePath)
 
                         update(code: """
                             // Line One
@@ -402,7 +402,7 @@ class SourcerySpecTests: QuickSpec {
                             var property = foo
                             // Line Three
                             // sourcery:end
-                            """, in: templatePath)
+                            """.withPlatformLineTerminator, in: templatePath)
 
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
 
@@ -420,7 +420,7 @@ class SourcerySpecTests: QuickSpec {
                             // Line Three
                             // sourcery:end
                             }
-                            """
+                            """.withPlatformLineTerminator
 
                         let result = try? sourcePath.read(.utf8)
                         expect(result).to(equal(expectedResult))
@@ -434,7 +434,7 @@ class SourcerySpecTests: QuickSpec {
                             }
 
                             class Bar {}
-                            """, in: sourcePath)
+                            """.withPlatformLineTerminator, in: sourcePath)
 
                         update(code: """
                             // Line One
@@ -444,7 +444,7 @@ class SourcerySpecTests: QuickSpec {
                             // Line Three
                             // sourcery:end
                             {% endfor %}
-                            """, in: templatePath)
+                            """.withPlatformLineTerminator, in: templatePath)
 
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
 
@@ -462,7 +462,7 @@ class SourcerySpecTests: QuickSpec {
                             // Line Three
                             // sourcery:end
                             }
-                            """
+                            """.withPlatformLineTerminator
 
                         let result = try? sourcePath.read(.utf8)
                         expect(result).to(equal(expectedResult))
@@ -473,7 +473,7 @@ class SourcerySpecTests: QuickSpec {
                             class Foo {
                                 class Bar {}
                             }
-                            """, in: sourcePath)
+                            """.withPlatformLineTerminator, in: sourcePath)
 
                         update(code: """
                             // Line One
@@ -481,7 +481,7 @@ class SourcerySpecTests: QuickSpec {
                             var property = bar
                             // Line Three
                             // sourcery:end
-                            """, in: templatePath)
+                            """.withPlatformLineTerminator, in: templatePath)
 
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
 
@@ -494,7 +494,7 @@ class SourcerySpecTests: QuickSpec {
                             // sourcery:end
                             }
                             }
-                            """
+                            """.withPlatformLineTerminator
 
                         let result = try? sourcePath.read(.utf8)
                         expect(result).to(equal(expectedResult))
@@ -507,7 +507,7 @@ class SourcerySpecTests: QuickSpec {
                             extension Foo {
                                 class Bar {}
                             }
-                            """, in: sourcePath)
+                            """.withPlatformLineTerminator, in: sourcePath)
 
                         update(code: """
                             // Line One
@@ -515,7 +515,7 @@ class SourcerySpecTests: QuickSpec {
                             var property = bar
                             // Line Three
                             // sourcery:end
-                            """, in: templatePath)
+                            """.withPlatformLineTerminator, in: templatePath)
 
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
 
@@ -530,7 +530,7 @@ class SourcerySpecTests: QuickSpec {
                             // sourcery:end
                             }
                             }
-                            """
+                            """.withPlatformLineTerminator
 
                         let result = try? sourcePath.read(.utf8)
                         expect(result).to(equal(expectedResult))
@@ -543,7 +543,7 @@ class SourcerySpecTests: QuickSpec {
                             extension Foo {
                                 class Bar {}
                             }
-                            """, in: sourcePath)
+                            """.withPlatformLineTerminator, in: sourcePath)
 
                         update(code: """
                             // Line One
@@ -555,7 +555,7 @@ class SourcerySpecTests: QuickSpec {
                             var property = bar
                             // Line Three
                             // sourcery:end
-                            """, in: templatePath)
+                            """.withPlatformLineTerminator, in: templatePath)
 
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
 
@@ -575,7 +575,7 @@ class SourcerySpecTests: QuickSpec {
                             // sourcery:end
                             }
                             }
-                            """
+                            """.withPlatformLineTerminator
 
                         let result = try? sourcePath.read(.utf8)
                         expect(result).to(equal(expectedResult))
@@ -590,7 +590,7 @@ class SourcerySpecTests: QuickSpec {
                             var property = 2
                             // Line Three
                             // sourcery:end
-                            """, in: templatePath)
+                            """.withPlatformLineTerminator, in: templatePath)
 
                         let secondTemplatePath = outputDir + Path("OtherFakeTemplate.stencil")
 
@@ -598,7 +598,7 @@ class SourcerySpecTests: QuickSpec {
                             // sourcery:inline:auto:Foo.otherFake
                             // Line Four
                             // sourcery:end
-                            """, in: secondTemplatePath)
+                            """.withPlatformLineTerminator, in: secondTemplatePath)
 
                         expect {
                             try Sourcery(watcherEnabled: false, cacheDisabled: true)
@@ -618,7 +618,7 @@ class SourcerySpecTests: QuickSpec {
                             // Line Three
                             // sourcery:end
                             }
-                            """
+                            """.withPlatformLineTerminator
 
                         let result = try? sourcePath.read(.utf8)
                         expect(result).to(equal(expectedResult))
@@ -647,7 +647,7 @@ class SourcerySpecTests: QuickSpec {
                                 var property = 2
                                 // Line Three
                                 // sourcery:end
-                                """, in: templatePath)
+                                """.withPlatformLineTerminator, in: templatePath)
 
                             _ = try? Sourcery(watcherEnabled: false, cacheDisabled: false).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: Output(outputDir, linkTo: nil))
                         }
@@ -664,7 +664,7 @@ class SourcerySpecTests: QuickSpec {
                                 // Line Three
                                 // sourcery:end
                                 }
-                                """
+                                """.withPlatformLineTerminator
 
                             let result = try? sourcePath.read(.utf8)
                             expect(result).to(equal(expectedResult))
@@ -693,7 +693,7 @@ class SourcerySpecTests: QuickSpec {
                             }
                             // sourcery:end
                             {% endfor %}
-                            """, in: templatePath)
+                            """.withPlatformLineTerminator, in: templatePath)
 
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
                     }
@@ -707,7 +707,7 @@ class SourcerySpecTests: QuickSpec {
                             // Line Three
                             }
 
-                            """
+                            """.withPlatformLineTerminator
 
                         let generatedPath = outputDir + Path("Generated/Foo.generated.swift")
 
@@ -722,7 +722,7 @@ class SourcerySpecTests: QuickSpec {
 
                             // Line One
 
-                            """
+                            """.withPlatformLineTerminator
 
                         let generatedPath = outputDir + Sourcery().generatedPath(for: templatePath)
 
@@ -736,7 +736,7 @@ class SourcerySpecTests: QuickSpec {
                             // sourcery:file:Generated/{{ type.name }}
                             // sourcery:end
                             {% endfor %}
-                            """, in: templatePath)
+                            """.withPlatformLineTerminator, in: templatePath)
 
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true, prune: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
 
@@ -759,7 +759,7 @@ class SourcerySpecTests: QuickSpec {
                             var property2 = 2
                             }
                             // sourcery:end
-                            """, in: templatePath)
+                            """.withPlatformLineTerminator, in: templatePath)
 
                         let expectedResult = """
                             // Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery
@@ -772,7 +772,7 @@ class SourcerySpecTests: QuickSpec {
                             var property2 = 2
                             }
 
-                            """
+                            """.withPlatformLineTerminator
 
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true, prune: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
 
@@ -1019,7 +1019,7 @@ class SourcerySpecTests: QuickSpec {
                             }
                             // sourcery:end
                             {% endfor %}
-                            """, in: templatePath)
+                            """.withPlatformLineTerminator, in: templatePath)
 
                     expect {
                         try Sourcery(cacheDisabled: true, prune: true).processFiles(sources, usingTemplates: templates, output: output)
