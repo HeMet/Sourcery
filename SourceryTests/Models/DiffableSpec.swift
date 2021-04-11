@@ -48,7 +48,7 @@ class DiffableSpec: QuickSpec {
                 sut.append("Value 1")
                 sut.append("Value 2")
 
-                expect("\(sut)").to(equal("Value 1\nValue 2"))
+                expect("\(sut)").to(equal("Value 1\nValue 2".withPlatformLineTerminator))
             }
 
             it("processes identifier for all elements") {
@@ -56,14 +56,14 @@ class DiffableSpec: QuickSpec {
                 sut.append("Value 1")
                 sut.append("Value 2")
 
-                expect("\(sut)").to(equal("Prefixed Value 1\nValue 2"))
+                expect("\(sut)").to(equal("Prefixed Value 1\nValue 2".withPlatformLineTerminator))
             }
 
             it("joins 2 diffable results") {
                 sut.append("Value 1")
                 sut.append(contentsOf: DiffableResult(results: ["Value 2"]))
 
-                expect("\(sut)").to(equal("Value 1\nValue 2"))
+                expect("\(sut)").to(equal("Value 1\nValue 2".withPlatformLineTerminator))
             }
 
             describe("trackDifference") {
@@ -116,7 +116,7 @@ class DiffableSpec: QuickSpec {
                                     actual: [Type(name: "FooBar"), Type(name: "Foo")],
                                     expected: [Type(name: "Foo"), Type(name: "Foo2")])
 
-                            expect("\(sut)").to(equal("idx 0: localName <expected: Foo, received: FooBar>\nidx 1: localName <expected: Foo2, received: Foo>"))
+                            expect("\(sut)").to(equal("idx 0: localName <expected: Foo, received: FooBar>\nidx 1: localName <expected: Foo2, received: Foo>".withPlatformLineTerminator))
                         }
                     }
 
@@ -126,7 +126,7 @@ class DiffableSpec: QuickSpec {
                                     actual: ["Key": Type(name: "Foo")],
                                     expected: ["Key": Type(name: "Foo"), "Something": Type(name: "Bar")])
 
-                            expect("\(sut)").to(equal("Different count, expected: 2, received: 1\nMissing keys: Something"))
+                            expect("\(sut)").to(equal("Different count, expected: 2, received: 1\nMissing keys: Something".withPlatformLineTerminator))
                         }
 
                         it("finds difference at given key count") {
