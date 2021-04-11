@@ -239,7 +239,8 @@ class Sourcery {
                 }
                 return try JavaScriptTemplate(path: $0)
                 #else
-                fatalError("JavaScript templates are not supported on current platrorm")
+                Log.warning("Skipping template \($0). JavaScript templates are supported on Darwin platform only.")
+                return nil
                 #endif
             } else {
                 return try StencilTemplate(path: $0)
