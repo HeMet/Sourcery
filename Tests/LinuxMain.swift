@@ -6,15 +6,20 @@ import SourceryUtils
 
 SourceryUtils.inUnitTests = true
 
-QCKMain([
+var allTests: [QuickSpec.Type] = []
+
+allTests += [
     ConfigurationSpec.self,
     GeneratorSpec.self,
     SourcerySpecTests.self,
-    // Generating
-//    JavaScriptTemplateTests.self, (JS)
+]
+
+allTests += [
     StencilTemplateSpec.self,
 //    SwiftTemplateTests.self, (need to update runtime)
-    // Models
+]
+
+allTests += [
     ClassSpec.self,
     DiffableSpec.self,
     EnumSpec.self,
@@ -22,10 +27,18 @@ QCKMain([
     ProtocolSpec.self,
     StructSpec.self,
     TypealiasSpec.self,
-//    TypedSpec.self, (KVC)
     TypeSpec.self,
     VariableSpec.self,
-    // Parsing
+]
+
+#if os(Darwin)
+allTests += [
+    JavaScriptTemplateTests.self,
+    TypedSpec.self,
+]
+#endif
+
+allTests += [
     AnnotationsParserSpec.self,
     TemplateAnnotationsParserSpec.self,
     VerifierSpec.self,
@@ -40,4 +53,6 @@ QCKMain([
     VerifierSpec.self,
     TypeNameSpec.self,
     ParserComposerSpec.self,
-])
+]
+
+QCKMain(allTests)
