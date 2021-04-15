@@ -1,7 +1,5 @@
-// Generated using Sourcery 0.17.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.3.4 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
-
-// no KVC on Windows
 #if !os(Windows)
 import Quick
 import Nimble

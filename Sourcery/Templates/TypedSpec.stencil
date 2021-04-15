@@ -1,4 +1,5 @@
 //sourcery:file:../../../SourceryTests/Models/TypedSpec
+#if !os(Windows)
 import Quick
 import Nimble
 #if SWIFT_PACKAGE
@@ -67,4 +68,5 @@ class TypedSpec: QuickSpec {
         {% endfor %}
     }
 }
+#endif
 //sourcery:end
