@@ -58,7 +58,6 @@ let package = Package(
         .target(
             name: "SourceryLib",
             dependencies: sourceryDependencies,
-            path: "Sourcery",
             exclude: [
                 "main.swift",
                 "Templates",
