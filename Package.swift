@@ -46,15 +46,8 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "Sourcery",
-            dependencies: sourceryDependencies,
-            exclude: [
-                "Templates"
-            ]
-        ),
-        .target(
             name: "SourceryExecutable",
-            dependencies: ["Sourcery"],
+            dependencies: ["SourceryLib"],
             exclude: [
                 "Info.plist"
             ]
