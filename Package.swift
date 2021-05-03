@@ -120,10 +120,6 @@ let package = Package(
                 "CodableContext",
                 "Quick",
                 "Nimble"
-            ],
-            path: "Templates/CodableContextTests",
-            exclude: [
-                "Info.plist"
             ]
         ),
         .testTarget(
