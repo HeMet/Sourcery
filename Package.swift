@@ -122,6 +122,8 @@ let package = Package(
                 "Nimble"
             ]
         ),
+        // LinuxMain is not compiled as part of the target
+        // since there is no way to run script before compilation begins.
         .testTarget(
             name: "TemplatesTests",
             dependencies: [
@@ -129,23 +131,10 @@ let package = Package(
                 "Nimble",
                 "PathKit"
             ],
-            path: "Templates",
-            exclude: [
-                "CodableContext",
-                "CodableContextTests",
-                "Tests/Generated",
-                "Tests/Info.plist",
-                "default.profraw"
-            ],
-            sources: [
-                // LinuxMain is not compiled as part of the target
-                // since there is no way to run script before compilation begins.
-                "Tests/TemplatesTests.swift"
-            ],
             resources: [
-                .copy("Templates"),
-                .copy("Tests/Context"),
-                .copy("Tests/Expected")
+                .copy("Resources/Templates"),
+                .copy("Resources/Context"),
+                .copy("Resources/Expected")
             ]
         )
     ]
@@ -160,7 +149,7 @@ func hookInternalSwiftSyntaxParser() {
     if !isFromTerminal {
         package
             .targets
-            .filter { $0.isTest || $0.name == "Sourcery" }
+            .filter { $0.isTest || $0.name == "SourceryLib" }
             .forEach { $0.installSwiftSyntaxParser() }
      }
 }
