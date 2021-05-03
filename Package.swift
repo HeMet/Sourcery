@@ -65,9 +65,7 @@ let package = Package(
             name: "SourceryLib",
             dependencies: sourceryDependencies,
             exclude: [
-                "main.swift",
-                "Templates",
-                "Info.plist"
+                "Templates"
             ]
         ),
         .target(name: "SourceryRuntime"),
