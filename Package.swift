@@ -24,7 +24,7 @@ let package = Package(
        .macOS(.v10_12),
     ],
     products: [
-        .executable(name: "sourcery", targets: ["Sourcery"]),
+        .executable(name: "sourcery", targets: ["SourceryExecutable"]),
         // For testing purpose. The linker has problems linking against executable.
         .library(name: "SourceryLib", targets: ["SourceryLib"]),
         .library(name: "SourceryRuntime", targets: ["SourceryRuntime"]),
@@ -51,7 +51,13 @@ let package = Package(
             name: "Sourcery",
             dependencies: sourceryDependencies,
             exclude: [
-                "Templates",
+                "Templates"
+            ]
+        ),
+        .target(
+            name: "SourceryExecutable",
+            dependencies: ["Sourcery"],
+            exclude: [
                 "Info.plist"
             ]
         ),

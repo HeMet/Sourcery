@@ -13,6 +13,7 @@ import SourceryRuntime
 import SourceryFramework
 import SourceryUtils
 import SourceryJS
+import Sourcery
 
 extension Path: ArgumentConvertible {
     /// :nodoc:
