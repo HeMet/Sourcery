@@ -25,8 +25,6 @@ let package = Package(
     ],
     products: [
         .executable(name: "sourcery", targets: ["SourceryExecutable"]),
-        // For testing purpose. The linker has problems linking against executable.
-        .library(name: "SourceryLib", targets: ["SourceryLib"]),
         .library(name: "SourceryRuntime", targets: ["SourceryRuntime"]),
         .library(name: "SourceryStencil", targets: ["SourceryStencil"]),
         .library(name: "SourceryJS", targets: ["SourceryJS"]),
